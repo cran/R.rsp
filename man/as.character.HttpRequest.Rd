@@ -19,7 +19,7 @@
  Returns a short string describing the HTTP request.
 }
 
-\usage{\method{as.character}{HttpRequest}(this, ...)}
+\usage{\method{as.character}{HttpRequest}(x, ...)}
 
 \arguments{
   \item{...}{Not used.}

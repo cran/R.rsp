@@ -55,14 +55,14 @@ extends \link[R.rsp]{FileRspResponse}\cr
 }
 
 
-\bold{Methods inherited from FileRspResponse}:\cr
+ \bold{Methods inherited from FileRspResponse}:\cr
 flush, getAbsolutePath, getName, getOutput, getPath, write
 
-\bold{Methods inherited from RspResponse}:\cr
+ \bold{Methods inherited from RspResponse}:\cr
 flush, import, write
 
-\bold{Methods inherited from Object}:\cr
-$, $<-, [[, [[<-, as.character, attach, attachLocally, clone, detach, equals, extend, finalize, getEnvironment, getFields, getInstanciationTime, getStaticInstance, hasField, hashCode, ll, load, objectSize, print, save
+ \bold{Methods inherited from Object}:\cr
+$, $<-, [[, [[<-, as.character, attach, attachLocally, clearCache, clone, detach, equals, extend, finalize, gc, getEnvironment, getFields, getInstanciationTime, getStaticInstance, hasField, hashCode, ll, load, objectSize, print, save
 
  }
 

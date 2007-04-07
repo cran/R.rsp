@@ -120,7 +120,7 @@ setMethodS3("translateRsp", "default", function(file="", text=NULL, path=getPare
         bfr <- substring(bfr, len+1);
     
         # Read the '=' with optional white spaces around it
-        pos <- regexpr("^[ \]*=[ \]*", bfr);
+        pos <- regexpr("^[ ]*=[ ]*", bfr);
         if (pos == -1)
           throw(Exception("Error when parsing attributes. Expected an equal sign.", code=rspCode));
         len <- attr(pos, "match.length");
@@ -521,6 +521,8 @@ setMethodS3("translateRsp", "default", function(file="", text=NULL, path=getPare
 
 ##############################################################################
 # HISTORY:
+# 2007-04-07
+# o Replace regexpr pattern "^[ \]*=[ \]*" with "^[ \]*=[ \]*".
 # 2006-07-20
 # o BUG FIX: An RSP comment tag would also replicate last text or R code.
 # 2006-07-17

@@ -61,7 +61,7 @@ setMethodS3("indexOfNonQuoted", "default", function(str, pattern, ...) {
     tmp <- gsub("\\\\\\\\", "", tmp);
 
     # b. Remove all espaced quotes, i.e. '\"'.
-    tmp <- gsub("\\\[\"\']", "", tmp);
+    tmp <- gsub("\\\\[\"\']", "", tmp);
   
     # c. Remove all non quotes
     tmp <- gsub("[^'\"]", "", tmp);
@@ -99,6 +99,8 @@ setMethodS3("indexOfNonQuoted", "default", function(str, pattern, ...) {
 
 ##############################################################################
 # HISTORY:
+# 2007-04-07
+# o Replaced gsub pattern "\\\[\"\']" with "\\\\[\"\']" in indexOfNonQuoted().
 # 2006-07-04
 # o Made the Rdoc help internal.
 # 2005-09-16

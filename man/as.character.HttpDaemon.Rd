@@ -19,7 +19,7 @@
  Returns a short string describing the HTTP daemon.
 }
 
-\usage{\method{as.character}{HttpDaemon}(static, ...)}
+\usage{\method{as.character}{HttpDaemon}(x, ...)}
 
 \arguments{
   \item{...}{Not used.}

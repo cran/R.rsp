@@ -1,6 +1,17 @@
 Package: R.rsp
 ==============
 
+Version: 0.3.2 [2007-04-07]
+o Replaced gsub pattern "\\\[\"\']" with "\\\\[\"\']" in
+  indexOfNonQuoted().
+o Replace regexpr pattern "^[ \]*=[ \]*" with "^[ \]*=[ \]*"
+  in translateRsp().
+
+
+Version: 0.3.1 [2007-01-07]
+o Added rspToHtml() in order to simplify RSP-to-HTML compilations.
+
+
 Version: 0.3.0 [2006-07-20]
 o Package has now been verified to compile not only HTML input files,
   but also TeX files.  This make RSP a very power tool to write 
@@ -18,9 +29,11 @@ o BUG FIX: translateRsp("\\\n") would convert to "\\n". Thanks
 o BUG FIX: translateRsp() would replicate last R code or text piece,
   for each RSP comment tag.
 
+
 Version: 0.2.9 [2006-07-05]
 o BUG FIX: If argument 'path' was NULL, translateRsp() gave an error.
   Thanks Julien Gagneur for pointing this out.
+
 
 Version: 0.2.8 [2006-07-04]
 o Renamed class Response to RspResponse and RspResponse to 
@@ -29,8 +42,10 @@ o Now sourceRsp() creates an HttpRequest object internally, if not
   given.  Added an example to ?sourceRsp too.
 o Added a little bit more help text.
 
+
 Version: 0.2.7 [2006-06-13]
 o BUG FIX: Used obsolete setClassS3() instead of setConstructorS3().
+
 
 Version: 0.2.6 [2006-02-22]
 o Added getParameters() to HttpRequest for completeness.
@@ -38,6 +53,7 @@ o The RSP page on "System Details" used functions only available
   on Windows platforms.
 o BUG FIX: HttpDaemon$getHttpRequest() failed to retrieve 
   parameters with empty values, e.g. "index.rsp?foo=&bar=2".
+
 
 Version: 0.2.5 [2006-01-21]
 o Added writeResponse() to HttpDaemon.  No other classes but
@@ -49,6 +65,7 @@ o Mozilla browsers does unfortunately not follow file URLs (file://)
   via RSP pages (without passing everything through the HTTP daemon
   that is). It works under Internet Explorer.
 o Added more help.
+
 
 Version: 0.2.4 [2006-01-11]
 o BUG FIX: translateRsp() would in some locales give the error:
@@ -63,11 +80,13 @@ o Updated example(HttpDaemon) so it actually runs and opens up
 o Added argument 'overwrite' to sourceAllRsp().
 o Added argument 'overwrite' to constructor of RspResponse.
 
+
 Version: 0.2.3 [2005-10-27]
 o Removed the generation of doc/ from rsp files. Now all such
   documentation is supposed to viewed via the built in HTTP
   daemon.  This might change if/when a root ServletRequest 
   class is written.
+
 
 Version: 0.2.2 [2005-10-20]
 o Now root paths can be set before the server has started.
@@ -77,9 +96,11 @@ o BUG FIX: HttpDaemon$startHelp() tried to open the wrong page.
 o Update the RSP pages to include a common header with a navigator.
   Changes the CSS style to use sans serif etc.
 
+
 Version: 0.2.1 [2005-10-15]
 o BUG FIX: The HttpDaemon sent the wrong MIME type for *.rsp pages. 
   Now text/html as it should be.
+
 
 Version: 0.2.0 [2005-09-26]
 o Added a simple webserver (HTTP Daemon) requiring Tcl, which now
@@ -88,11 +109,13 @@ o Added a simple webserver (HTTP Daemon) requiring Tcl, which now
 o BUG FIX: sourceRsp() is no longer using argument 'output', 
   but 'response'.
 
+
 Version: 0.1.3 [2005-09-18]
 o The RSP template is now searching for a functional PNG device.
 o Made a few method protected (and hence hid their documentation), 
   because they are not of public interest.
 o Added help to all methods.  R CMD check gives no warnings.
+
 
 Version: 0.1.2 [2005-08-15]
 o All output is first interpreted as a GString before being written.
@@ -100,12 +123,14 @@ o Added support for page directive with attribute 'import'.
 o More robust search for '%>'; tries to make sure the ending tag
   is not within a character string.
 
+
 Version: 0.1.1 [2005-08-02]
 o If an error occurs with an RSP file when running sourceAllRsp(),
   it smoothly continues with the next file instead of interrupting.
 o Clean up and added help pages to all methods and classes.
 o Now the "User Guides and Package Vignettes" documentation is
   build from RSP files when re-building man pages from Rdoc comments.
+
 
 Version: 0.1.0 [2005-07-26]
 o Created.  Since May 2005, there has been a trial version of an 

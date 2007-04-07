@@ -22,6 +22,7 @@
 # \section{To get started}{
 #   To get started, see:
 #   \enumerate{
+#     \item @see "rspToHtml" - To compile an RSP file to HTML.
 #     \item @see "browseRsp" - To start the internal \R web server and
 #       launch the RSP main menu in the default web browser.
 #       From this page you access not only help pages and demos on how 
