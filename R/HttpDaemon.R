@@ -100,7 +100,10 @@ setMethodS3("setCount", "HttpDaemon", function(static, count, ...) {
 # @keyword IO
 # @keyword programming
 #*/###########################################################################
-setMethodS3("as.character", "HttpDaemon", function(static, ...) {
+setMethodS3("as.character", "HttpDaemon", function(x, ...) {
+  # To please R CMD check
+  static <- x;
+
   s <- paste(class(static)[1], ":", sep="");
   if (isStarted(static)) {
     s <- paste(s, " HTTP daemon is started.", sep="");

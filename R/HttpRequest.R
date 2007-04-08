@@ -83,7 +83,10 @@ setConstructorS3("HttpRequest", function(requestUri=NULL, parameters=list(), ...
 # @keyword IO
 # @keyword programming
 #*/###########################################################################
-setMethodS3("as.character", "HttpRequest", function(this, ...) {
+setMethodS3("as.character", "HttpRequest", function(x, ...) {
+  # To please R CMD check
+  this <- x;
+
   s <- paste(class(this)[1], ":", sep="");
 
   if (is.null(this$requestUri)) {
