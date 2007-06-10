@@ -453,10 +453,10 @@ setMethodS3("translateRsp", "default", function(file="", text=NULL, path=getPare
             args <- tmp[-1];
             if (mime == "text/html") {
               rspLanguage <- HtmlRspLanguage();
-            } else if (mime == "text/latex") {
-              rspLanguage <- LaTeXRspLanguage();
-            } else if (mime == "text/plain") {
-              rspLanguage <- TextRspLanguage();
+##            } else if (mime == "text/latex") {
+##              rspLanguage <- LaTeXRspLanguage();
+##            } else if (mime == "text/plain") {
+##              rspLanguage <- TextRspLanguage();
             }
           }
 

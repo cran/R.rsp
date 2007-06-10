@@ -1,6 +1,11 @@
 Package: R.rsp
 ==============
 
+Version: 0.3.3 [2007-06-10]
+o Updated code such that package pass R CMD check R v2.6.0.
+o BUG FIX: Removed obsolete code calling non-existing functions.
+
+
 Version: 0.3.2 [2007-04-07]
 o Replaced gsub pattern "\\\[\"\']" with "\\\\[\"\']" in
   indexOfNonQuoted().
