@@ -34,7 +34,7 @@ setMethodS3("processRsp", "HttpDaemon", function(static, ...) {
   # Get the request information
   request <- getHttpRequest(static);
 
-  pathname <- as.character(tclvalue("mypath"));
+  pathname <- as.character(tcltk::tclvalue("mypath"));
 
 
   # The connection where to write RSP response output to.
@@ -77,6 +77,8 @@ setMethodS3("processRsp", "HttpDaemon", function(static, ...) {
 
 ###############################################################################
 # HISTORY:
+# 2007-06-10
+# o Now all methods of 'tcltk' are called explicitly with prefix 'tcltk::'.
 # 2006-01-21
 # o Moved processRsp() to its own file.  The purpose is to one day get a
 #   HttpDaemon class which does not know of RSP pages.

@@ -240,7 +240,7 @@ setMethodS3("getConfig", "HttpDaemon", function(static, ...) {
   # Load required package
   require(tcltk) || stop("Package not installed/found: tcltk");
 
-  config <- as.tclObj("config");
+  config <- tcltk::as.tclObj("config");
   class(config) <- c("tclArray", class(config));
   config;
 }, static=TRUE, protected=TRUE)
@@ -283,21 +283,21 @@ setMethodS3("getHttpRequest", "HttpDaemon", function(static, ...) {
   getRequestUri <- function(...) {
     url <- NA;
     tryCatch({
-      url <- as.character(tclvalue("url"));
+      url <- as.character(tcltk::tclvalue("url"));
     }, error = function(ex) {
     })
     url;
   }
 
   getData <- function(field=NULL, ...) {
-    data <- as.tclObj("data");
+    data <- tcltk::as.tclObj("data");
     class(data) <- c("tclArray", class(data));
     if (is.null(field))
       return(data);
     value <- data[[field]];
     if (is.null(value))
       return(NULL);
-    value <- tclvalue(value);
+    value <- tcltk::tclvalue(value);
     value;
   }
 
@@ -322,7 +322,7 @@ setMethodS3("getHttpRequest", "HttpDaemon", function(static, ...) {
 
   HttpRequest(
     serverPort    = getPort(static),
-    contextRoot   = getParent(as.character(tclvalue("mypath"))),
+    contextRoot   = getParent(as.character(tcltk::tclvalue("mypath"))),
     requestUri    = getData("url"),
     queryString   = getData("query"),
     remoteAddress = getData("ipaddr"),
@@ -453,7 +453,7 @@ setMethodS3("setRootPaths", "HttpDaemon", function(static, paths, ...) {
   # If server is started, updated servers settings
   if (isStarted(static)) {
     paths <- paste(paths, collapse=";");
-    res <- tcl("setRootPaths", paths);
+    res <- tcltk::tcl("setRootPaths", paths);
   }
 
   invisible(oldPaths);
@@ -465,7 +465,7 @@ setMethodS3("setRootPaths", "HttpDaemon", function(static, paths, ...) {
 ##   if (isStarted(static)) {
 ##     paths <- getRootPaths(static);
 ##     paths <- paste(paths, collapse=";");
-##     res <- tcl("setRootPaths", paths);
+##     res <- tcltk::tcl("setRootPaths", paths);
 ##   }
 ##   invisible(getRootPaths(static));
 ## }, static=TRUE)
@@ -625,7 +625,7 @@ setMethodS3("sourceTcl", "HttpDaemon", function(static, ...) {
   if (!isFile(pathname))
     stop("Tcl source code file not found: ", pathname);
 
-  res <- tcl("source", pathname);
+  res <- tcltk::tcl("source", pathname);
   invisible(res);
 }, static=TRUE, protected=TRUE);
 
@@ -704,10 +704,10 @@ setMethodS3("start", "HttpDaemon", function(x, rootPaths=NULL, port=8080, defaul
   sourceTcl(static);
 
   # Start the HTTP daemon (the webserver)
-  res <- tcl("server", paste(rootPaths, collapse=";"), port, default);
+  res <- tcltk::tcl("server", paste(rootPaths, collapse=";"), port, default);
 
   # Validate opened port.
-  port <- Arguments$getInteger(tclvalue(res), range=c(0,65535));
+  port <- Arguments$getInteger(tcltk::tclvalue(res), range=c(0,65535));
 
   invisible(port);
 }, static=TRUE)
@@ -751,8 +751,8 @@ setMethodS3("stop", "HttpDaemon", function(static, ...) {
     stop("HTTP daemon is not started.");
 
   # Close the httpd socket.
-  .Tcl("close $config(listen)");
-  .Tcl("unset config");
+  tcltk::.Tcl("close $config(listen)");
+  tcltk::.Tcl("unset config");
 
   invisible(TRUE);
 }, static=TRUE)
@@ -847,10 +847,10 @@ setMethodS3("writeResponse", "HttpDaemon", function(static, ...) {
 
   # Escape certain characters, but converting the string to a Tcl string
   # and back.
-  str <- as.character(tclVar(str));
+  str <- as.character(tcltk::tclVar(str));
 
   # Write the string to HTTP output connection.
-  .Tcl(paste("catch { puts $sock $", str, " }", sep=""));
+  tcltk::.Tcl(paste("catch { puts $sock $", str, " }", sep=""));
 
   invisible(nchar(str));
 })
@@ -858,6 +858,8 @@ setMethodS3("writeResponse", "HttpDaemon", function(static, ...) {
 
 ###############################################################################
 # HISTORY:
+# 2007-06-10
+# o Now all methods of 'tcltk' are called explicitly with prefix 'tcltk::'.
 # 2006-07-10
 # o Now append- and insertRootPaths() pass arguments '...' to setRootPaths().
 # 2006-07-04
