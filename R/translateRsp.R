@@ -34,9 +34,6 @@
 #   Returns a @character string of \R source code.
 # }
 #
-# \details{
-# }
-#
 # @author
 #
 # \seealso{
@@ -112,7 +109,7 @@ setMethodS3("translateRsp", "default", function(file="", text=NULL, path=getPare
         len <- attr(pos, "match.length");
         bfr <- substring(bfr, len+1);
         # Read the attribute name
-        pos <- regexpr("^[a-zA-Z][a-zA-Z0-9]*", bfr);
+        pos <- regexpr("^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0-9]*", bfr);
         if (pos == -1)
           throw(Exception("Error when parsing attributes. Expected an attribute name.", code=rspCode));
         len <- attr(pos, "match.length");
@@ -358,7 +355,7 @@ setMethodS3("translateRsp", "default", function(file="", text=NULL, path=getPare
       #
       # <%@ directive attr1="foo" attr2="bar" ...%>
       # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-      pattern <- "^@[ ]*([a-zA-Z][a-zA-Z0-9]*)[ ]+(.*)$";
+      pattern <- "^@[ ]*([abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0-9]*)[ ]+(.*)$";
       if (regexpr(pattern, part) != -1) {
         # <%@foo attr1="bar" attr2="geek"%> => ...
         directive <- gsub(pattern, "\\1", part);

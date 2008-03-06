@@ -1,6 +1,14 @@
 Package: R.rsp
 ==============
 
+Version: 0.3.4 [2008-03-06]
+o BUG FIX: Regular expression pattern 'a-Z' is illegal on (at least) 
+  some locale, e.g. 'C' (where 'A-z' works). The only way to specify 
+  the ASCII alphabet is to list all characters explicitly, which we now
+  do in all methods of the package.  See the r-devel thread 
+  "invalid regular expression '[a-Z]'" on 2008-03-05 for details.
+
+
 Version: 0.3.3 [2007-06-10]
 o Updated code such that package pass R CMD check R v2.6.0.
 o BUG FIX: Removed obsolete code calling non-existing functions.
