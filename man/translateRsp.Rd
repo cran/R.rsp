@@ -43,9 +43,6 @@
   Returns a \code{\link[base]{character}} string of \R source code.
 }
 
-\details{
-}
-
 \author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
 
 \seealso{
