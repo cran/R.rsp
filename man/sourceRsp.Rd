@@ -19,7 +19,7 @@
 \usage{\method{sourceRsp}{default}(..., response=FileRspResponse(file = stdout()), request=NULL, envir=parent.frame(), verbose=FALSE)}
 
 \arguments{
-  \item{...}{Arguments passed to \code{\link{translateRsp}}(), e.g. \code{file}
+  \item{...}{Arguments passed to \code{\link{translateRspV1}}(), e.g. \code{file}
     and \code{path}.}
   \item{response}{An \code{\link{RspResponse}} object to which output is passed.
     This object can be accessed by the RSP code.}
@@ -68,7 +68,7 @@ file.show(getOutput(response))
 \author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
 
 \seealso{
-  \code{\link{translateRsp}}().
+  \code{\link{translateRspV1}}().
   \code{\link{sourceAllRsp}}().
 }
 
