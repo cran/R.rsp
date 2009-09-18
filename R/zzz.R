@@ -3,7 +3,8 @@
 .First.lib <- function(libname, pkgname) {
   pkg <- Package(pkgname);
   assign(pkgname, pkg, pos=getPosition(pkg));
-  cat(getName(pkg), " v", getVersion(pkg), " (", getDate(pkg), ")",
-      " successfully loaded. See ?", pkgname, " for help.\n",
-      " Type browseRsp() to open the RSP main menu in your browser.\n", sep="");
+
+  packageStartupMessage(getName(pkg), " v", getVersion(pkg), " (", 
+    getDate(pkg), ") successfully loaded. See ?", pkgname, " for help.\n",
+    " Type browseRsp() to open the RSP main menu in your browser.");
 }

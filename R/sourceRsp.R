@@ -10,7 +10,7 @@
 # @synopsis
 #
 # \arguments{
-#   \item{...}{Arguments passed to @see "translateRsp", e.g. \code{file} 
+#   \item{...}{Arguments passed to @see "translateRspV1", e.g. \code{file} 
 #     and \code{path}.}
 #   \item{response}{An @see "RspResponse" object to which output is passed.
 #     This object can be accessed by the RSP code.}
@@ -43,7 +43,7 @@
 # @author
 #
 # \seealso{
-#   @see "translateRsp".
+#   @see "translateRspV1".
 #   @see "sourceAllRsp".
 # }
 #
@@ -93,7 +93,7 @@ setMethodS3("sourceRsp", "default", function(..., response=FileRspResponse(file=
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   # Translate RSP document to an R servlet
-  rCode <- translateRsp(..., verbose=verbose);
+  rCode <- translateRspV1(..., verbose=verbose);
 
   verbose && capture(verbose, paste("22", displayCode(code=rCode)));
   	

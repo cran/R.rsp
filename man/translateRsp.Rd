@@ -10,42 +10,30 @@
 \alias{translateRsp.default}
 \alias{translateRsp}
 
-\title{Translates an RSP file to an R servlet}
+\title{Translates an RSP file to an R RSP source file}
 
 \description{
- Translates an RSP file to an R servlet.
+ Translates an RSP file to an R RSP source file.
 }
 
-\usage{\method{translateRsp}{default}(file="", text=NULL, path=getParent(file), rspLanguage=getOption("rspLanguage"), verbose=FALSE, ...)}
+\usage{\method{translateRsp}{default}(filename, path=NULL, ..., force=FALSE, verbose=FALSE)}
 
 \arguments{
-  \item{file}{A filename, a URL, or a \code{\link[base:connections]{connection}} to be read.
-              Ignored if \code{text} is not \code{\link[base]{NULL}}.}
-  \item{text}{If specified, a \code{\link[base]{character}} \code{\link[base]{vector}} of RSP code to be
-              translated.}
-  \item{path}{A pathname setting the current include path.
-              If \code{file} is a filename and its parent directory
-              is different from this one, \code{path} is added
-              to the beginning of \code{file} before the file is read.}
-  \item{rspLanguage}{An \code{\link{RspLanguage}} object.}
-  \item{verbose}{Either a \code{\link[base]{logical}}, a \code{\link[base]{numeric}}, or a \code{\link[R.utils]{Verbose}}
-    object specifying how much verbose/debug information is written to
-    standard output. If a Verbose object, how detailed the information is
-    is specified by the threshold level of the object. If a numeric, the
-    value is used to set the threshold of a new Verbose object. If \code{\link[base:logical]{TRUE}},
-    the threshold is set to -1 (minimal). If \code{\link[base:logical]{FALSE}}, no output is written.
-    [Currently not used.]
-  }
+  \item{filename}{A filename to be read.}
+  \item{path}{An optional path to the file.}
   \item{...}{Not used.}
+  \item{force}{A \code{\link[base]{logical}}.}
+  \item{verbose}{\code{\link[R.utils]{Verbose}}.}
 }
 
 \value{
-  Returns a \code{\link[base]{character}} string of \R source code.
+  Returns (invisibly) the pathname to the R RSP source code.
 }
 
 \author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
 
 \seealso{
+  Internally \code{\link{parseRsp}}() parses the RSP file into an R code string.
   \code{\link{sourceRsp}}().
 }
 

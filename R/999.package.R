@@ -29,7 +29,7 @@
 #       to use RSP, but also other package RSP pages.
 #     \item @see "sourceRsp" - To process a single RSP page.
 #     \item @see "sourceAllRsp" - To process multiple RSP pages in a batch.
-#     \item @see "translateRsp" - To translate an RSP page in to R code, 
+#     \item @see "parseRsp" - To parse an RSP page in to R code, 
 #       but without evaluating the code.
 #     \item @see "HttpDaemon" - The internal web server.
 #   }

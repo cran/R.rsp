@@ -42,7 +42,7 @@
       to use RSP, but also other package RSP pages.
     \item \code{\link{sourceRsp}}() - To process a single RSP page.
     \item \code{\link{sourceAllRsp}}() - To process multiple RSP pages in a batch.
-    \item \code{\link{translateRsp}}() - To translate an RSP page in to R code,
+    \item \code{\link{parseRsp}}() - To parse an RSP page in to R code,
       but without evaluating the code.
     \item \code{\link{HttpDaemon}} - The internal web server.
   }
