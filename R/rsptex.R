@@ -29,6 +29,10 @@
 #   or attach its content by \code{attachLocally(env)}.
 # }
 #
+# \examples{\dontrun{
+#   @include "../incl/rsptex.Rex"
+# }}
+#
 # @author
 #
 # \seealso{
@@ -39,7 +43,7 @@
 # @keyword file
 # @keyword IO
 #*/########################################################################### 
-setMethodS3("rsptex", "default", function(..., pdf=FALSE, force=FALSE, verbose=FALSE) {
+setMethodS3("rsptex", "default", function(..., pdf=TRUE, force=FALSE, verbose=FALSE) {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Validate arguments
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,7 +57,7 @@ setMethodS3("rsptex", "default", function(..., pdf=FALSE, force=FALSE, verbose=F
 
   verbose && enter(verbose, "Compiling RSP LaTeX file");
 
-  pathname2 <- compileRsp(..., force=force, verbose=verbose);
+  pathname2 <- compileRsp(..., trimRsp=TRUE, force=force, verbose=verbose);
   verbose && cat(verbose, "LaTeX pathname: ", pathname2);
 
   ext <- ifelse(pdf, ".pdf", ".dvi");
@@ -87,6 +91,13 @@ setMethodS3("rsptex", "default", function(..., pdf=FALSE, force=FALSE, verbose=F
 
 ############################################################################
 # HISTORY:
+# 2011-03-08
+# o Now rsptex() trims white space of RSP blocks so that RSP blocks will
+#   not add additional newlines.  This is done via the new 'trimRsp'
+#   argument of compileRsp() et al.
+# 2011-02-20
+# o Now argument 'pdf' of rsptex() default to TRUE.
+# o Added an example(rsptex).
 # 2011-02-13
 # o Added a section to help(rsptex) explaining in what environment the
 #   RSP document is evaluated and how to retrieve it and its content.
