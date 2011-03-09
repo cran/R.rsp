@@ -16,7 +16,7 @@
  Compiles an RSP LaTeX file into a DVI file.
 }
 
-\usage{\method{rsptex}{default}(..., pdf=FALSE, force=FALSE, verbose=FALSE)}
+\usage{\method{rsptex}{default}(..., pdf=TRUE, force=FALSE, verbose=FALSE)}
 
 \arguments{
   \item{...}{Arguments passed to \code{\link{compileRsp}}().}
@@ -37,6 +37,13 @@
   Afterward you can query its content by, say, \code{ll(envir=env)}
   or attach its content by \code{attachLocally(env)}.
 }
+
+\examples{\dontrun{
+  library("R.rsp")
+path <- system.file("tex.rsp", package="R.rsp")
+rsptex("report.tex.rsp", path=path)
+
+}}
 
 \author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
 
