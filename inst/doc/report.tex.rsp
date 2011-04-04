@@ -1,0 +1,396 @@
+<% t0 <- Sys.time() %>
+\documentclass[letter,12pt]{article}
+\usepackage{graphicx}
+\usepackage{xspace}
+\usepackage{alltt}
+\graphicspath{{figures/}}
+
+\addtolength{\oddsidemargin}{-0.5in}	
+\addtolength{\evensidemargin}{-0.5in}	
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.5in}	
+\addtolength{\textheight}{1in}
+
+\newcommand{\keywords}[1]{\footnotesize{\textbf{Keywords: }#1}\xspace}
+\newcommand{\pkg}[1]{\textsl{#1}\xspace}
+\newcommand{\code}[1]{\texttt{#1}\xspace}
+\newcommand{\bs}{$\backslash$}
+
+\newenvironment{rspVerbatim}{\begin{alltt}}{\end{alltt}}
+
+\title{Dynamic LaTeX reports with RSP}
+\author{Henrik Bengtsson}
+\date{<%=format(as.Date(getDate(R.rsp)), format="%B %d, %Y")%>}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+An important part of a statistical analysis is to document the analysis and its results.  A common approach is to build up an R script as the the analysis progresses.  This script may generate image files and tables that are later inserted manually into a, say, LaTeX report.  This strategy works alright for small one-off analyzes, whereas for larger and partly repetitive analyzes an automatic report generator is more suitable.
+
+In this document we will illustrate how a LaTeX document can be extended with the RSP markup language resulting in a very powerful tool for generating dynamic reports in R.  
+As we will discover, with RSP it is possible to generate document constructs that are not possible in Sweave, e.g. looping of a mix of R and LaTeX blocks.
+Because RSP is a so called \emph{context-indepent} markup language, RSP can be used to produce documents of any text-based format, e.g. plain text, HTML, XML, SVG, as well as Javascript, R, and Sweave.
+This document was produced using RSP-embedded LaTeX.
+\end{abstract}
+
+\keywords{reproducible research, report generator, markup language, LaTeX}
+
+\begin{center}
+\emph{This document is under construction.}
+\end{center}
+
+\clearpage
+\tableofcontents
+
+\clearpage
+
+<%-------------------------------------------------------------------
+  INTRODUCTION
+  -------------------------------------------------------------------%>
+\section{Compiling RSP-markup documents}
+Before anything else, load the \pkg{R.rsp} package by \code{library("R.rsp")}. 
+
+
+ \subsection{Compiling LaTeX documents with RSP markup}
+Then, in order to compile an LaTeX document with RSP markup (a "LaTeX RSP document") named \code{report.tex.rsp} into a PDF, do:
+\begin{verbatim}
+rsptex("report.tex.rsp")
+\end{verbatim}
+This will
+(i) translate the LaTeX RSP document into a valid 
+    R script (\code{report.tex.rsp.R}),
+(ii) run the R script resulting in a LaTeX document (\code{report.tex}), and
+(iii) compile the LaTeX document into a PDF (\code{report.pdf}).
+
+You can try to compile this document by calling
+\begin{verbatim}
+library("R.rsp")
+path <- system.file("doc", package="R.rsp")
+rsptex("report.tex.rsp", path=path)
+\end{verbatim}
+The PDF (\code{report.pdf}) will be available in the current directory of R (see \code{getwd()}).
+
+
+
+<%-------------------------------------------------------------------
+  THE RSP MARKUP LANGUAGE
+  -------------------------------------------------------------------%>
+\section{The RSP markup language}
+
+\subsection{Evaluating code (\code{<\%\{code\}\%>})}
+The RSP markup \code{<\%\{code\}\%>} evaluates the code (without inserting it into the document).  For instance,
+\begin{rspVerbatim}
+<\%
+n <- 3
+type <- "horse"
+%>
+\end{rspVerbatim}
+evaluates the code such that \code{n == 3} and \code{type == "horse"} afterward.
+
+
+\subsection{Evaluating and embedding code (\code{<\%:\{code\}\%>})}
+Just as \code{<\%\{code\}\%>}, the RSP markup \code{<\%:\{code\}\%>} also evaluates code, but in addition it also inserts the code verbatim into the document.  For instance,
+\begin{rspVerbatim}
+<\%:
+n <- 3
+type <- "horse"
+%>
+\end{rspVerbatim}
+evaluates the code and insert the following into the output document:
+\begin{verbatim}
+<%:
+n <- 3
+type <- "horse"
+%>
+\end{verbatim}
+Formatting of the inserted code has to be taken care of by LaTeX.  For instance, here we have explicitly wrapped the RSP markup inside a \code{{\textbackslash}begin\{verbatim\}...{\textbackslash}end\{verbatim\}} block.
+
+
+\clearpage
+\subsection{Echoing evaluated code (\code{<\%=evalWithEcho(\{code chunk\})\%>})}
+The \code{evalWithEcho()} function allows us to evaluate, embed and echo the output of a code chunk\footnote{\code{\{code chunk\}} must be a complete and valid R expression, because \code{evalWithEcho()} is a function call.}.  For example,
+\begin{rspVerbatim}
+<\%=evalWithEcho(\{
+n <- 3;   # Comments are not displayed
+n
+print(Sys.time())
+type <- "horse"
+type
+\})%>
+\end{rspVerbatim}
+produces
+\begin{verbatim}
+<%=evalWithEcho({
+n <- 3;
+n
+print(Sys.time())
+type <- "horse"
+type
+})%>
+\end{verbatim}
+Note that code is parsed and formatted by the R parser, meaning that indentation, spacing and so on are \emph{not} preserved when echoing this way.  This is also why comments, semicolons and other code constructs are dropped from the code.
+
+
+\subsection{Inlining values of variables (\code{<\%=\{code\}\%>})}
+The RSP markup \code{<\%=\{code\}\%>} evaluates the code (without inserting it into the document) and inserts the character representation\footnote{The \emph{character representation} of an object \code{x} is what \code{as.character(x)} gives.} of the returned object.  For instance,
+\begin{rspVerbatim}
+There are <\%=n\%> red <\%=type\%>s
+\end{rspVerbatim}
+would produce the string 'There are <%=n%> red <%=type%>s'.
+If inlining multiple values, they are all pasted together without any separator.  For example,
+\begin{rspVerbatim}
+The letters of the alphabet are '<\%=LETTERS\%>'
+\end{rspVerbatim}
+produces 'The letters the alphabet are '<%=LETTERS%>'.
+To separate the elements with commas, use \code{<\%=paste(LETTERS, collapse=", ")\%>}.  Alternatively, use \code{<\%=hpaste(LETTERS)\%>} to output '<%=hpaste(LETTERS)%>'\footnote{The \code{hpaste()} function of \pkg{R.utils} provides "human-readable" pasting of vectors.}.
+
+
+
+
+\subsection{Iterating over a mixture of RSP and text blocks}
+A useful feature of RSP is that it is possible to use RSP constructs that span multiple code and text blocks.  For instance, the following will iterate over a set of text and RSP blocks:
+\begin{rspVerbatim}
+The <\%=n <- length(letters)%> letters in the English alphabet are: 
+<\% for (i in 1:n) \{ \%>
+  <\%=letters[i]\%>/<\%=LETTERS[i]\%><\%=if(i < n) ", "\%>
+<\% \} \%>.
+\end{rspVerbatim}
+which generates:\footnote{Of course, in this particular case, the above for-loop can be replaced by \code{paste(letters, LETTERS, sep="/", collapse=", ")}.}: 'The <%=n <- length(letters)%> letters in the English alphabet are: 
+<% for (i in 1:n) { %>
+  <%=letters[i]%>/<%=LETTERS[i]%><%=if(i < n) ", "%>
+<% } %>.'
+
+A more complex example is where one wish to generate a report on human genomic data across all of the 24 chromosomes and where the same type of analysis should be repeated for each chromosome.  With RSP markup, this can be achieved by an outer loop over chromosomes:
+\begin{rspVerbatim}
+<\% for (chromosome in 1:24) \{ %>
+{\bs}section\{Chromosome <\%=chromosome\%>\}
+...
+A mix of RSP and text blocks constituting 
+the analysis of the current chromosome.
+...
+<\% \} # for (chromosome ...) \%>
+\end{rspVerbatim}
+
+Note that there exist no corresponding markup in Sweave.  Instead, contrary to RSP, Sweave requires the each code chunk contains a complete R expression.  This means that, in terms of the above example, in Sweave it is not possible to begin a for loop in one code chunk and end it in a succeeding one.  This has to do with the fundamentally different way RSP and Sweave documents are processed.
+
+
+
+<%-------------------------------------------------------------------
+  FIGURES
+  -------------------------------------------------------------------%>
+\section{Generating and inserting figures}
+Since the above RSP markups are powerful enough, there is no need for a specific markup for figures.  This section shows how to create and embed image files into the final document.
+
+\subsection{Brief on including image files in LaTeX}
+When insert a figure in LaTeX, it is recommended to do so without specifying neither the path nor the filename extension of the image file, e.g. \code{{\textbackslash}includegraphics\{MyFigure\}}.
+In order for this to work, one must specify the "image search path", e.g.
+\begin{verbatim}
+\graphicspath{{figures/}{figures/external/}}
+\end{verbatim}
+which is preferably added to the beginning of the LaTeX file.  This tells LaTeX to search for image files in directory figures/ as well as directory figures/external/.   Moreover, when leaving out the filename extension, LaTeX will automatically search for image files with different filename extensions, e.g. \code{*.png}, \code{*.eps}, and \code{*.pdf}.
+
+
+\subsection{Defining a function that creates an image file}
+The \code{devEval()} function of the \pkg{R.utils} package is useful for creating an image file from a set of plot commands.  For instance, \code{devEval("png", name="myFigure", width=840, aspectRatio=0.6, \{ curve(dnorm, from=-5, to=+5) \})} will create a PNG file named \code{myFigure.png} displaying the Guassian density distribution and that is 840 pixels wide and 0.6*840=504 pixels high.  Moreover, (by default) \code{devEval()} writes the image file to the figures/ directory.  For more information, see \code{help("devEval")}.
+
+To spare ourselves from having to repeat the same arguments each time an image is created, we define the following custom function for creating PNG image files with a certain default dimension (840 by 840 since the default aspect ratio is 1) and default graphical parameters (see \code{help("par")}):
+\begin{verbatim}
+<%:
+# Use greater objects by default
+setOption("devNew/args/par", list(cex=2, lwd=2));
+toPNG <- function(name, ..., width=840) {
+ devEval(type="png", width=width, name=name, ..., force=TRUE)$fullname;
+}
+%>
+\end{verbatim}
+This function creates a PNG file based on a set of plot commands and returns the so called \emph{fullname} of the image file.  The fullname of an image file is the filename without the filename extension.
+%%  For instance, if the image file is \code{"MyFigure,yeah,cool.png"}, then the fullname is \code{"MyFigure,yeah,cool"}.  
+
+The following code creates a PNG image file 'figures/MyFigure,yeah,cool.png' and returns \code{"MyFigure,yeah,cool"}:
+\begin{verbatim}
+toPNG("MyFigure,yeah,cool", aspectRatio=0.6, {
+  curve(dnorm, from=-5, to=+5);
+})
+\end{verbatim}
+
+
+\subsection{Generating and embedding figures}
+\begin{figure}[htp]
+ \begin{center}
+ \resizebox{0.70\textwidth}{!}{%
+  \includegraphics{<%=toPNG("MyFigure,yeah,cool", aspectRatio=0.6, {
+   curve(dnorm, from=-5, to=+5);
+  })%>}
+ }%
+ \end{center}
+ \caption{This figure was generated and inserted into the LaTeX document by RSP-embedded markup.}
+ \label{fig:MyFigure}
+\end{figure}
+
+With this setup, it is possible to create and embed a figure with the following tidy markup:
+\begin{rspVerbatim}
+{\bs}includegraphics\{<\%=toPNG(name="MyFigure,yeah,cool", aspectRatio=0.6, \{
+  curve(dnorm, from=-5, to=+5);
+\})\%>\}
+\end{rspVerbatim}
+After the RSP code has been processed, and the image file has been created, the above simply produces the following markup in the generated LaTeX document:
+\begin{verbatim}
+\includegraphics{MyFigure,yeah,cool}
+\end{verbatim}
+
+
+
+<%-------------------------------------------------------------------
+  ADDITIONAL FEATURES
+  -------------------------------------------------------------------%>
+
+\section{Templates - Reusing RSP and text blocks}
+Sometimes the very similar paragraphs of text, tables, or figures are used throughout a document with only minor differences.  Instead of cut'n'pasting the same pieces of RSP and code to other places in the document, it is more robust and much easier to setup a template which is then reused in place.
+Because of the nature of RSP, setting up a template is as simple as wrapping the mixture of RSP and code blocks in a function definition.  For example, assume you wish to reuse the following RSP and R blocks multiple times:
+\begin{rspVerbatim}
+The sum of $x=<\%=hpaste(1:n, abbreviate="{\bs}{\bs}ldots")\%>$ is <\%=sum(1:n)\%>.
+\end{rspVerbatim}
+Then place it in a function definition:
+\begin{rspVerbatim}
+<\% myTemplate <- function(n, ...) \{ \%>
+The sum of $x=<\%=hpaste(1:n, abbreviate="{\bs}{\bs}ldots")\%>$ is <\%=sum(1:n)\%>.<\%----\%>
+<\% \} # myTemplate() \%>
+\end{rspVerbatim}
+<% myTemplate <- function(n, ...) { %>
+The sum of $x=<%=hpaste(1:n, abbreviate="\\ldots")%>$ is <%=sum(1:n)%>.<%----%>
+<% } # myTemplate() %><%-- TO FIX: Should not be needed! /HB 2011-03-31 --%>
+We use a trailing (empty) RSP comment (\code{<\%----\%>}) to escape the following newline.  Also, note that there is no limitation in how many RSP and text blocks you can use.  After having defined the template, it can be reused any number of times by simply calling it as a function:
+\begin{rspVerbatim}
+<\% myTemplate(n=3) \%>
+\end{rspVerbatim}
+which produces '<% myTemplate(n=3) %>'.  Without the trailing RSP comment, the final document would contain a whitespace after the period and before the closing single-quote.
+A template can also be used within for loops.  For example:
+\begin{rspVerbatim}
+{\bs}begin\{itemize\}
+<\% for (ii in c(3,5,10,100)) \{ \%>
+ {\bs}item <\% myTemplate(n=ii) \%>
+<\% \} # for (ii ...) \%>
+{\bs}end\{itemize\}
+\end{rspVerbatim}
+produces:
+\begin{itemize}
+<% for (ii in c(3,5,10,100)) { %>
+ \item <%= myTemplate(ii) %>
+<% } # for (ii ...) %>
+\end{itemize}
+
+
+
+<%-------------------------------------------------------------------
+  PREPROCESSING DIRECTIVES
+  -------------------------------------------------------------------%>
+\section{Preprocessing directives}
+When an RSP-embedded document processed, it is first \emph{preprocessed} before it is \emph{translated} into an R script.  During this step it is possible to 
+modify the document by removing parts of it and inserting new pieces to it.  For instance, by using the RSP hidden comments, multiple lines of the document can be silently dropped.
+
+<%--, and by using the so called RSP 'insert' directive content of other files can be pasted into the document.
+--%>
+
+
+\subsection{Hidden comments (\code{<\%--\{anything\}--\%>})}
+The RSP markup \code{<\%--\{anything\}--\%>} will be treated as a comment that can contain \emph{anything} (but \code{--\%>}), which will not be translated and not part of the output, i.e. it will immediately be dropped.  RSP comments are useful for excluding large sections of an RSP document.  It is useful to understand that RSP comments are \emph{greedy}, that is, anything between (and including) the \code{<\%--} and the \emph{first} following \code{--\%>} will be dropped, which means that they cannot be nested.
+For example,
+\begin{rspVerbatim}
+<\%-- This is an RSP comment that will be dropped --\%>
+You can write a paragraph and drop a large portion of it using 
+RSP comments, <\%-- All the below will be dropped
+There are <\%=n\%> red <\%=type\%>s
+<\%-- and this --\%> but they must not be nested --\%>, because then
+the output will be like this.
+\end{rspVerbatim}
+produces
+\begin{verbatim}
+<%-- This is an RSP comment that will be dropped --%>
+You can write a paragraph and drop a large portion of it using 
+RSP comments, <%-- All the below will be dropped
+There are <%=n%> red <%=type%>s
+<%-- and this --%> but they must not be nested --%>, because then
+the output will be like this.
+\end{verbatim}
+
+Moreover, RSP comments are special in the sense that if (and only if) the remainder of the line following the comment consists of only whitespace symbols, then they are also dropped, including the newline.  Thus, an \code{<\%----\%>} at the end of a line will prevent a newline from being inserted.
+
+
+<%--
+
+\subsection{Inserting files (\code{<\%@insert file="\{pathname\}"\%>})}
+The \emph{insert} directive can be used to insert the content of a file into the main RSP-embedded document \emph{just as if the content was pasted manually}.
+ This makes it possible to reuse commonly used R scripts, text paragraphs, page layouts and so on.
+For instance, assume that the file 'R/graphics.R' contains
+\begin{verbatim}
+setOption("devNew/args/par", list(cex=2, lwd=2));
+toPNG <- function(name, ..., width=840) {
+ devEval(type="png", width=width, name=name, ..., force=TRUE)$fullname;
+}
+\end{verbatim}
+Then it is possible to insert its content into a \code{<\%\{code\}\%>} block of the main RSP-embedded document by:
+\begin{rspVerbatim}
+<\%
+# Graphics settings
+<\%@insert file="R/graphics.R"\%>
+\%>
+\end{rspVerbatim}
+which "updates" the main document to:
+\begin{rspVerbatim}
+<\%
+# Graphics settings
+setOption("devNew/args/par", list(cex=2, lwd=2));
+toPNG <- function(name, ..., width=840) \{
+ devEval(type="png", width=width, name=name, ..., force=TRUE)$fullname;
+\}
+\%>
+\end{rspVerbatim}
+In addition to the \code{file} attribute, the insert directive also takes an optional \code{path} attribute, which provides an alternative for specifying the path, e.g. \code{<\%@insert file="graphics.R" path="R/"\%>}.
+
+It is also possible to insert the content of all files in a directory that match a given \emph{filename pattern}, which is specified by the \code{pattern} attribute.  For instance,
+\begin{rspVerbatim}
+<\%
+<\%@insert path="R/", pattern="[.]R$"\%>
+\%>
+\end{rspVerbatim}
+inserts the content of all *.R files that are available in the R/ directory.\footnote{Files are guaranteed to be inserted in lexicographic order when using the 'insert' preprocessing directive.  Their content is by default concatenated using the newline symbol, which can be changed by setting the \code{collapse} attribute.}
+
+Finally, it is important to understand that the paths used for inserting these files are all relative to the current working directory of R \emph{at the time of the preprocessing}\footnote{The current working directory as seen by the RSP preprocessor \emph{cannot} be modified via a \code{<\%setwd(newPath)\%>} construct, because that is only evaluated after the preprocessing step.}.
+
+<%----%>
+
+
+
+<%-------------------------------------------------------------------
+  COMPARISON TO OTHER METHODS
+  -------------------------------------------------------------------%>
+<%--
+\section{Brief comparison to other markup languages}
+
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{lccc}
+Feature & RSP & brew & Sweave \\
+\hline
+Context-independent processing                 & yes & yes & - \\
+Interweaving incomplete code and text snippets & yes & yes & - \\
+Hidden comments                                & yes &   ? & ? \\
+Multiline comments                             & yes &   - & ? \\
+"As-is" insertion of other files               & yes &   ? & ? \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+<%----%>
+
+<%-------------------------------------------------------------------
+  APPENDIX
+  -------------------------------------------------------------------%>
+\clearpage
+\section*{Appendix}
+\subsection*{Session information}
+<%=toLatex(sessionInfo())%>
+This report was automatically generated using \code{rsptex()} of the R.rsp package.  Total processing time (excluding RSP-to-R translation) was <%=sprintf("%.2f", Sys.time()-t0)%> seconds.
+
+\end{document}
