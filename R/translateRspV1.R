@@ -44,7 +44,7 @@
 # @keyword file
 # @keyword IO
 #*/###########################################################################
-setMethodS3("translateRspV1", "default", function(file="", text=NULL, path=getParent(file), rspLanguage=getOption("rspLanguage"), trimRsp=FALSE, verbose=FALSE, ...) {
+setMethodS3("translateRspV1", "default", function(file="", text=NULL, path=getParent(file), rspLanguage=getOption("rspLanguage"), trimRsp=TRUE, verbose=FALSE, ...) {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Local function
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,7 +63,7 @@ setMethodS3("translateRspV1", "default", function(file="", text=NULL, path=getPa
     partsT <- unlist(parts[idxs], use.names=FALSE);
 
     # Find text parts that ends with a new line
-    endsWithNewline <- (regexpr("\n[ \t\v]*$", partsT[-length(partsT)]) != -1);
+    endsWithNewline <- (regexpr("(\n|\r|\r\n)[ \t\v]*$", partsT[-length(partsT)]) != -1);
     endsWithNewline <- which(endsWithNewline);
 
     # Any candidates?
@@ -73,7 +73,7 @@ setMethodS3("translateRspV1", "default", function(file="", text=NULL, path=getPa
       partsTT <- partsT[nextT];
 
       # Among those, which starts with a new line?
-      startsWithNewline <- (regexpr("^[ \t\v]*\n", partsTT) != -1);
+      startsWithNewline <- (regexpr("^[ \t\v]*(\n|\r|\r\n)", partsTT) != -1);
       startsWithNewline <- nextT[startsWithNewline];
 
       # Any remaining candidates?
@@ -85,7 +85,7 @@ setMethodS3("translateRspV1", "default", function(file="", text=NULL, path=getPa
         partsT[endsWithNewline] <- sub("[ \t\v]*$", "", partsT[endsWithNewline]);
 
         # Trim to the left (including new line because it belongs to RSP)
-        partsT[startsWithNewline] <- sub("^[ \t\v]*\n", "", partsT[startsWithNewline]);
+        partsT[startsWithNewline] <- sub("^[ \t\v]*(\n|\r|\r\n)", "", partsT[startsWithNewline]);
 
         parts[idxs] <- partsT;
       }
@@ -575,6 +575,8 @@ setMethodS3("translateRspV1", "default", function(file="", text=NULL, path=getPa
 
 ##############################################################################
 # HISTORY:
+# 2011-03-12
+# o Now the trimming of RSP handles all newline types, i.e. LF, CR+LF, CR.
 # 2011-03-08
 # o Added argument 'trimRsp' to translateRspV1() for trimming white spaces
 #   surrounding RSP blocks that have preceeding and succeeding white space
@@ -588,7 +590,7 @@ setMethodS3("translateRspV1", "default", function(file="", text=NULL, path=getPa
 # o BUG FIX: An RSP comment tag would also replicate last text or R code.
 # 2006-07-17
 # o BUG FIX: translateRsp("\\\n") would convert to "\\n".  Update internal
-#   escapeRspText().  Thanks Peter Dahlsgaard for the suggestions.
+#   escapeRspText().  Thanks Peter Dalgaard for the suggestions.
 # 2006-07-05
 # o BUG FIX: If argument 'path' was NULL, translateRsp() gave an error.
 # 2006-07-04
