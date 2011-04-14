@@ -1,6 +1,21 @@
 Package: R.rsp
 ==============
 
+Version: 0.5.0 [2011-04-14]
+o Added rsp().
+o Added compileLaTeX() and compileSweave().
+o Changed RSP preprocess directives to have format <%#insert ...%>.
+o DOCUMENTATION: Updated 'Dynamic LaTeX reports with RSP' vignette.
+o CLEANUP: Cleaned up the help pages.
+
+
+Version: 0.4.10 [2011-04-06]
+o RSP PAGES: Added a demo page listing all built-in colors in R.
+o RSP PAGES: Now the 'R Server Pages' page launched by browseRsp()
+  list only the first package installation in case a package
+  occurs in multiple package libraries in .libPaths().
+
+
 Version: 0.4.9 [2011-04-04]
 o Added support for RSP preprocessing directive <%@insert ...%>.
 

@@ -32,6 +32,7 @@
 #
 # @keyword file
 # @keyword IO
+# @keyword internal
 #*/###########################################################################
 setMethodS3("rspToHtml", "default", function(file=NULL, path=NULL, outFile=NULL, outPath=NULL, extension="html", overwrite=TRUE, ...) {
   # Argument 'file' and 'path':
@@ -58,7 +59,7 @@ setMethodS3("rspToHtml", "default", function(file=NULL, path=NULL, outFile=NULL,
   sourceRsp(file=pathname, response=response, ...);
 
   invisible(getAbsolutePath(response));
-})
+}, private=TRUE) # rspToHtml()
 
 
 ############################################################################
