@@ -38,6 +38,7 @@
 #
 # @keyword file
 # @keyword IO
+# @keyword internal
 #*/###########################################################################
 setMethodS3("parseRsp", "default", function(rspCode, rspLanguage=getOption("rspLanguage"), trimRsp=TRUE, validate=TRUE, verbose=FALSE, ...) {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,8 +102,8 @@ setMethodS3("parseRsp", "default", function(rspCode, rspLanguage=getOption("rspL
 
 
 
-  processRspInserts <- function(rspCode, ...) {
-    rspPattern <- "<%@[ ]*([abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0-9]*)[ ]+(.*?)%>";
+  preprocessRspDirectives <- function(rspCode, ...) {
+    rspPattern <- "<%[#@][ ]*([abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ][abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0-9]*)[ ]+(.*?)%>";
 
     bfr <- rspCode;
     rspCode <- c();
@@ -179,7 +180,7 @@ setMethodS3("parseRsp", "default", function(rspCode, rspLanguage=getOption("rspL
     rspCode <- paste(rspCode, collapse="");
 
     rspCode;
-  } # processRspInserts()
+  } # preprocessRspDirectives()
 
 
 
@@ -405,7 +406,7 @@ setMethodS3("parseRsp", "default", function(rspCode, rspLanguage=getOption("rspL
     rspCode <- dropRspComments(rspCode, trimRsp=trimRsp);
   
     # Preprocessing RSP directives should go here, e.g. @insert.
-    rspCode <- processRspInserts(rspCode);
+    rspCode <- preprocessRspDirectives(rspCode);
   } # while (...)
 
 
@@ -727,6 +728,8 @@ setMethodS3("parseRsp", "default", function(rspCode, rspLanguage=getOption("rspL
 
 ##############################################################################
 # HISTORY:
+# 2011-04-12
+# o Change the preprocess directives to have format <%#insert ...%>.
 # 2011-04-01
 # o Added support for <%insert path="<path>" pattern="<pattern>"%>.
 # o Added support for <%insert file="<filename>" path="<path>"%>.
