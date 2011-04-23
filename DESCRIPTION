@@ -1,6 +1,6 @@
 Package: R.rsp
-Version: 0.5.0
-Date: 2011-04-14
+Version: 0.5.2
+Date: 2011-04-18
 Title: Report generation
 Author: Henrik Bengtsson <henrikb@braju.com>
 Maintainer: Henrik Bengtsson <henrikb@braju.com>
@@ -14,12 +14,12 @@ Description: An RSP document is a text-based document containing an
         TeX etc.  It can also be used to enhance other literate
         programming languanges such as Sweave.  In addition to RSP,
         this package also provides an internal cross-platform web
-        server and built-in dynamic RS_embedded HTML help pages, which
+        server and built-in dynamic RSP-embedded HTML help pages, which
         can be launched by browseRsp().  If other packages provide RSP
         help pages, these are automatically linked to as well.
 License: LGPL (>= 2.1)
 URL: http://www.braju.com/R/
 LazyLoad: TRUE
-Packaged: 2011-04-14 20:11:31 UTC; hb
+Packaged: 2011-04-19 16:49:21 UTC; hb
 Repository: CRAN
-Date/Publication: 2011-04-15 05:16:21
+Date/Publication: 2011-04-23 20:54:56
