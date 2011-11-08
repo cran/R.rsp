@@ -91,6 +91,20 @@ docVersion <- match.arg(docVersion, choices=c("release", "devel"));
 \newenvironment{rspVerbatim}{\vspace{-\parskip}\begin{alltt}\color{blue}}{\end{alltt}}
 \newenvironment{escapeRspVerbatim}{\vspace{-\parskip}\begin{alltt}}{\end{alltt}}
 
+
+
+<%
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Set default graphics options
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Use greater objects by default
+setOption("devNew/args/par", list(lwd=2));
+
+# Change the default dimensions for PNGs
+devOptions("png", width=840)
+%>
+
+
 \title{Dynamic LaTeX reports with RSP<%=ifelse(docVersion == "devel", "*", "")%>}
 \author{Henrik Bengtsson}
 \date{<%=format(as.Date(getDate(R.rsp)), format="%B %d, %Y")%>}
@@ -169,6 +183,20 @@ The PDF (\code{report.pdf}) will be available in the current directory of R (see
   -------------------------------------------------------------------%>
 \section{The RSP markup language}
 
+\subsection{Inlining values of variables (\code{<\%=\{code\}\%>})}
+The RSP markup \code{<\%=\{code\}\%>} evaluates the code (without inserting it into the document) and inserts the character representation\footnote{The \emph{character representation} of an object \code{x} is what \code{as.character(x)} gives.} of the returned object.  For instance,
+\begin{rspVerbatim}
+Today's date is <\%=Sys.Date()\%>
+\end{rspVerbatim}
+would produce the string 'Today's date is <%=Sys.Date()%>'.
+If inlining multiple values, they are all pasted together without any separator.  For example,
+\begin{rspVerbatim}
+The letters of the alphabet are '<\%=LETTERS\%>'
+\end{rspVerbatim}
+produces 'The letters the alphabet are '<%=LETTERS%>'.
+To separate the elements with commas, use \code{<\%=paste(LETTERS, collapse=", ")\%>}.  Alternatively, use \code{<\%=hpaste(LETTERS)\%>} to output '<%=hpaste(LETTERS)%>'\footnote{The \code{hpaste()} function of \pkg{R.utils} provides "human-readable" pasting of vectors.}.
+
+
 \subsection{Evaluating code (\code{<\%\{code\}\%>})}
 The RSP markup \code{<\%\{code\}\%>} evaluates the code (without inserting it into the document).  For instance,
 \begin{rspVerbatim}
@@ -180,61 +208,55 @@ type <- "horse"
 evaluates the code such that \code{n == 3} and \code{type == "horse"} afterward.
 
 
-\subsection{Evaluating and embedding code (\code{<\%:\{code\}\%>})}
+
+%% \clearpage
+\subsection{Capturing evaluated code (\code{<\%=evalCapture(\{code chunk\})\%>})}
+The \code{evalCapture()} function allows us to evaluate, embed and echo the output of a code chunk\footnote{\code{\{code chunk\}} must be a complete and valid R expression, because \code{evalCapture()} is a function call.}. 
+Formatting of the capture has to be taken care of by LaTeX.  Below we have explicitly wrapped the RSP markup inside a \code{{\textbackslash}begin\{verbatim\}...{\textbackslash}end\{verbatim\}} block.
+For example,
+\begin{rspVerbatim}
+<\%=evalCapture(\{
+for (kk in 1:3) \{
+  printf("Iteration #%d{\bs}n", kk)
+\}
+
+print(Sys.time())
+type <- "horse";  # Comments are dropped
+type
+\})%>
+\end{rspVerbatim}
+produces
+\begin{verbatim}
+<%=evalCapture({
+for (kk in 1:3) {
+  printf("Iteration #%d\n", kk)
+}
+
+print(Sys.time())
+type <- "horse";  # Comments are dropped
+type
+})%>
+\end{verbatim}
+By adding arguments \code{code=FALSE} and/or \code{output=FALSE} one can control whether the deparsed source code and/or the output of each subexpression is captured.
+Note that code is parsed and formatted by the R parser, meaning that indentation, empty lines, spacing and so on are \emph{not} preserved when echoing this way.  This is also why comments, semicolons and other code constructs are dropped from the code.
+
+
+\subsection{Evaluating and embedding code verbatim (\code{<\%:\{code\}\%>})}
 Just as \code{<\%\{code\}\%>}, the RSP markup \code{<\%:\{code\}\%>} also evaluates code, but in addition it also inserts the code verbatim into the document.  For instance,
 \begin{rspVerbatim}
 <\%:
-n <- 3
+n <- 3;  # A comment
 type <- "horse"
 %>
 \end{rspVerbatim}
 evaluates the code and insert the following into the output document:
 \begin{verbatim}
 <%:
-n <- 3
+n <- 3;  # A comment
 type <- "horse"
 %>
 \end{verbatim}
-Formatting of the inserted code has to be taken care of by LaTeX.  For instance, here we have explicitly wrapped the RSP markup inside a \code{{\textbackslash}begin\{verbatim\}...{\textbackslash}end\{verbatim\}} block.
-
-
-%% \clearpage
-\subsection{Echoing evaluated code (\code{<\%=evalWithEcho(\{code chunk\})\%>})}
-The \code{evalWithEcho()} function allows us to evaluate, embed and echo the output of a code chunk\footnote{\code{\{code chunk\}} must be a complete and valid R expression, because \code{evalWithEcho()} is a function call.}.  For example,
-\begin{rspVerbatim}
-<\%=evalWithEcho(\{
-n <- 3;   # Comments are not displayed
-n
-print(Sys.time())
-type <- "horse"
-type
-\})%>
-\end{rspVerbatim}
-produces
-\begin{verbatim}
-<%=evalWithEcho({
-n <- 3;
-n
-print(Sys.time())
-type <- "horse"
-type
-})%>
-\end{verbatim}
-Note that code is parsed and formatted by the R parser, meaning that indentation, spacing and so on are \emph{not} preserved when echoing this way.  This is also why comments, semicolons and other code constructs are dropped from the code.
-
-
-\subsection{Inlining values of variables (\code{<\%=\{code\}\%>})}
-The RSP markup \code{<\%=\{code\}\%>} evaluates the code (without inserting it into the document) and inserts the character representation\footnote{The \emph{character representation} of an object \code{x} is what \code{as.character(x)} gives.} of the returned object.  For instance,
-\begin{rspVerbatim}
-There are <\%=n\%> red <\%=type\%>s
-\end{rspVerbatim}
-would produce the string 'There are <%=n%> red <%=type%>s'.
-If inlining multiple values, they are all pasted together without any separator.  For example,
-\begin{rspVerbatim}
-The letters of the alphabet are '<\%=LETTERS\%>'
-\end{rspVerbatim}
-produces 'The letters the alphabet are '<%=LETTERS%>'.
-To separate the elements with commas, use \code{<\%=paste(LETTERS, collapse=", ")\%>}.  Alternatively, use \code{<\%=hpaste(LETTERS)\%>} to output '<%=hpaste(LETTERS)%>'\footnote{The \code{hpaste()} function of \pkg{R.utils} provides "human-readable" pasting of vectors.}.
+Note that with this construct it is \emph{not} possible the capture the \emph{output}, only the code.
 
 
 
@@ -273,49 +295,35 @@ Note that there exist no corresponding markup in Sweave.  Instead, contrary to R
 \section{Generating and inserting figures}
 Since the above RSP markups are powerful enough, there is no need for a specific markup for figures.  This section shows how to create and embed image files into the final document.
 
-\subsection{Brief on including image files in LaTeX}
-When insert a figure in LaTeX, it is recommended to do so without specifying neither the path nor the filename extension of the image file, e.g. \code{{\textbackslash}includegraphics\{MyFigure\}}.
+
+%% \subsection{Creating image files}
+The \code{toEPS()}, \code{toPDF()} and \code{toPNG()} functions of the \pkg{R.utils} package are useful when creating image files that are recognized by LaTeX.  For instance,
+\begin{verbatim}
+# Use greater objects by default
+setOption("devNew/args/par", list(lwd=2));
+
+toPDF("myFigure,yeah,cool", aspectRatio=0.6, { 
+  curve(dnorm, from=-5, to=+5)
+})
+\end{verbatim}
+creates a PDF image file named \code{myFigure,yeah,cool.png} whose height is 60\% of its width and displays the Guassian density distribution.
+The function returns the filename without the filename extension, i.e. \code{"myFigure,yeah,cool"}.
+  Moreover, (by default) these functions writes the image file to the figures/ directory.  For more information, see \code{help("toPDF")}.\\
+
+
+%% \subsection{Brief on including image files in LaTeX}
+When inserting a figure in LaTeX, it is recommended to do so without specifying neither the path nor the filename extension of the image file, e.g. \code{{\textbackslash}includegraphics\{MyFigure\}}.
 In order for this to work, one must specify the "image search path", e.g.
 \begin{verbatim}
 \graphicspath{{figures/}{figures/external/}}
 \end{verbatim}
 which is preferably added to the beginning of the LaTeX file.  This tells LaTeX to search for image files in directory figures/ as well as directory figures/external/.   Moreover, when leaving out the filename extension, LaTeX will automatically search for image files with different filename extensions, e.g. \code{*.png}, \code{*.eps}, and \code{*.pdf}.
 
-
-\subsection{Defining a function that creates an image file}
-The \code{devEval()} function of the \pkg{R.utils} package is useful for creating an image file from a set of plot commands.  For instance,
-\begin{verbatim}
-devEval("png", name="myFigure", width=840, aspectRatio=0.6, { 
-  curve(dnorm, from=-5, to=+5)
-})
-\end{verbatim}
-creates a PNG file named \code{myFigure.png} displaying the Guassian density distribution, an image file that is 840 pixels wide and 0.6*840=504 pixels high.  Moreover, (by default) \code{devEval()} writes the image file to the figures/ directory.  For more information, see \code{help("devEval")}.\\
-
-To spare ourselves from having to repeat the same arguments each time an image is created, we define the following custom function for creating PNG image files with a certain default dimension (840 by 840 since the default aspect ratio is 1) and default graphical parameters (see \code{help("par")}):
-\begin{verbatim}
-<%:
-# Use greater objects by default
-setOption("devNew/args/par", list(cex=2, lwd=2));
-toPNG <- function(name, ..., width=840) {
- devEval(type="png", width=width, name=name, ..., force=TRUE)$fullname;
-}
-%>
-\end{verbatim}
-This function creates a PNG file based on a set of plot commands and returns the so called \emph{fullname} of the image file.  The fullname of an image file is the filename without the filename extension.
-%%  For instance, if the image file is \code{"MyFigure,yeah,cool.png"}, then the fullname is \code{"MyFigure,yeah,cool"}.
-The following code creates a PNG image file 'figures/MyFigure,yeah,cool.png' and returns \code{"MyFigure,yeah,cool"}:
-\begin{verbatim}
-toPNG("MyFigure,yeah,cool", aspectRatio=0.6, {
-  curve(dnorm, from=-5, to=+5);
-})
-\end{verbatim}
-
-
-\subsection{Generating and embedding figures}
+%% \subsection{Generating and embedding figures}
 \begin{figure}[htp]
  \begin{center}
  \resizebox{0.70\textwidth}{!}{%
-  \includegraphics{<%=toPNG("MyFigure,yeah,cool", aspectRatio=0.6, {
+  \includegraphics{<%=toPDF("MyFigure,yeah,cool", aspectRatio=0.6, {
    curve(dnorm, from=-5, to=+5);
   })%>}
  }%
@@ -324,9 +332,9 @@ toPNG("MyFigure,yeah,cool", aspectRatio=0.6, {
  \label{fig:MyFigure}
 \end{figure}
 
-With this setup, it is possible to create and embed a figure with the following tidy markup:
+With this setup, it is possible to create and embed a figure as the one in Figure~\ref{fig:MyFigure} with the following tidy markup:
 \begin{rspVerbatim}
-{\bs}includegraphics\{<\%=toPNG(name="MyFigure,yeah,cool", aspectRatio=0.6, \{
+{\bs}includegraphics\{<\%=toPDF("MyFigure,yeah,cool", aspectRatio=0.6, \{
   curve(dnorm, from=-5, to=+5);
 \})\%>\}
 \end{rspVerbatim}
@@ -334,6 +342,7 @@ After the RSP code has been processed, and the image file has been created, the 
 \begin{verbatim}
 \includegraphics{MyFigure,yeah,cool}
 \end{verbatim}
+Note that by replacing \code{toPDF()} with \code{toPNG()} (\code{toEPS()}), a PNG (EPS) image file is inserted instead.
 
 
 
@@ -342,7 +351,7 @@ After the RSP code has been processed, and the image file has been created, the 
   -------------------------------------------------------------------%>
 
 \section{Templates - Reusing RSP and text blocks}
-Sometimes the very similar paragraphs of text, tables, or figures are used throughout a document with only minor differences.  Instead of cut'n'pasting the same pieces of RSP and code to other places in the document, it is more robust and much easier to setup a template which is then reused in place.
+Sometimes rather similar paragraphs of text, tables, or figures are used throughout a document with only minor differences.  Instead of cut'n'pasting the same pieces of RSP and code to other places in the document, it is more robust and much easier to setup a template which is then reused in place.
 Because of the nature of RSP, setting up a template is as simple as wrapping the mixture of RSP and code blocks in a function definition.  For example, assume you wish to reuse the following RSP and R blocks multiple times:
 \begin{rspVerbatim}
 The sum of $x=<\%=hpaste(1:n, abbreviate="{\bs}{\bs}ldots")\%>$ is <\%=sum(1:n)\%>.
@@ -360,7 +369,7 @@ We use a trailing (empty) RSP comment (\code{<\%----\%>}) to escape the followin
 \begin{rspVerbatim}
 <\% myTemplate(n=3) \%>
 \end{rspVerbatim}
-which produces '<% myTemplate(n=3) %>'.  Without the trailing RSP comment, the final document would contain a whitespace after the period and before the closing single-quote.
+which produces '<% myTemplate(n=3) %>'.  Without the trailing RSP comment, the final document would contain a whitespace after the period (and before the closing single-quote in the previous sentence).
 A template can also be used within for loops.  For example:
 \begin{rspVerbatim}
 {\bs}begin\{itemize\}
@@ -419,10 +428,7 @@ The \emph{insert} directive can be used to insert the content of a file into the
  This makes it possible to reuse commonly used R scripts, text paragraphs, page layouts and so on.
 For instance, assume that the file 'R/graphics.R' contains
 \begin{verbatim}
-setOption("devNew/args/par", list(cex=2, lwd=2));
-toPNG <- function(name, ..., width=840) {
- devEval(type="png", width=width, name=name, ..., force=TRUE)$fullname;
-}
+setOption("devNew/args/par", list(lwd=2));
 \end{verbatim}
 Then it is possible to insert its content into a \code{<\%\{code\}\%>} block\footnote{Note, if the insert directive is not wrapped up in a \code{<\%\{code\}\%>} block, the inserted source code will be inserted as text to the document rather than as code.} of the main RSP-embedded document by:
 \begin{rspVerbatim}
@@ -435,10 +441,7 @@ which "updates" the main document to:
 \begin{rspVerbatim}
 <\%
 # Graphics settings
-setOption("devNew/args/par", list(cex=2, lwd=2));
-toPNG <- function(name, ..., width=840) \{
- devEval(type="png", width=width, name=name, ..., force=TRUE)$fullname;
-\}
+setOption("devNew/args/par", list(lwd=2));
 \%>
 \end{rspVerbatim}
 In addition to the \code{file} attribute, the insert directive also takes an optional \code{path} attribute, which provides an alternative for specifying the path, e.g. \code{<\%\#insert file="graphics.R" path="R/"\%>}.\\

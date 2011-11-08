@@ -1,4 +1,4 @@
-18840fc07f54e7fdb4eda08987a7daf3 *DESCRIPTION
+ab585a4fe19053e18071cd6f0ec59bee *DESCRIPTION
 09b0468194e518f04267e387dcaaaa35 *NAMESPACE
 b8867065fd7ff6a4eb82f03dd9adadb3 *R/000.R
 3b2257773b4a2201fe9e48ced616d564 *R/006.fixVarArgs.R
@@ -18,7 +18,7 @@ eb43794e8034916d8383952fd4f97629 *R/compileRsp.R
 6d332a29a05f6f1cfa81cd414eed498d *R/compileSweave.R
 9f9c647a10d674dcc5391047cb07312d *R/dvips.R
 d74eea43639bc8290f6eea18b8b63838 *R/epsDev.R
-c017e0eaf01593487f467292bab17abb *R/evalWithEcho.R
+5c8012cae505a951da480192561f47a6 *R/evalWithEcho.R
 029f5a5c6df2819921d207e87d44418c *R/hexToInt.R
 85db4143d7928482f55a5c007167909f *R/importRsp.R
 58db82cc68d21c3d23b0624bc42bb7b0 *R/indexOfNonQuoted.R
@@ -47,11 +47,11 @@ bcd634af06fd368c8c3b9fdcc6e75559 *incl/sourceAllRsp.Rex
 18892e3487562ce0b4e8e5d2223c67b6 *incl/sourceRsp.Rex
 4509ed250bfc47338a83efc0bf7a041b *incl/vignettes/R.rsp-package.rtex
 7cb3c462eab26eaa024c728e5bfe0418 *incl/vignettes/rtex.R
-e7c637988d4482cb2467d986104b103c *inst/NEWS
+e5327047eed8e8deba9baccfc115bd80 *inst/NEWS
 0d549c21f91bca4bf70ddf0be915b22c *inst/doc/R.rsp-package.pdf
-2c49f014f3bf13246e9464970b57ef0f *inst/doc/index.html
-f54435bd82a29ae62d9e361ab5512583 *inst/doc/report.pdf
-542e37c91a639ec310bfc5531ce178e8 *inst/doc/report.tex.rsp
+100ec4cd38695663800c9c6a80d7ab0b *inst/doc/index.html
+9dfd3d7ef494b5426c834cddd679fd61 *inst/doc/report.pdf
+8d230dbb8c8307f04503762d8afb1b05 *inst/doc/report.tex.rsp
 9f55542a1470e2382c2c42dcc8bac07b *inst/rsp/R/help/index.rsp
 6ddc4c101a26ff0ccd377879606f5f6d *inst/rsp/R/index.rsp
 436a3d220f88656713318124201382f5 *inst/rsp/R/settings/ROptions.R
