@@ -1,4 +1,4 @@
-7a029989433baace46dbf6308bc7120b *DESCRIPTION
+92ea18c247c3480ad85c558ddf5c220e *DESCRIPTION
 09b0468194e518f04267e387dcaaaa35 *NAMESPACE
 b8867065fd7ff6a4eb82f03dd9adadb3 *R/000.R
 3b2257773b4a2201fe9e48ced616d564 *R/006.fixVarArgs.R
@@ -33,8 +33,8 @@ f7603e0d7b3fb843a6a84e8b93cbba9e *R/rspToHtml.R
 5ea709c1a2ef8eb17d6ca02bde194a8d *R/sourceRsp.R
 07e06368a56f7e854c1bcdb73638b8b6 *R/sourceRspV2.R
 26c14bd1d8bf54e7ec55b9ea7f5c0d7a *R/sourceWithTrim.R
-f0eb27b984c4f9c9350d91caaa6acfc7 *R/translateRsp.R
-d5e90e1c9d9c14355d006bc46b4e631c *R/translateRspV1.R
+8a60f38f7936c00f76da7fe6fd77a099 *R/translateRsp.R
+7bb340c5d05346d1ae2890f81cd5af90 *R/translateRspV1.R
 78195d190fd984b0c72c4dee50270833 *R/urlDecode.R
 1360e850f73150a67d2304dec09fb7c7 *R/zzz.R
 5135155a71eefccbccfd5d0631e19be9 *incl/BengtssonH_2003.bib.Rdoc
@@ -47,10 +47,10 @@ bcd634af06fd368c8c3b9fdcc6e75559 *incl/sourceAllRsp.Rex
 18892e3487562ce0b4e8e5d2223c67b6 *incl/sourceRsp.Rex
 4509ed250bfc47338a83efc0bf7a041b *incl/vignettes/R.rsp-package.rtex
 7cb3c462eab26eaa024c728e5bfe0418 *incl/vignettes/rtex.R
-2d57af474e98da8333fe9cd70f45b426 *inst/NEWS
+4a9b4df74b6f50358e88498c6bd53abe *inst/NEWS
 0d549c21f91bca4bf70ddf0be915b22c *inst/doc/R.rsp-package.pdf
 100ec4cd38695663800c9c6a80d7ab0b *inst/doc/index.html
-4ccbbf1b75e277a242cfbc949faa89d6 *inst/doc/report.pdf
+d00a6188eac4dd8370a0557714aa9d63 *inst/doc/report.pdf
 8d9ceb127ccebe2dabc4e514b8e61521 *inst/doc/report.tex.rsp
 9f55542a1470e2382c2c42dcc8bac07b *inst/rsp/R/help/index.rsp
 6ddc4c101a26ff0ccd377879606f5f6d *inst/rsp/R/index.rsp

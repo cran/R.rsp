@@ -1,6 +1,6 @@
 Package: R.rsp
-Version: 0.6.9
-Date: 2011-11-14
+Version: 0.6.10
+Date: 2011-11-17
 Title: Dynamic generation of scientific reports
 Author: Henrik Bengtsson <henrikb@braju.com>
 Maintainer: Henrik Bengtsson <henrikb@braju.com>
@@ -10,6 +10,6 @@ Description: An RSP document is a text-based document containing an R-embedded t
 License: LGPL (>= 2.1)
 URL: http://www.braju.com/R/
 LazyLoad: TRUE
-Packaged: 2011-11-15 06:03:28 UTC; hb
+Packaged: 2011-11-18 23:33:19 UTC; hb
 Repository: CRAN
-Date/Publication: 2011-11-15 06:49:34
+Date/Publication: 2011-11-19 06:46:20
