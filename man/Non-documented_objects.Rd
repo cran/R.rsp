@@ -103,6 +103,10 @@
 \alias{sourceWithTrim.default}
 \alias{sourceRspV2}
 \alias{sourceRspV2.default}
+\alias{buildNonSweaveVignette}
+\alias{buildNonSweaveVignettes}
+\alias{parseVignette}
+\alias{buildPkgIndexHtml}
 
 \description{
 This page contains aliases for all "non-documented" objects that
