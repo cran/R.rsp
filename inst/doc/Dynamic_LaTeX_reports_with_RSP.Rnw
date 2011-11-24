@@ -8,7 +8,10 @@
 %    'Overview of user guides and package vignettes'
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 %\VignetteIndexEntry{Dynamic LaTeX reports with RSP}
-%\VignetteKeywords{}
+%\VignetteKeyword{reproducible research, report generator, markup language, LaTeX}
+%\VignetteDepends{R.rsp}
+%\VignetteSource{Dynamic_LaTeX_reports_with_RSP.tex.rsp}
+%\VignetteBuild{rsp("Dynamic_LaTeX_reports_with_RSP.tex.rsp")}
 \documentclass{article}
 \begin{document}
 \end{document}
