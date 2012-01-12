@@ -1,5 +1,5 @@
-d7b76a0013844351a0a3d0de61080091 *DESCRIPTION
-09b0468194e518f04267e387dcaaaa35 *NAMESPACE
+d411d6c315144d1ffd66a55271646c1f *DESCRIPTION
+ed8ddfb77a25baa2774f14ed4cba454f *NAMESPACE
 b8867065fd7ff6a4eb82f03dd9adadb3 *R/000.R
 3b2257773b4a2201fe9e48ced616d564 *R/006.fixVarArgs.R
 04a1b87b1e5a8c8cdd7cba8e1767296d *R/999.NonDocumentedObjects.R
@@ -26,7 +26,7 @@ d74eea43639bc8290f6eea18b8b63838 *R/epsDev.R
 cb5521b11c8dc95cb43ca9939b05a02d *R/parseRsp.R
 5cf7d2ec5d0f03e116f8bb74e26e22cf *R/processRsp.HttpDaemon.R
 0dcad638ac864114d2719bd2530ed709 *R/ps2pdf.R
-4db8021c74e63949d97aad075a932b49 *R/rsp.R
+c03ab8545e1b334e36e6a1026b0124ac *R/rsp.R
 a09ccea53eb7c3cb7bad80534dd2e5de *R/rspCapture.R
 f7603e0d7b3fb843a6a84e8b93cbba9e *R/rspToHtml.R
 807e120ade297e4dc86dea51a93a7993 *R/rsptex.R
@@ -48,13 +48,13 @@ bcd634af06fd368c8c3b9fdcc6e75559 *incl/sourceAllRsp.Rex
 18892e3487562ce0b4e8e5d2223c67b6 *incl/sourceRsp.Rex
 4509ed250bfc47338a83efc0bf7a041b *incl/vignettes/R.rsp-package.rtex
 7cb3c462eab26eaa024c728e5bfe0418 *incl/vignettes/rtex.R
-9dc5adc53ace7c446a1f9ba07b906630 *inst/NEWS
+0650d71820afa1a4972a8353aaddcd59 *inst/NEWS
 eda25d2e773bd45f0372e23750ff9434 *inst/doc/Dynamic_LaTeX_reports_with_RSP.Rnw
-61acf4654670bb9e32923469b51dc52c *inst/doc/Dynamic_LaTeX_reports_with_RSP.pdf
-0152e6ca3a5316666264061a8f162688 *inst/doc/Dynamic_LaTeX_reports_with_RSP.tex.rsp
-63ac84dddb9b8f112af02081eb218d99 *inst/doc/NonSweaveVignettes.Rnw
-7ec362bf84ab0728e4c54859163a2c9b *inst/doc/NonSweaveVignettes.pdf
-416659e56dbb9d6180a7143e86c7a63c *inst/doc/NonSweaveVignettes.tex.rsp
+a906cafaaedd1821f94d3cae3053a815 *inst/doc/Dynamic_LaTeX_reports_with_RSP.pdf
+a70b7d6cd27ec3dab13b10415faf6992 *inst/doc/Dynamic_LaTeX_reports_with_RSP.tex.rsp
+e2b74e9af03926389beef31e925e5149 *inst/doc/NonSweaveVignettes.Rnw
+03e601fb89849661d14f58b966e66204 *inst/doc/NonSweaveVignettes.pdf
+38e7420f79cad2b351103e8a9c8d23af *inst/doc/NonSweaveVignettes.tex.rsp
 01882edbb07790db5864c5dbeaaeb7c2 *inst/doc/index.html
 1806874a2d3f2999e76d872883e5ef50 *inst/doc/templates/index.html.rsp
 9f55542a1470e2382c2c42dcc8bac07b *inst/rsp/R/help/index.rsp
