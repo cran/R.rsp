@@ -1,7 +1,7 @@
-d411d6c315144d1ffd66a55271646c1f *DESCRIPTION
+377425cbb73539d9144393ab36935685 *DESCRIPTION
 ed8ddfb77a25baa2774f14ed4cba454f *NAMESPACE
 b8867065fd7ff6a4eb82f03dd9adadb3 *R/000.R
-3b2257773b4a2201fe9e48ced616d564 *R/006.fixVarArgs.R
+6ab143be61f7054e8df8e87ff67acbb7 *R/006.fixVarArgs.R
 04a1b87b1e5a8c8cdd7cba8e1767296d *R/999.NonDocumentedObjects.R
 37d09925be6785e0b990dd5ab116d185 *R/999.package.R
 fca1482e388ab90bb7b617504ed7b160 *R/FileRspResponse.R
@@ -34,6 +34,7 @@ f7603e0d7b3fb843a6a84e8b93cbba9e *R/rspToHtml.R
 5ea709c1a2ef8eb17d6ca02bde194a8d *R/sourceRsp.R
 07e06368a56f7e854c1bcdb73638b8b6 *R/sourceRspV2.R
 26c14bd1d8bf54e7ec55b9ea7f5c0d7a *R/sourceWithTrim.R
+146c4c305f0228537db84be39882899e *R/toLatex.R
 8a60f38f7936c00f76da7fe6fd77a099 *R/translateRsp.R
 7bb340c5d05346d1ae2890f81cd5af90 *R/translateRspV1.R
 78195d190fd984b0c72c4dee50270833 *R/urlDecode.R
@@ -48,14 +49,15 @@ bcd634af06fd368c8c3b9fdcc6e75559 *incl/sourceAllRsp.Rex
 18892e3487562ce0b4e8e5d2223c67b6 *incl/sourceRsp.Rex
 4509ed250bfc47338a83efc0bf7a041b *incl/vignettes/R.rsp-package.rtex
 7cb3c462eab26eaa024c728e5bfe0418 *incl/vignettes/rtex.R
-0650d71820afa1a4972a8353aaddcd59 *inst/NEWS
-eda25d2e773bd45f0372e23750ff9434 *inst/doc/Dynamic_LaTeX_reports_with_RSP.Rnw
-a906cafaaedd1821f94d3cae3053a815 *inst/doc/Dynamic_LaTeX_reports_with_RSP.pdf
+a809380c316537d7debe52210673c836 *inst/NEWS
+ce6bcbc043fd509a008c146cc0c287a1 *inst/doc/Dynamic_LaTeX_reports_with_RSP.Rnw
+bb79f92fc20ddaad62346dde4012bb1d *inst/doc/Dynamic_LaTeX_reports_with_RSP.pdf
 a70b7d6cd27ec3dab13b10415faf6992 *inst/doc/Dynamic_LaTeX_reports_with_RSP.tex.rsp
-e2b74e9af03926389beef31e925e5149 *inst/doc/NonSweaveVignettes.Rnw
-03e601fb89849661d14f58b966e66204 *inst/doc/NonSweaveVignettes.pdf
-38e7420f79cad2b351103e8a9c8d23af *inst/doc/NonSweaveVignettes.tex.rsp
+9c9b6b39e7598908f6e4d735dc31885b *inst/doc/NonSweaveVignettes.Rnw
+234e66e5867109e5410b3dde3223cbb9 *inst/doc/NonSweaveVignettes.pdf
+eda054bbcf2d73c14474ad26ad99c720 *inst/doc/NonSweaveVignettes.tex.rsp
 01882edbb07790db5864c5dbeaaeb7c2 *inst/doc/index.html
+6ae153c48caeb629afb98349c00ccb2b *inst/doc/templates/Makefile
 1806874a2d3f2999e76d872883e5ef50 *inst/doc/templates/index.html.rsp
 9f55542a1470e2382c2c42dcc8bac07b *inst/rsp/R/help/index.rsp
 6ddc4c101a26ff0ccd377879606f5f6d *inst/rsp/R/index.rsp
@@ -173,6 +175,7 @@ c939979c7486254c3d17326ed39f5ba6 *man/sourceRsp.Rd
 26fe215b1f04dbf141c60c68fecf5f17 *man/start.HttpDaemon.Rd
 f057dd23c73eb1f116e5a15e836c7dde *man/startHelp.HttpDaemon.Rd
 5fb87b59b3f8ab6778f9f93174750e49 *man/stop.HttpDaemon.Rd
+1c44c74d2f4be58be4eca3a4233ae702 *man/toLaTeX.character.Rd
 c244d7b884f5889481466af6204a4747 *man/translateRsp.Rd
 121cd9628963bd823198d49cec882b64 *man/translateRspV1.Rd
 49feadd56f46aed7c8903ee90108c24e *man/write.FileRspResponse.Rd

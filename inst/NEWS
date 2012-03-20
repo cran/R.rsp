@@ -1,6 +1,28 @@
 Package: R.rsp
 ==============
 
+Version: 0.7.5 [2012-03-20]
+o Now inst/doc/templates/Makefile does a better job cleaning up.
+
+
+Version: 0.7.4 [2012-03-06]
+o CRAN POLICY: Removed all internal copies of 'base' functions
+  that contain .Internal().
+
+
+Version: 0.7.3 [2012-02-28]
+o Added toLatex() for LaTeX escaping character strings, cf.
+  utils::toLatex() for 'sessionInfo' objects.
+
+
+Version: 0.7.2 [2012-01-21]
+o Placed a copy of inst/doc/Makefile in inst/doc/templates/ and
+  updated the 'Include static PDFs and non-Sweave vignettes in 
+  an R package' vignette accordingly.  The reason for this change
+  is that inst/doc/Makefile will not be installed in recent
+  version of R.  The Makefile also does a better job cleaning up.
+
+
 Version: 0.7.1 [2011-11-28]
 o Now R.rsp::rsp() can be called without the package had been
   loaded before.
