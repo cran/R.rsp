@@ -1,11 +1,11 @@
 Package: R.rsp
-Version: 0.7.5
-Date: 2012-03-20
+Version: 0.8.2
+Date: 2012-06-22
 Title: Dynamic generation of scientific reports
 Author: Henrik Bengtsson <henrikb@braju.com>
 Maintainer: Henrik Bengtsson <henrikb@braju.com>
-Depends: R (>= 2.5.0), R.methodsS3(>= 1.2.2), R.oo (>= 1.9.3), R.utils
-        (>= 1.12.0)
+Depends: R (>= 2.5.0), R.utils (>= 1.12.1), R.devices (>= 2.1.1)
+Imports: R.methodsS3 (>= 1.2.2), R.oo (>= 1.9.3), R.utils (>= 1.12.1)
 Suggests: tcltk
 Description: An RSP document is a text-based document containing an
         R-embedded template of the final document, e.g. "Today's date
@@ -18,14 +18,14 @@ Description: An RSP document is a text-based document containing an
         programming languages such as Sweave, e.g.
         "<<eval=<%=doEval%>>>= [...] @".  As explained in one of the
         vignettes, RSP-embedded LaTeX vignettes can easily be included
-        in any R package.  In addition to RSP, this package also
+        in any R package.  (In addition to RSP, this package also
         provides an internal cross-platform web server and built-in
         dynamic RSP-embedded HTML help pages, which can be launched by
         browseRsp().  If other packages provide RSP help pages, these
-        are automatically linked to as well.
+        are automatically linked to as well.)
 License: LGPL (>= 2.1)
 URL: http://www.braju.com/R/
 LazyLoad: TRUE
-Packaged: 2012-03-20 22:33:05 UTC; hb
+Packaged: 2012-07-04 23:36:28 UTC; hb
 Repository: CRAN
-Date/Publication: 2012-03-21 07:59:26
+Date/Publication: 2012-07-05 06:41:40

@@ -285,7 +285,7 @@ the analysis of the current chromosome.
 <\% \} # for (chromosome ...) \%>
 \end{rspVerbatim}
 
-Note that there exist no corresponding markup in Sweave.  Instead, contrary to RSP, Sweave requires the each code chunk contains a complete R expression.  This means that, in terms of the above example, in Sweave it is not possible to begin a for loop in one code chunk and end it in a succeeding one.  This has to do with the fundamentally different way RSP and Sweave documents are processed.  If using Sweave, one solution to this is to use RSP to generate the Sweave document, e.g. \code{rsp("report.Rnw.rsp")}.
+Note that there exist no corresponding markup in Sweave.  Instead, contrary to RSP, Sweave requires that each code chunk contains a complete R expression.  This means that, in terms of the above example, in Sweave it is not possible to begin a for loop in one code chunk and end it in a succeeding one.  This has to do with the fundamentally different way RSP and Sweave documents are processed.  If using Sweave, one solution to this is to use RSP to generate the Sweave document, e.g. \code{rsp("report.Rnw.rsp")}.
 
 
 
@@ -297,7 +297,7 @@ Since the above RSP markups are powerful enough, there is no need for a specific
 
 
 %% \subsection{Creating image files}
-The \code{toPDF()} and \code{toPNG()} functions of the \pkg{R.utils} package are useful when creating image files that are recognized by LaTeX.  For instance,
+The \code{toPDF()} and \code{toPNG()} functions of the \pkg{R.devices} package are useful when creating image files that are recognized by LaTeX.  For instance,
 \begin{verbatim}
 # Use greater objects by default
 setOption("devNew/args/par", list(lwd=2));
@@ -391,7 +391,7 @@ produces:
   PREPROCESSING DIRECTIVES
   -------------------------------------------------------------------%>
 \section{Preprocessing directives}
-When an RSP-embedded document processed, it is first \emph{preprocessed} before it is \emph{translated} into an R script.  During this step it is possible to 
+When an RSP-embedded document in processed, it is first \emph{preprocessed} before it is \emph{translated} into an R script.  During this step it is possible to 
 modify the document by removing parts of it and inserting new pieces to it.  For instance, by using the RSP hidden comments, multiple lines of the document can be silently dropped.
 
 <%--, and by using the so called RSP 'insert' directive content of other files can be pasted into the document.
