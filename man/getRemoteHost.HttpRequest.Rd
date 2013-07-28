@@ -9,19 +9,19 @@
 \name{getRemoteHost.HttpRequest}
 \alias{getRemoteHost.HttpRequest}
 \alias{HttpRequest.getRemoteHost}
-\alias{getRemoteHost.HttpRequest}
 \alias{getRemoteHost,HttpRequest-method}
-
 
 \title{Gets the fully qualified name of the client that sent the request}
 
 \description{
- Gets the fully qualified name of the client that sent the request. 
+ Gets the fully qualified name of the client that sent the request.
  If it cannot resolve the hostname, this method returns the dotted-string
  form of the IP address.
 }
 
-\usage{\method{getRemoteHost}{HttpRequest}(this, ...)}
+\usage{
+\method{getRemoteHost}{HttpRequest}(this, ...)
+}
 
 \arguments{
   \item{...}{Not used.}
@@ -31,7 +31,7 @@
  Returns a \code{\link[base]{character}} string.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link{getRemoteAddress}}().

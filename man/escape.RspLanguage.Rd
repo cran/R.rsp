@@ -9,9 +9,7 @@
 \name{escape.RspLanguage}
 \alias{escape.RspLanguage}
 \alias{RspLanguage.escape}
-\alias{escape.RspLanguage}
 \alias{escape,RspLanguage-method}
-
 
 \title{Escapes a string specifically for a given RSP response language}
 
@@ -19,7 +17,9 @@
  Escapes a string specifically for a given RSP response language.
 }
 
-\usage{\method{escape}{RspLanguage}(this, ...)}
+\usage{
+\method{escape}{RspLanguage}(this, ...)
+}
 
 \arguments{
   \item{...}{R objects to be pasted together.}
@@ -29,7 +29,7 @@
  Returns a \code{\link[base]{character}} string.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{RspLanguage}}.

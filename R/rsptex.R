@@ -10,7 +10,7 @@
 # @synopsis
 #
 # \arguments{
-#   \item{...}{Arguments passed to @see "compileRsp".}
+#   \item{...}{Arguments passed to @see "compileRsp0".}
 #   \item{pdf}{If @TRUE, a PDF is generated, otherwise a DVI file.}
 #   \item{force}{If @TRUE, file timestamps are ignored.}
 #   \item{verbose}{See @see "R.utils::Verbose".}
@@ -58,12 +58,14 @@ setMethodS3("rsptex", "default", function(..., pdf=TRUE, force=FALSE, verbose=FA
 
   verbose && enter(verbose, "Compiling RSP LaTeX file");
 
-  pathname2 <- compileRsp(..., trimRsp=TRUE, force=force, verbose=verbose);
+  pathname2 <- compileRsp0(..., trimRsp=TRUE, force=force, verbose=verbose);
   verbose && cat(verbose, "LaTeX pathname: ", pathname2);
+  filename2 <- basename(pathname2);
 
   ext <- ifelse(pdf, ".pdf", ".dvi");
-  pathname3 <- gsub("[.]tex$", ext, pathname2);
+  pathname3 <- gsub("[.]tex$", ext, filename2);
   verbose && cat(verbose, "Output pathname: ", pathname3);
+  verbose && cat(verbose, "Output exists: ", file.exists(pathname3));
 
   # Is output file up to date?
   isUpToDate <- FALSE;
@@ -84,6 +86,8 @@ setMethodS3("rsptex", "default", function(..., pdf=TRUE, force=FALSE, verbose=FA
     verbose && exit(verbose);
   }
 
+  verbose && cat(verbose, "Output exists: ", file.exists(pathname3));
+
   verbose && exit(verbose);
 
   invisible(pathname3);
@@ -92,6 +96,12 @@ setMethodS3("rsptex", "default", function(..., pdf=TRUE, force=FALSE, verbose=FA
 
 ############################################################################
 # HISTORY:
+# 2013-03-31
+# o BUG FIX: rsptex() would return a non-existing pathname (it assumed
+#   the generated PDF/DVI file is in the source directory while it really
+#   is in the current working directory).
+# 2013-03-29
+# o Renamed to compileRsp0().
 # 2011-03-08
 # o Now rsptex() trims white space of RSP blocks so that RSP blocks will
 #   not add additional newlines.  This is done via the new 'trimRsp'

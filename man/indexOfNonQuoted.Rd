@@ -16,7 +16,9 @@
  Gets the first index of a string that is not inside a double qouted string.
 }
 
-\usage{\method{indexOfNonQuoted}{default}(str, pattern, ...)}
+\usage{
+\method{indexOfNonQuoted}{default}(str, pattern, ...)
+}
 
 \arguments{
   \item{str}{The \code{\link[base]{character}} string to be scanned.}
@@ -29,7 +31,7 @@
   the search string in the main string.  If not found, -1 is returned.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link[base]{grep}}().

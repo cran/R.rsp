@@ -16,7 +16,10 @@
  Translates an RSP file to an R servlet.
 }
 
-\usage{\method{translateRspV1}{default}(file="", text=NULL, path=getParent(file), rspLanguage=getOption("rspLanguage"), trimRsp=TRUE, verbose=FALSE, ...)}
+\usage{
+\method{translateRspV1}{default}(file="", text=NULL, path=getParent(file),
+  rspLanguage=getOption("rspLanguage"), trimRsp=TRUE, verbose=FALSE, ...)
+}
 
 \arguments{
   \item{file}{A filename, a URL, or a \code{\link[base:connections]{connection}} to be read.
@@ -44,7 +47,7 @@
   Returns a \code{\link[base]{character}} string of \R source code.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link{sourceRsp}}().

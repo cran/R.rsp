@@ -16,7 +16,10 @@
  Parse an RSP code string to an R RSP code string.
 }
 
-\usage{\method{parseRsp}{default}(rspCode, rspLanguage=getOption("rspLanguage"), trimRsp=TRUE, validate=TRUE, verbose=FALSE, ...)}
+\usage{
+\method{parseRsp}{default}(rspCode, rspLanguage=getOption("rspLanguage"), trimRsp=TRUE, validate=TRUE,
+  verbose=FALSE, ...)
+}
 
 \arguments{
   \item{rspCode}{A \code{\link[base]{character}} \code{\link[base]{vector}} of RSP code to parsed.}
@@ -39,7 +42,7 @@
   Returns a \code{\link[base]{character}} string of \R source code.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link{sourceRsp}}().

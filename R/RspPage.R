@@ -6,7 +6,7 @@
 # \description{
 #  @classhierarchy
 # }
-# 
+#
 # @synopsis
 #
 # \arguments{
@@ -17,14 +17,15 @@
 # \section{Fields and Methods}{
 #  @allmethods
 # }
-# 
+#
 # @author
+# @keyword internal
 #*/###########################################################################
 setConstructorS3("RspPage", function(pathname=NULL, ...) {
   # Argument 'pathname':
   pathname <- Arguments$getCharacter(pathname);
 
-  extend(Object(), "RspPage", 
+  extend(Object(), "RspPage",
     pathname = pathname,
     ...
   );

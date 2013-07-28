@@ -9,9 +9,8 @@
 \name{getVerbatim.RspLanguage}
 \alias{getVerbatim.RspLanguage}
 \alias{RspLanguage.getVerbatim}
-\alias{getVerbatim.RspLanguage}
 \alias{getVerbatim,RspLanguage-method}
-
+\alias{getVerbatim.HtmlRspLanguage}
 
 \title{Gets a verbatim string specific for a given RSP response language}
 
@@ -19,7 +18,9 @@
  Gets a verbatim string specific for a given RSP response language.
 }
 
-\usage{\method{getVerbatim}{RspLanguage}(this, ...)}
+\usage{
+\method{getVerbatim}{RspLanguage}(this, ...)
+}
 
 \arguments{
   \item{...}{R objects to be pasted together.}
@@ -29,7 +30,7 @@
  Returns a \code{\link[base]{character}} string.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{RspLanguage}}.

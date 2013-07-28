@@ -9,9 +9,9 @@
 \name{flush.RspResponse}
 \alias{flush.RspResponse}
 \alias{RspResponse.flush}
-\alias{flush.RspResponse}
 \alias{flush,RspResponse-method}
-
+\alias{flush.FileRspResponse}
+\alias{flush.HttpDaemonRspResponse}
 
 \title{Flushes the response buffer}
 
@@ -19,7 +19,9 @@
  Flushes the response buffer.
 }
 
-\usage{\method{flush}{RspResponse}(...)}
+\usage{
+\method{flush}{RspResponse}(...)
+}
 
 \arguments{
   \item{...}{Not used.}
@@ -29,7 +31,7 @@
  Returns nothing.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{RspResponse}}.

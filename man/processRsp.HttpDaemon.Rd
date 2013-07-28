@@ -1,18 +1,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Do not modify this file since it was automatically generated from:
 % 
-%  processRsp.HttpDaemon.R
+%  HttpDaemon.processRsp.R
 % 
 % by the Rdoc compiler part of the R.oo package.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\name{processRsp.HttpDaemon}
+\name{HttpDaemon$processRsp}
+\alias{HttpDaemon$processRsp}
 \alias{processRsp.HttpDaemon}
 \alias{HttpDaemon.processRsp}
-\alias{processRsp.HttpDaemon}
 \alias{processRsp,HttpDaemon-method}
-
 
 \title{Processes an RSP page}
 
@@ -20,19 +19,37 @@
  Processes an RSP page.
 }
 
-\synopsis{processRsp.HttpDaemon(static, ...)}
-\usage{HttpDaemon$processRsp(...)}
+\usage{
+## Static method (use this):
+## HttpDaemon$processRsp(pathname=tcltk::tclvalue("mypath"),
+##   version=getOption("R.rsp/HttpDaemon/RspVersion", "0.1.0"), ...)
+
+## Don't use the below:
+\method{processRsp}{HttpDaemon}(static=getStaticInstance(HttpDaemon), pathname=tcltk::tclvalue("mypath"),
+  version=getOption("R.rsp/HttpDaemon/RspVersion", "0.1.0"), ...)
+}
 
 \arguments{
+  \item{pathname}{The RSP file to be processed.}
+  \item{version}{The version of the RSP processor to use.}
   \item{...}{Not used.}
 }
 
 \value{
- Returns (invisibly) the translated RSP document as a single
- \code{\link[base]{character}} string.
+ Returns nothing.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\section{Settings}{
+  The \pkg{R.rsp} package implements different RSP engines.
+  It is possible to specify which version the Tcl HTTP daemon
+  should use via the option \code{R.rsp/HttpDaemon/RspVersion}.
+  The default is still to use the old RSP engine, which corresponds
+  to \code{options("R.rsp/HttpDaemon/RspVersion"="0.1.0")}.
+  To use the new RSP engine, which is still under development, use
+  \code{options("R.rsp/HttpDaemon/RspVersion"="1.0.0")}.
+}
+
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{HttpDaemon}}.

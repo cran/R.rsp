@@ -9,9 +9,7 @@
 \name{as.character.HttpDaemon}
 \alias{as.character.HttpDaemon}
 \alias{HttpDaemon.as.character}
-\alias{as.character.HttpDaemon}
 \alias{as.character,HttpDaemon-method}
-
 
 \title{Returns a short string describing the HTTP daemon}
 
@@ -19,7 +17,9 @@
  Returns a short string describing the HTTP daemon.
 }
 
-\usage{\method{as.character}{HttpDaemon}(x, ...)}
+\usage{
+\method{as.character}{HttpDaemon}(x, ...)
+}
 
 \arguments{
   \item{...}{Not used.}
@@ -29,7 +29,7 @@
  Returns a \code{\link[base]{character}} string.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{HttpDaemon}}.

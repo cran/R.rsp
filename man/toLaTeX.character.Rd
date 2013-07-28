@@ -9,8 +9,7 @@
 
 \name{toLatex.character}
 \alias{toLatex.character}
-\alias{toLatex.character}
-
+\alias{toLatex.default}
 \alias{le}
 
 \title{Escapes character strings to become LaTeX compatible}
@@ -19,7 +18,9 @@
  Escapes character strings to become LaTeX compatible.
 }
 
-\usage{\method{toLatex}{character}(object, ...)}
+\usage{
+\method{toLatex}{character}(object, ...)
+}
 
 \arguments{
   \item{object}{A \code{\link[base]{character}} \code{\link[base]{vector}} of N strings.}
@@ -30,7 +31,7 @@
   A \code{\link[base]{character}} \code{\link[base]{vector}} of N strings.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link[utils]{toLatex}} for escaping \code{\link[utils]{sessionInfo}} objects.

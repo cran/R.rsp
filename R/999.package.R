@@ -2,72 +2,37 @@
 # @RdocPackage R.rsp
 #
 # \description{
-#   @eval "getDescription(R.rsp)"
-# }
-#
-# \section{Requirements}{
-#   This is a cross-platform package implemented in plain \R.
-#   This package depends on the packages \pkg{R.oo} [1] and \pkg{R.utils}.
-#
-#   Note that no webserver is required to process RSP documents.
+#   @eval "gsub('(\\\\|%)', '\\\\\\1', getDescription(R.rsp))"
 # }
 #
 # \section{Installation}{
-#   To install this package, do \code{install.packages("R.rsp")}.
+#   To install this package, call \code{install.packages("R.rsp")}.
 # }
 #
 # \section{To get started}{
 #   To get started, see:
 #   \enumerate{
-#     \item @see "rsp" - To compiles any RSP-embedded document.
-#     \item @see "browseRsp" - Luanches a locally running RSP website powered by an internal web server and RSP-embedded HTML pages.  From this page you access not only help pages and demos on how to use RSP, but also other package RSP pages.
+#     \item For a one-page overview of RSP, see vignette '\href{../doc/index.html}{RSP Markup Language - Reference Card}'.
+#     \item For a detailed description of RSP, see vignette '\href{../doc/index.html}{Dynamic document creation using RSP}'.
+#     \item To included RSP vignettes in a package, see '\href{../doc/index.html}{Include RSP and other non-Sweave vignettes in R packages}'.
+#     \item To compile a RSP-embedded text document to a final document, use @see "rfile", e.g. \code{rfile("report.tex.rsp")} outputs file 'report.pdf' and \code{rfile("report.md.rsp")} outputs file 'report.html'.
+#     \item To compile a RSP document (file or string) and output the result to standard output or a string, use @see "rcat" an @see "rstring", respectively.
 #   }
-# } 
-#
-# \section{Wishlist}{
-#  Here is a list of features that would be useful, but which I have
-#  too little time to add myself. Contributions are appreciated.
-#  \itemize{ 
-#    \item Extract the HTTP daemon part of this package and create
-#          a standalone package named R.httpd or similar.  It should
-#          provide a method to register simple modules, such as an
-#          RSP module.  The R.rsp package should then only be a 
-#          simple module.
-#    \item Write "plugins" to common web servers, e.g. modules to
-#          the Apache webserver.
-#    \item Add support for multiple default files; needs Tcl coding.
-#    \item Create a root ServletRequest class to support not only
-#          HTTP requests, but also other types of request, e.g.
-#          FileRequest etc.  This requires some thinking of 
-#          user cases and design.
-#  }
-#
-#  If you consider implement some of the above, make sure it is not
-#  already implemented by downloading the latest "devel" version! 
 # }
 #
 # \section{License}{
-#   The releases of this package is licensed under 
+#   The releases of this package is licensed under
 #   LGPL version 2.1 or newer.
 #
-#   The development code of the packages is under a private licence 
+#   The development code of the packages is under a private licence
 #   (where applicable) and patches sent to the author fall under the
 #   latter license, but will be, if incorporated, released under the
-#   "release" license above. 
+#   "release" license above.
 # }
-#
-# @author 
 #
 # \section{How to cite this package}{
-#   Not available.
+#  @eval "paste(capture.output(print(citation('R.rsp'), style='latex')), collapse='\n')"
 # }
 #
-# \section{References}{
-#  [1] @include "../incl/BengtssonH_2003.bib.Rdoc" \cr
-# }
-#
-# % Building HTML documentation from RSP example files
-#*/#########################################################################  
-
-
-# @eval "path <- '../inst/doc'; unlink(path, recursive=TRUE); mkdirs(path); sourceAllRsp(path='../inst/rsp/', outputPath='../inst/doc/', extension='html'); ''"
+# @author
+#*/#########################################################################

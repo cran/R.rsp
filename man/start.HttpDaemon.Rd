@@ -6,12 +6,11 @@
 % by the Rdoc compiler part of the R.oo package.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\name{start.HttpDaemon}
+\name{HttpDaemon$start}
+\alias{HttpDaemon$start}
 \alias{start.HttpDaemon}
 \alias{HttpDaemon.start}
-\alias{start.HttpDaemon}
 \alias{start,HttpDaemon-method}
-
 
 \title{Starts the HTTP daemon}
 
@@ -20,8 +19,13 @@
  regardless of port used.
 }
 
-\synopsis{start.HttpDaemon(x, rootPaths=NULL, port=8080, default="index.rsp", ...)}
-\usage{HttpDaemon$start(rootPaths=NULL, port=8080, default="index.rsp", ...)}
+\usage{
+## Static method (use this):
+## HttpDaemon$start(rootPaths=NULL, port=8080, default="^index[.](html|.*)$", ...)
+
+## Don't use the below:
+\method{start}{HttpDaemon}(x, rootPaths=NULL, port=8080, default="^index[.](html|.*)$", ...)
+}
 
 \arguments{
   \item{rootPaths}{The path(s) to act as the root of the webserver file
@@ -29,7 +33,7 @@
       accessable.  If \code{\link[base]{NULL}}, the preset paths will be used,
       cf. \code{\link[R.rsp:setRootPaths.HttpDaemon]{*setRootPaths}()}.}
   \item{port}{The socket port the server listens to.}
-  \item{default}{The default filename (basename) to be retrieved if
+  \item{default}{The default filename pattern to be retrieved if
       not specified.}
   \item{...}{Not used.}
 }
@@ -38,7 +42,7 @@
  Returns nothing.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link[R.rsp:setRootPaths.HttpDaemon]{*setRootPaths}()}.

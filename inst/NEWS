@@ -1,9 +1,164 @@
 Package: R.rsp
 ==============
 
+Version: 0.9.17 [2013-07-28]
+o CLEANUP: Dropped tempvar() now in R.utils v1.26.0.
+
+
+Version: 0.9.16 [2013-07-26]
+o GENERALIZATION: Now all return values are processed via generic
+  function rpaste() before being outputted via cat().  This makes
+  it possible (i) to override the default and (ii) to define class
+  specific behaviors from within the RSP document itself.
+
+
+Version: 0.9.15 [2013-07-19]
+o Added capabilitiesOf(R.rsp) for easy summary of what tools are
+  supported on the current system.  It is also possible to check
+  support for a particular tool, e.g. isCapableOf(R.rsp, "latex").
+o CLEANUP: Removed internal archive of old Tcl HTTP daemons.
+o CLEANUP: Rewrote the package description.
+
+
+Version: 0.9.14 [2013-07-18]
+o BUG FIX: rstring(), rcat(), and rfile() on template function:s
+  would only work if the evaluation was done in the default
+  environment.  Added system tests for this.
+
+
+Version: 0.9.13 [2013-07-17]
+o CLEANUP: Internal code cleanup.
+o BUG FIX: The automatic adding of a TEXINPUTS directory done by
+  compileLaTeX() needed to add its absolute (not relative) path.
+
+
+Version: 0.9.12 [2013-07-17]
+o Now it possible to pass argument 'clean' all the way down to
+  compileLaTeX() via rfile(), e.g. rfile("foo.tex.rsp", clean=TRUE).
+
+
+Version: 0.9.11 [2013-07-16]
+o Added rstring(), rcat() and rfile() for (template) function:s.
+o ROBUSTNESS: Updated system tests to not use commas in LaTeX file
+  paths, because such are not supported on all file systems.
+o ROBUSTNESS: If compileLaTeX() was called on a LaTeX file in a
+  directory different than the working directory, it could fail to
+  located files to be included (e.g. image files).  In order to make
+  this less likely to happen, compileLaTeX() now adds the the directory
+  of the compiled LaTeX file to the TEXINPUTS search path, iff it is
+  different than the working directory.
+
+
+Version: 0.9.10 [2013-07-14]
+o Added rfile() also for RspString, RspDocument and RspRSourceCode.
+o BUG FIX: evaluate() for RspRSourceCode failed to evaluate in to
+  proper environment if the default (parent) environment was used.
+
+
+Version: 0.9.9 [2013-07-12]
+o DOCUMENTATION: Updated the vignettes.
+o Updated the template vignette Makefile that is needed prior
+  to R v3.0.0 to no remove LaTeX files needed by R CMD check.
+  These should instead be handled by .Rinstignore (a template
+  for this is also available).
+
+
+Version: 0.9.8 [2013-07-04]
+o ROBUSTNESS: Added more tests on preprocessing.
+o Internal code cleanup.
+o Bumped up package dependencies.
+
+
+Version: 0.9.7 [2013-05-25]
+o Minor speedup by replacing rm() calls with NULL assignments.
+
+
+Version: 0.9.6 [2013-05-23]
+o ROBUSTNESS: Now rfile() handles files with only one filename extension.
+o Several updates to browseRsp():
+  - It automatically adds the current directory ('.') as well as a
+    './rsp' subdirectory to the list of known root paths.
+  - R.rsp::browseRsp() works without loading the package first.
+  - It can be used to open any RSP file by specifying it's (absolute or
+    relative) pathname, e.g. browseRsp("foo/bar.html.rsp") and
+    browseRsp("foo/bar.md.rsp").
+o Added argument 'trim=FALSE' to getParameter() and getParameters()
+  for HttpRequest.
+o Now processRsp() for HttpDaemon with version="1.0.0" utilizes
+  rfile() rather than rstring() so that postprocessors are also
+  applied.  Also, the rfile() working directory is set to the
+  current directory (and not the directory of the source file
+  as with version="0.1.0").  For backward compatibility with old
+  RSP pages, write() for HttpDaemonRspResponse now supports the
+  new RSP engine as well.  This will simplify the transition.
+
+
+Version: 0.9.5 [2013-05-20]
+o CRAN POLICY: Now all Rd \usage{} lines are at most 90 characters long.
+o CRAN POLICY: Now all Rd example lines are at most 100 characters long.
+
+
+Version: 0.9.4 [2013-05-18]
+o DOCUMENTATION: Now vignettes are properly using opened and closed
+  quotation marks.  Thanks Saunak Sen at UCSF for reporting on this.
+o Now empty lines in .rspPlugins are ignored.
+
+
+Version: 0.9.3 [2013-05-08]
+o DOCUMENTATION: Explicitly added arguments 'file' & 'path' to
+  rcat() to make the help page more user friendly [although
+  they're just passed as is to rstring()].
+
+
+Version: 0.9.2 [2013-04-04]
+o The internal RSP engine has undergone a major redesign.
+o BACKWARD COMPATIBILITY: The RSP processor of the built-in HTTP
+  daemon is by default still using the previous RSP engine.
+  Note, the built-in HTTP daemon is only there as a proof of
+  concept and is not recommended for other than toy examples.
+
+
+Version: 0.9.1 [2013-04-01]
+o The internal RSP engine is undergoing a major redesign.
+o Whenever only a URL directory is requested, the built-in HTTP daemon
+  now loads the first file matching "^index[.](html|.*)$".  It used
+  to only look for 'index.rsp'.
+
+
+Version: 0.9.0 [2013-03-01]
+o More functions can now be called without loading the package.
+o DOCUMENTATION: Updated the help usage section for all static methods.
+o Prepared package for the upcoming R (>= 3.0.0) generic vignette support.
+o Simplified how to build non-Sweave vignettes for R (< 3.0.0).
+  It now immitates how it is done in R (>= 3.0.0).
+
+
+Version: 0.8.5 [2013-01-20]
+o Now rsp() uses compileRnw() for *.Rnw files.
+o Added compileRnw() which compiles Sweave and knitr Rnw files.
+o Added typeOfRnw() which tries to infer whether an Rnw file is
+  for Sweave or knitr based on its contents.
+o ROBUSTNESS: Added system tests for compileKnitr(), compileRnw()
+  and rsp() for handling Sweave and knitr Rnw files.
+o Added 'knitr' under suggested packages.
+
+
+Version: 0.8.4 [2012-12-19]
+o Utilizing new startupMessage() of R.oo.
+
+
+Version: 0.8.3 [2012-12-06]
+o ROBUSTNESS: Added system tests for compileLaTeX(), compileSweave()
+  and rsp().
+o Added argument 'outPath' to compileLaTeX(), compileSweave() and rsp(),
+  which is also the working directory.
+o BUG FIX: compileLaTeX() and compileSweave() would return an incorrect
+  pathname unless the source file was in the working directory.
+
+
 Version: 0.8.2 [2012-06-22]
-o ROBUSTNESS: Now the doc/Makefile no longer assumes 'R' is on 
-  the system's search path.  Instead it uses $(R_HOME)/bin/R. 
+o ROBUSTNESS: Now the doc/Makefile no longer assumes 'R' is on
+  the system's search path.  Instead it uses $(R_HOME)/bin/R.
   Thanks to Kasper Hansen at John Hopkins for the suggestion.
 
 
@@ -14,7 +169,7 @@ o Now package only imports R.methodsS3 and R.oo instead of
 
 Version: 0.8.0 [2012-05-02]
 o Now the package depends on R.devices, which contains the utility
-  functions for graphical devices that originates from R.utils.
+  functions for graphical devices that originate from R.utils.
 
 
 Version: 0.7.5 [2012-03-20]
@@ -33,7 +188,7 @@ o Added toLatex() for LaTeX escaping character strings, cf.
 
 Version: 0.7.2 [2012-01-21]
 o Placed a copy of inst/doc/Makefile in inst/doc/templates/ and
-  updated the 'Include static PDFs and non-Sweave vignettes in 
+  updated the 'Include static PDFs and non-Sweave vignettes in
   an R package' vignette accordingly.  The reason for this change
   is that inst/doc/Makefile will not be installed in recent
   version of R.  The Makefile also does a better job cleaning up.
@@ -48,8 +203,8 @@ Version: 0.7.0 [2011-11-23]
 o DOCUMENTATION: Added a vignette explaining how to include static
   PDFs and non-Sweave vignettes in an R package.
 o Now the building of vignettes is independent of R.rsp.  All that
-  is needed to build non-Sweave vignettes (via RSP, brew etc), or 
-  include a static PDF, is to have a corresponding *.Rnw stub with 
+  is needed to build non-Sweave vignettes (via RSP, brew etc), or
+  include a static PDF, is to have a corresponding *.Rnw stub with
   custom vignette options \VignetteSource{} and \VignetteBuild{}.
   See inst/doc/ of this package for more details.
 o CLEANUP: Dropped an old vignette from 2006.
@@ -68,7 +223,7 @@ o ROBUSTNESS: Now the generated R script adds 'write <- R.rsp::write'
 Version: 0.6.9 [2011-11-14]
 o ROBUSTNESS: Now <%=[expr]%> is translated with curly brackets around
   the expression, i.e. write(response, {[expr]}).  This allows for
-  writing <%= x <- 1; x^2 %> instead of <%={ x <- 1; x^2 }%>.   
+  writing <%= x <- 1; x^2 %> instead of <%={ x <- 1; x^2 }%>.
 o BUG FIX: By default the RSP document would be evaluated in the
   local call frame of rsp(), not its parent frame.
 
@@ -92,7 +247,7 @@ Version: 0.6.5 [2011-11-01]
 o FIX: The package would not load in R v2.15.0 devel, because it
   tried to access restart(), which has been dropped.  This was
   a non-critical error and the fix was trivial.
-  
+
 
 Version: 0.6.4 [2011-10-21]
 o Updated the package's DESCRIPTION with an example of the RSP syntax.
@@ -131,7 +286,7 @@ o Added arguments 'clean' and 'quiet' to compileLaTeX().
 
 Version: 0.5.2 [2011-04-18]
 o Now browseRsp() pass '...' arguments to browseURL().
-o DOCUMENTATION: Updated 'Dynamic LaTeX reports with RSP' vignette. 
+o DOCUMENTATION: Updated 'Dynamic LaTeX reports with RSP' vignette.
 
 
 Version: 0.5.1 [2011-04-16]
@@ -164,7 +319,7 @@ o Added support for RSP preprocessing directive <%@insert ...%>.
 Version: 0.4.8 [2011-03-31]
 o Now parseRsp() drops RSP comments, i.e. '<%-- {anything} --%>'.
 o Rewrote evalWithEcho() so that it utilizes source(..., echo=TRUE).
-o DOCUMENTATION: Additional updates on the 'Dynamic LaTeX reports 
+o DOCUMENTATION: Additional updates on the 'Dynamic LaTeX reports
   with RSP' vignette.
 o DOCUMENTATION: Now the RSP documentation is automatically
   generated when the package is built.
@@ -177,8 +332,8 @@ o BUG FIX: write() for RspResponse classes would ignore arguments
 
 
 Version: 0.4.6 [2011-03-12]
-o Now the trimming of RSP handles all newline types, i.e. LF, 
-  CR+LF, and CR.  The corresponding argument 'trimRsp' now 
+o Now the trimming of RSP handles all newline types, i.e. LF,
+  CR+LF, and CR.  The corresponding argument 'trimRsp' now
   defaults to TRUE everywhere.
 o BUG FIX: The main 'R Server Pages' page launched by browseRsp()
   would list package twice on a Windows system.
@@ -213,15 +368,15 @@ o DOCUMENTATION: First draft of a article on how to generate
 
 
 Version: 0.4.2 [2011-02-14]
-o DOCUMENTATION: Added a section to help(rsptex) explaining in what 
-  environment the RSP document is evaluated and how to retrieve it 
+o DOCUMENTATION: Added a section to help(rsptex) explaining in what
+  environment the RSP document is evaluated and how to retrieve it
   and its content.
 o BUG FIX: parseRsp() would generate invalid R code/R comments for
   multiline <%=...%> statements.
 
 
 Version: 0.4.1 [2011-01-06]
-o DOCUMENTATION: Clarified in the help of HttpDaemon that it is only 
+o DOCUMENTATION: Clarified in the help of HttpDaemon that it is only
   connections from the local host (127.0.0.1) that are accepted.
   This lowers the risk for unauthorized access to the R session.
 
@@ -229,7 +384,7 @@ o DOCUMENTATION: Clarified in the help of HttpDaemon that it is only
 Version: 0.4.0 [2010-09-15]
 o BUG FIX: browseRsp(path="/R/settings/options.rsp") and
   browseRsp(path="/R/settings/par.rsp") was throwing "Error in
-  help("par", pager = stdoutPager): unused argument(s) 
+  help("par", pager = stdoutPager): unused argument(s)
   (pager = stdoutPager)" in R >= 2.10.0.
 
 
@@ -247,17 +402,17 @@ o Updated the HTTP header generated by the builtin webserver from
 Version: 0.3.5 [2009-02-23]
 o Added rsptex() to compiling a *.tex.rsp file into a *.dvi file
   via *.tex.rsp -> *.tex.rsp.R -> *.tex -> *.dvi.
-o Added compileRsp(), which utilizes internal translateRsp() 
+o Added compileRsp(), which utilizes internal translateRsp()
   which in turn calls parseRsp().
-o Renamed old translateRsp() to translateRspV1(), which 
+o Renamed old translateRsp() to translateRspV1(), which
   sourceRsp() is still utilizing.
 
 
 Version: 0.3.4 [2008-03-06]
-o BUG FIX: Regular expression pattern 'a-Z' is illegal on (at least) 
-  some locale, e.g. 'C' (where 'A-z' works). The only way to specify 
+o BUG FIX: Regular expression pattern 'a-Z' is illegal on (at least)
+  some locale, e.g. 'C' (where 'A-z' works). The only way to specify
   the ASCII alphabet is to list all characters explicitly, which we now
-  do in all methods of the package.  See the r-devel thread 
+  do in all methods of the package.  See the r-devel thread
   "invalid regular expression '[a-Z]'" on 2008-03-05 for details.
 
 
@@ -279,7 +434,7 @@ o Added rspToHtml() in order to simplify RSP-to-HTML compilations.
 
 Version: 0.3.0 [2006-07-20]
 o Package has now been verified to compile not only HTML input files,
-  but also TeX files.  This make RSP a very power tool to write 
+  but also TeX files.  This make RSP a very power tool to write
   vignettes.  Added a simple package vignette.
 o Packages with an rsp/ path (installed from inst/rsp/) will now
   be listed and linked to on the main RSP page.  This makes it very
@@ -287,9 +442,9 @@ o Packages with an rsp/ path (installed from inst/rsp/) will now
   aroma.light package.
 o Added browseRsp() for the Package too, e.g. browseRsp(aroma.light).
   Added help pages for these methods.
-o When calling browseRsp(start=TRUE), (the parents of) all library 
+o When calling browseRsp(start=TRUE), (the parents of) all library
   paths are now added to the root paths.
-o BUG FIX: translateRsp("\\\n") would convert to "\\n". Thanks 
+o BUG FIX: translateRsp("\\\n") would convert to "\\n". Thanks
   Peter Dahlsgaard for the suggestion how to fix it using deparse().
 o BUG FIX: translateRsp() would replicate last R code or text piece,
   for each RSP comment tag.
@@ -301,9 +456,9 @@ o BUG FIX: If argument 'path' was NULL, translateRsp() gave an error.
 
 
 Version: 0.2.8 [2006-07-04]
-o Renamed class Response to RspResponse and RspResponse to 
+o Renamed class Response to RspResponse and RspResponse to
   FileRspResponse, cf. HttpDaemonRspResponse.
-o Now sourceRsp() creates an HttpRequest object internally, if not 
+o Now sourceRsp() creates an HttpRequest object internally, if not
   given.  Added an example to ?sourceRsp too.
 o Added a little bit more help text.
 
@@ -316,7 +471,7 @@ Version: 0.2.6 [2006-02-22]
 o Added getParameters() to HttpRequest for completeness.
 o The RSP page on "System Details" used functions only available
   on Windows platforms.
-o BUG FIX: HttpDaemon$getHttpRequest() failed to retrieve 
+o BUG FIX: HttpDaemon$getHttpRequest() failed to retrieve
   parameters with empty values, e.g. "index.rsp?foo=&bar=2".
 
 
@@ -326,7 +481,7 @@ o Added writeResponse() to HttpDaemon.  No other classes but
 o Improved the built-in RSP pages.
 o Mozilla browsers does unfortunately not follow file URLs (file://)
   when clicking on links on a page that has been loaded via HTTP.
-  This makes it impossible (for now) to link to local R help pages 
+  This makes it impossible (for now) to link to local R help pages
   via RSP pages (without passing everything through the HTTP daemon
   that is). It works under Internet Explorer.
 o Added more help.
@@ -334,10 +489,10 @@ o Added more help.
 
 Version: 0.2.4 [2006-01-11]
 o BUG FIX: translateRsp() would in some locales give the error:
-   simpleError in gsub(pattern, replacement, x, ignore.case, 
+   simpleError in gsub(pattern, replacement, x, ignore.case,
    extended, fixed): 'replacement' is invalid in this locale
   This was due to an incorrect internal MAGIC.STRING.
-  Thanks Julien Gagneur at EMBL/HTFG Center, Heidelberg for 
+  Thanks Julien Gagneur at EMBL/HTFG Center, Heidelberg for
   this bug fix.
 o Create better support for plugins on the main RSP page.
 o Updated example(HttpDaemon) so it actually runs and opens up
@@ -349,13 +504,13 @@ o Added argument 'overwrite' to constructor of RspResponse.
 Version: 0.2.3 [2005-10-27]
 o Removed the generation of doc/ from rsp files. Now all such
   documentation is supposed to viewed via the built in HTTP
-  daemon.  This might change if/when a root ServletRequest 
+  daemon.  This might change if/when a root ServletRequest
   class is written.
 
 
 Version: 0.2.2 [2005-10-20]
 o Now root paths can be set before the server has started.
-o Updated the Tcl HTTP daemon so it can search multiple root 
+o Updated the Tcl HTTP daemon so it can search multiple root
   directories for files to be processed.
 o BUG FIX: HttpDaemon$startHelp() tried to open the wrong page.
 o Update the RSP pages to include a common header with a navigator.
@@ -363,21 +518,21 @@ o Update the RSP pages to include a common header with a navigator.
 
 
 Version: 0.2.1 [2005-10-15]
-o BUG FIX: The HttpDaemon sent the wrong MIME type for *.rsp pages. 
+o BUG FIX: The HttpDaemon sent the wrong MIME type for *.rsp pages.
   Now text/html as it should be.
 
 
 Version: 0.2.0 [2005-09-26]
 o Added a simple webserver (HTTP Daemon) requiring Tcl, which now
-  all R installation has.  The current version recognized and 
-  pre-process RSP files.  
-o BUG FIX: sourceRsp() is no longer using argument 'output', 
+  all R installation has.  The current version recognized and
+  pre-process RSP files.
+o BUG FIX: sourceRsp() is no longer using argument 'output',
   but 'response'.
 
 
 Version: 0.1.3 [2005-09-18]
 o The RSP template is now searching for a functional PNG device.
-o Made a few method protected (and hence hid their documentation), 
+o Made a few method protected (and hence hid their documentation),
   because they are not of public interest.
 o Added help to all methods.  R CMD check gives no warnings.
 
@@ -398,8 +553,7 @@ o Now the "User Guides and Package Vignettes" documentation is
 
 
 Version: 0.1.0 [2005-07-26]
-o Created.  Since May 2002, there has been a trial version of an 
+o Created.  Since May 2002, there has been a trial version of an
   RSPEngine class in the R.io package, but from now on this package
   should be used for RSP processing.  The RSPEngine class is made
   deprecated.
- 

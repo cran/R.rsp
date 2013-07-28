@@ -9,9 +9,7 @@
 \name{getPath.RspPage}
 \alias{getPath.RspPage}
 \alias{RspPage.getPath}
-\alias{getPath.RspPage}
 \alias{getPath,RspPage-method}
-
 
 \title{Gets the path of the directory of the current RSP file}
 
@@ -19,7 +17,9 @@
  Gets the path of the directory of the current RSP file.
 }
 
-\usage{\method{getPath}{RspPage}(this, ...)}
+\usage{
+\method{getPath}{RspPage}(this, ...)
+}
 
 \arguments{
   \item{...}{Not used.}
@@ -29,7 +29,7 @@
  Returns a \code{\link[base]{character}} string.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{RspPage}}.

@@ -9,9 +9,7 @@
 \name{import.RspResponse}
 \alias{import.RspResponse}
 \alias{RspResponse.import}
-\alias{import.RspResponse}
 \alias{import,RspResponse-method}
-
 
 \title{Imports the output from another RSP file}
 
@@ -21,7 +19,9 @@
  \code{<\%@ import file="url"\%>} tag.
 }
 
-\usage{\method{import}{RspResponse}(response, ...)}
+\usage{
+\method{import}{RspResponse}(response, ...)
+}
 
 \arguments{
   \item{...}{Arguments passed to \code{\link{sourceRsp}}().}
@@ -32,7 +32,7 @@
   If an error occurs, the error message is written too.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link{sourceRsp}}().

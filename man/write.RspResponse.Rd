@@ -9,17 +9,19 @@
 \name{write.RspResponse}
 \alias{write.RspResponse}
 \alias{RspResponse.write}
-\alias{write.RspResponse}
 \alias{write,RspResponse-method}
+\alias{write.FileRspResponse}
+\alias{write.HttpDaemonRspResponse}
 
-
-\title{Writes an RSP response to the predefined output file}
+\title{Writes an RSP response to the predefined output}
 
 \description{
- Writes an RSP response to the predefined output file.
+ Writes an RSP response to the predefined output.
 }
 
-\usage{\method{write}{RspResponse}(...)}
+\usage{
+\method{write}{RspResponse}(...)
+}
 
 \arguments{
   \item{...}{Objects to be pasted together and outputted.}
@@ -31,7 +33,7 @@
  Returns nothing.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{RspResponse}}.

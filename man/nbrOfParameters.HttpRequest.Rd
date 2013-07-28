@@ -9,9 +9,7 @@
 \name{nbrOfParameters.HttpRequest}
 \alias{nbrOfParameters.HttpRequest}
 \alias{HttpRequest.nbrOfParameters}
-\alias{nbrOfParameters.HttpRequest}
 \alias{nbrOfParameters,HttpRequest-method}
-
 
 \title{Gets the number of parameters}
 
@@ -19,7 +17,9 @@
  Gets the number of parameters.
 }
 
-\usage{\method{nbrOfParameters}{HttpRequest}(this, ...)}
+\usage{
+\method{nbrOfParameters}{HttpRequest}(this, ...)
+}
 
 \arguments{
   \item{...}{Not used.}
@@ -29,7 +29,7 @@
  Returns an \code{\link[base]{integer}}.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link[R.rsp:getParameter.HttpRequest]{*getParameter}()}.
