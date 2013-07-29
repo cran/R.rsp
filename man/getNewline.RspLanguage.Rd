@@ -9,9 +9,7 @@
 \name{getNewline.RspLanguage}
 \alias{getNewline.RspLanguage}
 \alias{RspLanguage.getNewline}
-\alias{getNewline.RspLanguage}
 \alias{getNewline,RspLanguage-method}
-
 
 \title{Gets the newline string specific for a given RSP response language}
 
@@ -19,7 +17,9 @@
  Gets the newline string specific for a given RSP response language.
 }
 
-\usage{\method{getNewline}{RspLanguage}(this, ...)}
+\usage{
+\method{getNewline}{RspLanguage}(this, ...)
+}
 
 \arguments{
   \item{...}{Not used.}
@@ -29,7 +29,7 @@
  Returns a \code{\link[base]{character}} string.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{RspLanguage}}.

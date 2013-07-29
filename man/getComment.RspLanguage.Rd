@@ -9,9 +9,8 @@
 \name{getComment.RspLanguage}
 \alias{getComment.RspLanguage}
 \alias{RspLanguage.getComment}
-\alias{getComment.RspLanguage}
 \alias{getComment,RspLanguage-method}
-
+\alias{getComment.HtmlRspLanguage}
 
 \title{Gets a comment string specific for a given RSP response language}
 
@@ -19,7 +18,9 @@
  Gets a comment string specific for a given RSP response language.
 }
 
-\usage{\method{getComment}{RspLanguage}(this, ...)}
+\usage{
+\method{getComment}{RspLanguage}(this, ...)
+}
 
 \arguments{
   \item{...}{R objects to be pasted together.}
@@ -29,7 +30,7 @@
  Returns a \code{\link[base]{character}} string.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{RspLanguage}}.

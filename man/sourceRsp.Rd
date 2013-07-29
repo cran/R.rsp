@@ -16,7 +16,10 @@
  Processes an RSP file by translating it to an R servlet, which is then sourced.
 }
 
-\usage{\method{sourceRsp}{default}(..., response=FileRspResponse(file = stdout()), request=NULL, envir=parent.frame(), verbose=FALSE)}
+\usage{
+\method{sourceRsp}{default}(..., response=FileRspResponse(file = stdout()), request=NULL,
+  envir=parent.frame(), verbose=FALSE)
+}
 
 \arguments{
   \item{...}{Arguments passed to \code{\link{translateRspV1}}(), e.g. \code{file}
@@ -50,7 +53,7 @@
 \examples{
 # The RSP file
 rspPath <- system.file("rsp/rsp/docs", package="R.rsp")
-rspFile <- file.path(rspPath, "helloWorld.rsp")
+rspFile <- file.path(rspPath, "helloWorld.html.rsp")
 file.show(rspFile)
 
 # The HTML (output) file
@@ -65,7 +68,7 @@ file.show(getOutput(response))
 
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link{translateRspV1}}().

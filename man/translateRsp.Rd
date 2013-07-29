@@ -16,7 +16,9 @@
  Translates an RSP file to an R RSP source file.
 }
 
-\usage{\method{translateRsp}{default}(filename, path=NULL, ..., force=FALSE, verbose=FALSE)}
+\usage{
+\method{translateRsp}{default}(filename, path=NULL, ..., force=FALSE, verbose=FALSE)
+}
 
 \arguments{
   \item{filename}{A filename to be read.}
@@ -30,7 +32,7 @@
   Returns (invisibly) the pathname to the R RSP source code.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   Internally \code{\link{parseRsp}}() parses the RSP file into an R code string.

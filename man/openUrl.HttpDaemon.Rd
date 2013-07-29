@@ -9,9 +9,7 @@
 \name{openUrl.HttpDaemon}
 \alias{openUrl.HttpDaemon}
 \alias{HttpDaemon.openUrl}
-\alias{openUrl.HttpDaemon}
 \alias{openUrl,HttpDaemon-method}
-
 
 \title{Starts the HTTP daemon and launches the specified URL}
 
@@ -19,7 +17,10 @@
  Starts the HTTP daemon and launches the specified URL.
 }
 
-\usage{\method{openUrl}{HttpDaemon}(static, url=sprintf("http://\%s:\%d/\%s", host, port, path), host="127.0.0.1", port=8074, path="", ...)}
+\usage{
+\method{openUrl}{HttpDaemon}(static, url=sprintf("http://\%s:\%d/\%s", host, port, path), host="127.0.0.1",
+  port=8074, path="", ...)
+}
 
 \arguments{
   \item{url}{The URL to be opened.}
@@ -33,7 +34,7 @@
  Returns nothing.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   Called by for instance \code{\link[R.rsp:startHelp.HttpDaemon]{*startHelp}()}.

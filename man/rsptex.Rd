@@ -16,10 +16,12 @@
  Compiles an RSP LaTeX file into a DVI file.
 }
 
-\usage{\method{rsptex}{default}(..., pdf=TRUE, force=FALSE, verbose=FALSE)}
+\usage{
+\method{rsptex}{default}(..., pdf=TRUE, force=FALSE, verbose=FALSE)
+}
 
 \arguments{
-  \item{...}{Arguments passed to \code{\link{compileRsp}}().}
+  \item{...}{Arguments passed to \code{\link{compileRsp0}}().}
   \item{pdf}{If \code{\link[base:logical]{TRUE}}, a PDF is generated, otherwise a DVI file.}
   \item{force}{If \code{\link[base:logical]{TRUE}}, file timestamps are ignored.}
   \item{verbose}{See \code{\link[R.utils]{Verbose}}.}
@@ -40,12 +42,13 @@
 
 \examples{\dontrun{
   library("R.rsp")
-path <- system.file("doc", package="R.rsp")
-rsptex("report.tex.rsp", path=path)
+path <- system.file(package="R.rsp")
+path <- file.path(path, "rsp_LoremIpsum")
+rsptex("LoremIpsum.tex.rsp", path=path)
 
 }}
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   The generated TeX document is compiled by \code{\link[tools]{texi2dvi}} in

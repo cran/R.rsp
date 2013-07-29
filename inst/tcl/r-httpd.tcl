@@ -283,17 +283,32 @@ proc push { sock } {
 		set mypath [ URLtoString "$path$data(url)"]
     regsub -all "\\.UP\\./" $mypath "../" mypath
 
-    # b. If pathname is a directory, add the default filename.
+    # b. If pathname is a directory, scan for default filename.
     if {[file isdirectory $mypath]} { 
       append mypath "/"
-      regsub {(//$)} $mypath "/" mypath 
-      append mypath $config(default) 
+      regsub {(//$)} $mypath "/" pathT
+      set mypath ""
+
+      # Scan for filename matching the default filename pattern
+      set pattern $config(default)
+      foreach {pathnameT} [glob -nocomplain -type f -directory $pathT *] {
+   	if {[file exists $pathnameT]} {
+	  set filenameT [file tail $pathnameT]
+          if {[regexp -nocase $pattern $filenameT dummy]} then {
+            set mypath $pathnameT
+            break
+          }
+	}
+      }
     }
 
     # c. If pathname refers to an existing file, we are done.
-   	if {[file exists $mypath]} {
-			break
+    if {[file exists $mypath]} {
+      ## puts "Found page file: $mypath\n"
+      break
     }
+
+    set mypath ""
   }
 
   # Ignore all ../
@@ -521,7 +536,7 @@ proc fmtdate {clicks} {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 proc URLtoString {data} {
   regsub -all {([][$\\])} $data {\\\1}
-  regsub -all {%([0-9a-fA-F][0-9a-fA-F])} $data  {[format %c 0x\1]} data
+  regsub -all {%([0-9a-fA-F][0-9a-fA-F])} $data {[format %c 0x\1]} data
   return [subst $data]
 }
 
@@ -535,6 +550,9 @@ proc bgerror {msg} {
 
 ###############################################################################
 # HISTORY:
+# 2013-03-31
+# o Now push() uses $config(default) as a filename pattern, which makes
+#   it more flexible, e.g. default="^index[.](html|.*)$"
 # 2011-09-21
 # o Added getRootPaths() which returns a Tcl array.
 # 2009-09-16

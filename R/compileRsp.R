@@ -1,11 +1,43 @@
-setMethodS3("compileRsp", "default", function(..., envir=parent.frame(), force=FALSE, verbose=FALSE) {
+###########################################################################/**
+# @RdocDefault compileRsp
+#
+# @title "Compiles an RSP file"
+#
+# \description{
+#  @get "title".
+# }
+#
+# @synopsis
+#
+# \arguments{
+#   \item{filename, path}{The filename and (optional) path of the
+#      RSP document to be compiled.}
+#   \item{...}{Additional arguments passed to @see "R.rsp::rfile".}
+#   \item{outPath}{The output and working directory.}
+#   \item{verbose}{See @see "R.utils::Verbose".}
+# }
+#
+# \value{
+#   Returns (invisibly) the pathname of the generated document.
+# }
+#
+# @author
+#
+# @keyword file
+# @keyword IO
+# @keyword internal
+#*/###########################################################################
+setMethodS3("compileRsp", "default", function(filename, path=NULL, ..., outPath=".", postprocess=TRUE, envir=parent.frame(), verbose=FALSE) {
+
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Validate arguments
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # Argument 'envir':
-  if (!is.environment(envir)) {
-    throw("Argument 'envir' is not an environment: ", class(envir)[1]);
-  }
+  # Arguments 'filename' & 'path':
+  pathname <- Arguments$getReadablePathname(filename, path=path);
+
+  # Arguments 'outPath':
+  outPath <- Arguments$getWritablePath(outPath);
+  if (is.null(outPath)) outPath <- ".";
 
   # Argument 'verbose':
   verbose <- Arguments$getVerbose(verbose);
@@ -14,51 +46,38 @@ setMethodS3("compileRsp", "default", function(..., envir=parent.frame(), force=F
     on.exit(popState(verbose));
   }
 
+  verbose && enter(verbose, "Compiling RSP document");
+  pathname <- getAbsolutePath(pathname);
+  verbose && cat(verbose, "RSP pathname (absolute): ", pathname);
+  verbose && printf(verbose, "Input file size: %g bytes\n", file.info(pathname)$size);
+  verbose && cat(verbose, "Output and working directory: ", outPath);
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # Translate an RSP file to an R RSP source file
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  pathname2 <- translateRsp(..., force=force, verbose=less(verbose,5));
-
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # Run R RSP file to generate output document
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  path2 <- dirname(pathname2);
-  filename2 <- basename(pathname2);
-
-  path3 <- path2;
-  filename3 <- gsub("[.](rsp|RSP)[.](r|R)$", "", filename2);
-  pathname3 <- Arguments$getWritablePathname(filename3,
-                                       path=path3, overwrite=TRUE);
-
-  # Is output file up to date?
-  isUpToDate <- FALSE;
-  if (!force && isFile(pathname3)) {
-    date <- file.info(pathname2)$mtime;
-    verbose && cat(verbose, "Source file modified on: ", date);
-    outDate <- file.info(pathname3)$mtime;
-    verbose && cat(verbose, "Output file modified on: ", outDate);
-    if (is.finite(date) && is.finite(outDate)) {
-      isUpToDate <- (outDate >= date);
-    }
-    verbose && printf(verbose, "Output file is %sup to date.\n", ifelse(isUpToDate, "", "not "));
+  opwd <- ".";
+  on.exit(setwd(opwd), add=TRUE);
+  if (!is.null(outPath)) {
+    opwd <- setwd(outPath);
   }
 
-  if (force || !isUpToDate) {
-    response <- FileRspResponse(pathname3, overwrite=TRUE);
-    envir$response <- response;
-    sourceTo(pathname2, envir=envir);
+  pathname2 <- rfile(pathname, ..., envir=envir);
+  pathname2 <- getAbsolutePath(pathname2);
+  setwd(opwd); opwd <- ".";
+
+  res <- pathname2;
+  verbose && print(verbose, res);
+
+  # Postprocess?
+  if (postprocess) {
+    res <- process(res, outPath=outPath, recursive=TRUE, verbose=verbose);
   }
 
-  invisible(pathname3);
+  verbose && exit(verbose);
+
+  invisible(res);
 }) # compileRsp()
 
 
 ###########################################################################
 # HISTORY:
-# 2009-02-23
-# o Updated to use parseRsp().
-# 2009-02-22
+# 2013-03-29
 # o Created.
 ###########################################################################

@@ -6,13 +6,13 @@
 # \description{
 #  @classhierarchy
 #
-#  An instance of class HttpDaemonRspResponse, which extends the 
+#  An instance of class HttpDaemonRspResponse, which extends the
 #  @see "RspResponse" class, is a buffer for output (response) sent to an
 #  @see "HttpDaemon".  It provides a method \code{write()} for writing
 #  output and a method \code{flush()} for flush the written output to
 #  the HTTP daemon.
 # }
-# 
+#
 # @synopsis
 #
 # \arguments{
@@ -28,27 +28,28 @@
 #  The purpose of this method is to provide partial writing of HTTP response
 #  such that, for instance, a web browser can display parts of an HTML page
 #  while the rest is generated.  Note that this is only supported by the
-#  HTTP v1.1 protocol. 
+#  HTTP v1.1 protocol.
 #
-#  \emph{Note: 
-#   The minimalistic HTTP daemon (written in Tcl) used internally 
-#   currently only supports HTTP v1.0. In other words, although this class 
+#  \emph{Note:
+#   The minimalistic HTTP daemon (written in Tcl) used internally
+#   currently only supports HTTP v1.0. In other words, although this class
 #   is used already, the output is only flushed at the end.
 #  }
 # }
 #
 # @author
-# 
+#
 # \seealso{
 #   @see "HttpDaemon".
 # }
 #
 # @keyword IO
-#*/########################################################################### 
+# @keyword internal
+#*/###########################################################################
 setConstructorS3("HttpDaemonRspResponse", function(httpDaemon=NULL, ...) {
   if (!is.null(httpDaemon)) {
     if (!inherits(httpDaemon, "HttpDaemon")) {
-      throw("Argument 'httpDaemon' is not an HttpDaemon object: ", 
+      throw("Argument 'httpDaemon' is not an HttpDaemon object: ",
                                                        class(httpDaemon)[1]);
     }
   }
@@ -61,71 +62,26 @@ setConstructorS3("HttpDaemonRspResponse", function(httpDaemon=NULL, ...) {
 })
 
 
-
-#########################################################################/**
-# @RdocMethod write
-#
-# @title "Writes strings to an HttpDaemonRspResponse buffer"
-
-# \description{
-#  @get "title".
-# }
-#
-# @synopsis
-#
-# \arguments{
-#   \item{...}{One or several strings, which will be concatenated.}
-#   \item{sep}{The string to used for concatenating several strings.}
-#   \item{collapse}{The string to used collapse vectors together.}
-# }
-#
-# \value{
-#  Returns nothing.
-# }
-#
-# @author
-#
-# \seealso{
-#   @seeclass
-# }
-#
-# @keyword IO
-#*/######################################################################### 
 setMethodS3("write", "HttpDaemonRspResponse", function(this, ..., collapse="", sep="") {
-  msg <- paste(..., collapse=collapse, sep=sep);  
+  version <- getOption("R.rsp/HttpDaemon/RspVersion", "0.1.0");
+  # Argment 'version':
+  if (!is.element(version, c("0.1.0", "1.0.0"))) {
+    throw("Unknown HttpDaemon RSP version: ", version);
+  }
+
+  # String to output
+  msg <- paste(..., collapse=collapse, sep=sep);
   msg <- as.character(GString(msg));
-  this$.bfr <- c(this$.bfr, msg);
+
+  if (version == "0.1.0") {
+    this$.bfr <- c(this$.bfr, msg);
+  } else if (version == "1.0.0") {
+    cat(msg);
+  }
 })
 
 
 
-#########################################################################/**
-# @RdocMethod flush
-#
-# @title "Flushes the buffer of an HttpDaemonRspResponse to the HttpDaemon"
-
-# \description{
-#  @get "title".
-# }
-#
-# @synopsis
-#
-# \arguments{
-#   \item{...}{Not used.}
-# }
-#
-# \value{
-#  Returns (invisibly) the number of characters flushed.
-# }
-#
-# @author
-#
-# \seealso{
-#   @seeclass
-# }
-#
-# @keyword IO
-#*/######################################################################### 
 setMethodS3("flush", "HttpDaemonRspResponse", function(con, ...) {
   # To please R CMD check.
   this <- con;
@@ -141,7 +97,7 @@ setMethodS3("flush", "HttpDaemonRspResponse", function(con, ...) {
 
   # Clear buffer
   this$.bfr <- NULL;
-  
+
   invisible(len);
 })
 
@@ -149,6 +105,8 @@ setMethodS3("flush", "HttpDaemonRspResponse", function(con, ...) {
 
 ##############################################################################
 # HISTORY:
+# 2013-05-23
+# o Now write() for HttpDaemonRspResponse supports the new RSP engine too.
 # 2011-03-15
 # o BUG FIX: write() for RspResponse classes would ignore arguments
 #   'collapse' and 'sep'.

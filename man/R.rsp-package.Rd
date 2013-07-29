@@ -15,48 +15,22 @@
 
 
 \description{
-  An RSP document is a text-based document containing an R-embedded template of the final document, e.g. "Today's date is <%=Sys.Date()%>".  An RSP document is preprocessed, parsed and translated into an R script, which when sourced generates the final document.  This way it is possible to dynamically generate reports in plain text, HTML, TeX etc, e.g. "\includegraphics{<%=toPDF('Normal', { curve(dnorm, from=-5, to=+5) })%>}". It can also be used to enhance other literate programming languages such as Sweave, e.g. "<<eval=<%=doEval%>>>= [...] @".  As explained in one of the vignettes, RSP-embedded LaTeX vignettes can easily be included in any R package.  In addition to RSP, this package also provides an internal cross-platform web server and built-in dynamic RSP-embedded HTML help pages, which can be launched by browseRsp().  If other packages provide RSP help pages, these are automatically linked to as well.
-}
-
-\section{Requirements}{
-  This is a cross-platform package implemented in plain \R.
-  This package depends on the packages \pkg{R.oo} [1] and \pkg{R.utils}.
-
-  Note that no webserver is required to process RSP documents.
+  The RSP markup language makes any text-based document come alive.  RSP provides a powerful markup for controlling the content and output of LaTeX, HTML, Markdown, AsciiDoc, Sweave and knitr documents (and more), e.g. 'Today's date is <\%=Sys.Date()\%>'.  Contrary to many other literate programming languages, with RSP it is straightforward to loop over mixtures of code and text sections, e.g. in month-by-month summaries.  RSP has also several preprocessing directives for incorporating static and dynamic contents of external files (local or online) among other things.  Functions rstring() and rcat() make it easy to process RSP strings, while rfile() compiles RSP files (also online) into their final outputs, e.g. rfile('report.tex.rsp') generates 'report.pdf'.  RSP is ideal for self-contained scientific reports and R package vignettes.
 }
 
 \section{Installation}{
-  To install this package, do \code{install.packages("R.rsp")}.
+  To install this package, call \code{install.packages("R.rsp")}.
 }
 
 \section{To get started}{
   To get started, see:
   \enumerate{
-    \item \code{\link{rsp}}() - To compiles any RSP-embedded document.
-    \item \code{\link{browseRsp}}() - Luanches a locally running RSP website powered by an internal web server and RSP-embedded HTML pages.  From this page you access not only help pages and demos on how to use RSP, but also other package RSP pages.
+    \item For a one-page overview of RSP, see vignette '\href{../doc/index.html}{RSP Markup Language - Reference Card}'.
+    \item For a detailed description of RSP, see vignette '\href{../doc/index.html}{Dynamic document creation using RSP}'.
+    \item To included RSP vignettes in a package, see '\href{../doc/index.html}{Include RSP and other non-Sweave vignettes in R packages}'.
+    \item To compile a RSP-embedded text document to a final document, use \code{\link{rfile}}(), e.g. \code{rfile("report.tex.rsp")} outputs file 'report.pdf' and \code{rfile("report.md.rsp")} outputs file 'report.html'.
+    \item To compile a RSP document (file or string) and output the result to standard output or a string, use \code{\link{rcat}}() an \code{\link{rstring}}(), respectively.
   }
-}
-
-\section{Wishlist}{
- Here is a list of features that would be useful, but which I have
- too little time to add myself. Contributions are appreciated.
- \itemize{
-   \item Extract the HTTP daemon part of this package and create
-         a standalone package named R.httpd or similar.  It should
-         provide a method to register simple modules, such as an
-         RSP module.  The R.rsp package should then only be a
-         simple module.
-   \item Write "plugins" to common web servers, e.g. modules to
-         the Apache webserver.
-   \item Add support for multiple default files; needs Tcl coding.
-   \item Create a root ServletRequest class to support not only
-         HTTP requests, but also other types of request, e.g.
-         FileRequest etc.  This requires some thinking of
-         user cases and design.
- }
-
- If you consider implement some of the above, make sure it is not
- already implemented by downloading the latest "devel" version!
 }
 
 \section{License}{
@@ -69,16 +43,11 @@
   "release" license above.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
-
 \section{How to cite this package}{
-  Not available.
+ Bengtsson H (2013).
+\emph{R.rsp: Dynamic generation of scientific reports}.
+R package version 0.9.17.
 }
 
-\section{References}{
- [1] H. Bengtsson, \emph{The R.oo package - Object-Oriented Programming with References Using Standard R Code}, In Kurt Hornik, Friedrich Leisch and Achim Zeileis, editors, Proceedings of the 3rd International Workshop on Distributed Statistical Computing (DSC 2003), March 20-22, Vienna, Austria. \url{http://www.ci.tuwien.ac.at/Conferences/DSC-2003/Proceedings/}
- \cr
-}
-
-% Building HTML documentation from RSP example files
+\author{Henrik Bengtsson}
 \keyword{package}

@@ -9,9 +9,7 @@
 \name{writeResponse.HttpDaemon}
 \alias{writeResponse.HttpDaemon}
 \alias{HttpDaemon.writeResponse}
-\alias{writeResponse.HttpDaemon}
 \alias{writeResponse,HttpDaemon-method}
-
 
 \title{Writes a string to the HTTP output connection}
 
@@ -19,7 +17,9 @@
  Writes a string to the HTTP output connection.
 }
 
-\usage{\method{writeResponse}{HttpDaemon}(static, ...)}
+\usage{
+\method{writeResponse}{HttpDaemon}(static, ...)
+}
 
 \arguments{
   \item{...}{A set of \code{\link[base]{character}} strings to be outputted.}
@@ -34,7 +34,7 @@
  Returns (invisibly) the number of characters written.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   For more information see \code{\link{HttpDaemon}}.

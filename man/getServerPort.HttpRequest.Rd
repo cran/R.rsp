@@ -9,17 +9,17 @@
 \name{getServerPort.HttpRequest}
 \alias{getServerPort.HttpRequest}
 \alias{HttpRequest.getServerPort}
-\alias{getServerPort.HttpRequest}
 \alias{getServerPort,HttpRequest-method}
-
 
 \title{Gets the port number on which this request was received}
 
 \description{
- Gets the port number on which this request was received. 
+ Gets the port number on which this request was received.
 }
 
-\usage{\method{getServerPort}{HttpRequest}(this, ...)}
+\usage{
+\method{getServerPort}{HttpRequest}(this, ...)
+}
 
 \arguments{
   \item{...}{Not used.}
@@ -29,7 +29,7 @@
  Returns an \code{\link[base]{integer}}.
 }
 
-\author{Henrik Bengtsson (\url{http://www.braju.com/R/})}
+\author{Henrik Bengtsson}
 
 \seealso{
   \code{\link{getServerPort}}().
