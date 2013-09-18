@@ -74,7 +74,7 @@ setMethodS3("parse", "RspRSourceCode", function(object, ...) {
   expr <- base::parse(text=code);
 
   expr;
-}, protected=TRUE) # parse()
+}, createGeneric=FALSE, protected=TRUE) # parse()
 
 
 
@@ -95,11 +95,17 @@ setMethodS3("parse", "RspRSourceCode", function(object, ...) {
 #   \item{args}{A named @list of arguments assigned to the environment
 #     in which the RSP string is parsed and evaluated.
 #     See @see "R.utils::cmdArgs".}
+#   \item{output}{A @character string specifying how the RSP output
+#     should be handled/returned.}
 #   \item{...}{Not used.}
 # }
 #
 # \value{
-#  Returns the outputted @character string, iff any.
+#  If \code{output="stdout"}, then @NULL is returned and the RSP output
+#  is sent to the standard output.  This is output is "non-buffered",
+#  meaning it will be sent to the output as soon as it is generated.
+#  If \code{output="RspStringProduct"}, then the output is captured
+#  and returned as an @see "RspStringProduct" with attributes set.
 # }
 #
 # @author
@@ -108,12 +114,15 @@ setMethodS3("parse", "RspRSourceCode", function(object, ...) {
 #   @seeclass
 # }
 #*/#########################################################################
-setMethodS3("evaluate", "RspRSourceCode", function(object, envir=parent.frame(), args="*", ..., verbose=FALSE) {
+setMethodS3("evaluate", "RspRSourceCode", function(object, envir=parent.frame(), args="*", output=c("RspStringProduct", "stdout"), ..., verbose=FALSE) {
+  # Argument 'envir':
+  envir <- as.environment(envir);
+
   # Argument 'args':
   args <- cmdArgs(args);
 
-  # Argument 'envir':
-  envir <- as.environment(envir);
+  # Argument 'output':
+  output <- match.arg(output);
 
 
   # Parse R RSP source code
@@ -122,16 +131,24 @@ setMethodS3("evaluate", "RspRSourceCode", function(object, envir=parent.frame(),
   # Assign arguments to the parse/evaluation environment
   attachLocally(args, envir=envir);
 
-  # Evaluate R source code and capture output
-  res <- capture.output({
+  if (output == "RspStringProduct") {
+    # Evaluate R source code and capture output
+    res <- capture.output({
+      eval(expr, envir=envir);
+      # Force a last complete line
+      cat("\n");
+    });
+    res <- paste(res, collapse="\n");
+    res <- RspStringProduct(res, attrs=getAttributes(object));
+  } else if (output == "stdout") {
     eval(expr, envir=envir);
     # Force a last complete line
     cat("\n");
-  });
-  res <- paste(res, collapse="\n");
+    res <- NULL;
+  }
 
-  RspStringProduct(res, attrs=getAttributes(object));
-}) # evaluate()
+  res;
+}, createGeneric=FALSE) # evaluate()
 
 
 setMethodS3("findProcessor", "RspRSourceCode", function(object, ...) {
@@ -153,10 +170,11 @@ setMethodS3("tidy", "RspRSourceCode", function(object, format=c("asis", "tangle"
 
   if (is.element(format, c("tangle", "safetangle", "demo", "unsafedemo"))) {
     # Drop header
-    idx <- grep('## RSP source code script', code)[1L];
-    if (!is.na(idx)) {
-      code <- code[-(1:idx)];
-    }
+    idx <- grep('## RSP source code script [BEGIN]', code, fixed=TRUE)[1L];
+    if (!is.na(idx)) code <- code[-seq(length=idx+1L)];
+    # Drop footer
+    idx <- grep('## RSP source code script [END]', code, fixed=TRUE)[1L];
+    if (!is.na(idx)) code <- code[seq(length=idx-2L)];
   }
 
   if (format == "demo") {
@@ -220,6 +238,13 @@ setMethodS3("tangle", "RspRSourceCode", function(code, format=c("safetangle", "t
 
 ##############################################################################
 # HISTORY:
+# 2013-09-18
+# o Now tidy() handles the new RSP R source code footer comments.
+# 2013-08-04
+# o Added argument 'output' to evaluate() for RspRSourceCode.
+# 2013-07-29
+# o BUG FIX: tidy() for RspRSourceCode would not drop the last line
+#   of the header leaving a long '## - - - - ...' comment line at top.
 # 2013-07-17
 # o Now evaluate() for RspRSourceCode no longer passes '...' to eval().
 #   This make it possible to pass argument 'clean' all the way down to

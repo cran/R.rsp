@@ -66,6 +66,7 @@ RspDocument(expressions=list(), ...)
  \tab \code{rcompile} \tab  -\cr
  \tab \code{rfile} \tab  -\cr
  \tab \code{rscript} \tab  -\cr
+ \tab \code{rsource} \tab  -\cr
  \tab \code{rstring} \tab  -\cr
  \tab \code{setMetadata} \tab  -\cr
  \tab \code{\link[R.rsp:subset.RspDocument]{subset}} \tab Subsets an RspDocument.\cr
@@ -79,7 +80,7 @@ RspDocument(expressions=list(), ...)
 getAttribute, getAttributes, hasAttribute, print, setAttribute, setAttributes
 
  \bold{Methods inherited from list}:\cr
-all.equal, as.data.frame, attachLocally, callHooks, relist, within
+all.equal, as.data.frame, attachLocally, relist, within
 
 
 }

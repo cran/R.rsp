@@ -177,7 +177,7 @@ setMethodS3("setMetadata", "RspDocument", function(object, metadata=NULL, name, 
 #*/#########################################################################
 setMethodS3("getSource", "RspDocument", function(object, ...) {
   getAttribute(object, "source", default=as.character(NA));
-}, protected=TRUE)
+}, protected=TRUE, createGeneric=FALSE)
 
 
 
@@ -214,7 +214,7 @@ setMethodS3("getPath", "RspDocument", function(object, ...) {
     path <- getParent(pathname);
   }
   path;
-}, protected=TRUE)
+}, protected=TRUE, createGeneric=FALSE)
 
 
 
@@ -688,7 +688,7 @@ setMethodS3("trim", "RspDocument", function(object, ..., verbose=FALSE) {
   verbose && exit(verbose);
 
   doc;
-}, protected=TRUE) # trim()
+}, protected=TRUE, createGeneric=FALSE) # trim()
 
 
 
@@ -1232,54 +1232,6 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
   } # getFileT()
 
 
-  parseRVignetteMetadata <- function(text, ...) {
-    # Parse "\Vignette" directives into RSP metadata
-    bfr <- unlist(strsplit(text, split="\n", fixed=TRUE));
-
-    pattern <- "[[:space:]]*%*[[:space:]]*\\\\Vignette(.*)\\{([^}]*)\\}";
-    keep <- (regexpr(pattern, bfr) != -1L);
-    bfr <- bfr[keep];
-
-    # Nothing todo?
-    if (length(bfr) == 0L) {
-      return(list());
-    }
-
-    # Mapping from R vignette metadata to RSP metadata
-    map <- c(
-      # Official R vignette markup
-      "IndexEntry"="title",
-      "Keyword"="keywords", "Keywords"="keywords",
-      # Custom
-      "Subject"="subject",
-      "Author"="author",
-      "Date"="date"
-    );
-
-    metadata <- grep(pattern, bfr, value=TRUE);
-    names <- gsub(pattern, "\\1", metadata);
-    metadata <- gsub(pattern, "\\2", metadata);
-    metadata <- trim(metadata);
-
-    # Keep only known markup
-    keep <- is.element(names, names(map));
-    metadata <- metadata[keep];
-    names <- names[keep];
-
-    # Nothing todo?
-    if (length(names) == 0L) {
-      return(list());
-    }
-
-    # Rename
-    names <- map[names];
-    names(metadata) <- names;
-    metadata <- as.list(metadata);
-
-    metadata;
-  } # parseRVignetteMetadata()
-
-
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Validate arguments
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1513,7 +1465,7 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
           throw(RspPreprocessingException("Attribute 'language' must be specified when parsing metadata from 'content'", item=item));
         }
         if (lang == "R-vignette") {
-          metadata <- parseRVignetteMetadata(content);
+          metadata <- .parseRVignetteMetadata(content);
         } else {
           throw(RspPreprocessingException(sprintf("Unknown 'language' ('%s')", lang), item=item));
         }

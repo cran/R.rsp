@@ -11,6 +11,7 @@
 # Required R packages
 library("R.rsp")
 library("R.devices")
+hpaste <- R.utils::hpaste
 %>
 
 <% t0 <- Sys.time() %>
@@ -119,7 +120,7 @@ library("R.devices")
 # Set default graphics options
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 # Use greater objects by default
-setOption("devNew/args/par", list(lwd=2));
+options("devNew/args/par"=list(lwd=2));
 
 # Change the default dimensions for PNGs
 devOptions("png", width=840)
@@ -128,7 +129,7 @@ devOptions("png", width=840)
 
 \title{<%@meta name="title"%><%@ifeq docVersion = "devel"%>*<%@endif%>}
 \author{<%@meta name="author"%>}
-\date{<%=format(as.Date(getDate(R.rsp)), format="%B %d, %Y")%>}
+\date{<%=format(as.Date(R.rsp$date), format="%B %d, %Y")%>}
 
 \begin{document}
 
@@ -158,12 +159,26 @@ Furthermore, because RSP is a so called content-independent markup language, it 
   INTRODUCTION
   -------------------------------------------------------------------%>
 \section{Introduction to RSP}
-The RSP markup language makes it possible to interweave text and R source code in a compact and powerful way for the purpose of generating text of any format.
+The RSP markup language makes it possible to interweave text and source code in a compact and powerful way for the purpose of generating text of any format.
 An example of an RSP-embedded string is
 \begin{rspVerbatim}
 "A random integer in [1,100]: <\%=sample(1:100, size=1)\%>{\bs}n"
 \end{rspVerbatim}
-Using the \pkg{R.rsp} package\footnote{To install the \pkg{R.rsp} package, call \code{install.packages("R.rsp")} at the R prompt.}, this RSP string can be processed and outputted as
+This string contains three RSP constructs, namely a \emph{plain text string} \code{"A~random~integer~in~[1,100]:~"}, an \emph{RSP expression} \code{<\%=sample(1:100,~size=1)\%>}, which here contains R code, and a second text string \code{"{\bs}n"}.
+The idea of RSP is to translate this into source code, which somewhat simplified would be
+\begin{escapeRspVerbatim}
+cat("A random integer in [1,100]:")
+cat(sample(1:100, size=1))
+cat("{\bs}n")
+\end{escapeRspVerbatim}
+By evaluating this code a text string is outputted, e.g.
+\begin{escapeRspVerbatim}
+A random integer in [1,100]: 77
+\end{escapeRspVerbatim}
+
+
+\subsection{rcat() - the RSP version of cat()}
+Using the RSP engine of the \pkg{R.rsp} package\footnote{To install the \pkg{R.rsp} package, call \code{install.packages("R.rsp")} at the R prompt.}, the above RSP string can be processed and outputted as
 \begin{escapeRspVerbatim}
 > library("R.rsp")
 > rcat("A random integer in [1,100]: <\%=sample(1:100, size=1)\%>{\bs}n")
@@ -179,18 +194,20 @@ To process the RSP string without outputting the result, but instead returning i
 \end{escapeRspVerbatim}
 
 
+\subsection{rsource() - the RSP version of source()}
+Consider instead the case where the above RSP string is stored in the text file \code{random.txt.rsp}.  Analogously to how \code{source()} runs an R script, \code{rsource()} runs an RSP document, e.g.
+\begin{escapeRspVerbatim}
+> rsource("random.txt.rsp")
+A random integer in [1,100]: 14
+\end{escapeRspVerbatim}
 
-%% \section{Compiling RSP documents to files}
-\subsection{rfile()}
-Consider an RSP-embedded text file \code{random.txt.rsp} that contains the above RSP string, i.e.
-\begin{rspVerbatim}
-A random integer in [1,100]: <\%=sample(1:100, size=1)\%>
-\end{rspVerbatim}
-This file can be compiled as
+
+\subsection{rfile() - start-to-end processing of RSP documents}
+As an alternative to \code{rsource()}, an RSP file can be processed using \code{rfile()}, which instead of outputting to standard output ("displaying on screen") writes the output to file.  For instance,
 \begin{verbatim}
 > rfile("random.txt.rsp")
 \end{verbatim}
-which generates a plain text file (\code{random.txt}) that contains
+generates a plain text file (\code{random.txt}) that contains
 \begin{escapeRspVerbatim}
 A random integer in [1,100]: 96
 \end{escapeRspVerbatim}
@@ -201,6 +218,7 @@ To try this example yourself, do
 path <- system.file("exData", package="R.rsp")
 rfile("random.txt.rsp", path=path)
 \end{verbatim}
+which generates \code{random.txt} in the current directory.
 %
 To process the same RSP file into a string (without generating a file), do
 \begin{verbatim}
@@ -208,14 +226,14 @@ path <- system.file("exData", package="R.rsp")
 s <- rstring(file="random.txt.rsp", path=path)
 cat(s)
 \end{verbatim}
-The latter example illustrates how \code{rstring()} also can load strings from either a file (or a URL or a connection) as an alternative to taking plain strings as input.
+The latter example illustrates how \code{rstring()} also can load RSP strings from either a file (or a URL or a connection) as an alternative to taking plain strings as input.
 
 
 
-\subsection{Automatic postprocessing}
+\subsubsection{Automatic postprocessing}
 For RSP documents that output certain file formats such as LaTeX, Sweave, and knitr, further processing of the RSP file output is often necessary before obtaining the final RSP product, e.g. a PDF file.
 The \code{rfile()} function will, based on the content type of the generated RSP output, detect if further processing (``postprocessing'') is possible.  If so, it is postprocessed to arrive at the final product.
-Currently, postprocessing to generate PDF and HTML output is supported for LaTeX, Markdown, AsciiDoc, Sweave and knitr documents.
+Currently, postprocessing to generate PDF and HTML output is directly supported for LaTeX, Markdown, AsciiDoc, Sweave and knitr documents.
 For instance, consider an RSP-embedded LaTeX document \code{report.tex.rsp}.  When compiling it by
 \begin{verbatim}
 > rfile("report.tex.rsp")
@@ -537,7 +555,7 @@ To disable the trimming of trailing whitespace and line breaks, add an \emph{end
 \label{PreprocessingDirectives}
 An \emph{RSP preprocessing directive}, or short an \emph{RSP directive}, is an RSP construct that starts with an `\code{@}' followed by a \emph{directive} and zero or more \emph{named arguments}, e.g. \code{<\%@include file="random.tex.rsp"\%>}.    RSP directives can for instance be used to include the content of another file or conditionally include/exclude parts of the existing document.  RSP preprocessing directives facilitate modularization of RSP documents such that the same RSP module can be reused in many places, which in turn minimizes and often eliminates the manual and often error-prone process of cut-and-pasting content between documents.
 %
-RSP preprocessing directives are processed during the parsing of the RSP document.  This is done \emph{after} RSP comments have been dropped and \emph{before} RSP code expressions are parsed.  This means that:
+RSP preprocessing directives are processed during the parsing of the RSP document.  This is done \emph{after} RSP comments have been dropped and \emph{before} RSP code expressions are parsed.  This means that
 \begin{itemize}
  \item RSP comments can be used to commenting out and hence exclude RSP preprocessing directives, e.g. \code{<\%--- <\%@include file=\lb"random.tex.rsp"\%> ---\%>}.
  \item RSP preprocessing directives may insert new RSP code expressions as if they where part of the original RSP document, e.g. \code{<\%@include file="random.tex.rsp"\%>}.  Any RSP comments inserted will be dropped as expected.  If other RSP directives are inserted, they are processed immediately.
@@ -554,8 +572,11 @@ After preprocessing, there are no remaining RSP preprocessing directives left in
 ----%>
 
 %
-The value of an RSP directive argument is parsed as a \emph{GString}\footnote{GStrings can be processed in R by the \code{gstring()} function in the \pkg{R.utils} package.}.  A GString is a regular string that optionally may contain bash-like syntax for inserting values of system environment variables.  For instance, if the environment variable `\code{R\_HOME}' is set to the home directory of the R installation, then \code{<\%@include file=\lb"\$\{R\_HOME\}/doc/AUTHORS"\%>} is parsed as \code{<\%@include file=\lb"/path/to/R/doc/AUTHORS"\%>} (resulting in the content of that `AUTHORS' file to be included ``as is'').  Note how this substitution is indepent of the R language.
-For convenience, when processing an RSP document using the RSP parser of the \pkg{R.rsp} package, GString also looks for a matching variables elsewhere.  Notably, it searches (i) among the variables in the R workspace, (ii) among the R options, and then (iii) among the system environment variable.\footnote{Although the RSP parser of the \pkg{R.rsp} package also looks for GString variable in the R environment and its options, it does not mean that these variables are dependent on the R language.  The substituted value will always be interpreted as a character string.  An RSP parser implemented in Python could take a similar approach.}
+The value of an RSP directive argument is parsed as a \emph{GString}\footnote{GStrings can be processed in R by the \code{gstring()} function in the \pkg{R.utils} package.}.  A GString is a regular string that optionally may contain bash-like syntax for inserting values of system environment variables.  Note how this substitution is indepent of the R language.
+<%-- TODO: Bad example since it uses absolute pathnames. /HB 2013-08-12
+For instance, if the environment variable `\code{R\_HOME}' is set to the home directory of the R installation, then \code{<\%@include file=\lb"\$\{R\_HOME\}/doc/AUTHORS"\%>} is parsed as \code{<\%@include file=\lb"/path/to/R/doc/AUTHORS"\%>} (resulting in the content of that `AUTHORS' file to be included ``as is'').
+ --%>
+For convenience, when processing an RSP document using the RSP parser of the \pkg{R.rsp} package, GString also looks for a matching variables elsewhere.  Notably, it searches (i) among the variables in the R workspace, (ii) among the R options, and then (iii) among the system environment variable.\footnote{Although the RSP parser of the \pkg{R.rsp} package also looks for GString variable in the R environment and its options, it does not mean that these variables are dependent on the R language.  The substituted value will always be interpreted as a character string.  An RSP parser implemented in Python could take a similar approach.}  Use of GStrings will be illustrate further in below sections.
 
 \begin{remark}
 Variables set in RSP code expressions \emph{cannot} be used in RSP directives, because they are only assigned after the RSP preprocessing directives have been processed.
@@ -607,7 +628,7 @@ then that RSP file can in turn include the text file as
 
 
 \begin{remark}
-Only \emph{relative pathnames} are allowed\footnote{The RSP compiler in the \pkg{R.rsp} package will given an error if it detects an absolute pathname.}.  If an RSP document could use absolute pathnames, then it would only compile on a particular computer system/user account and would have to be altered in order to compile elsewhere.  Note that it is always possible to use file system links\footnote{The \code{createLink()} function in \pkg{R.utils} provides a platform-independent way for creating file system links.} to link to files elsewhere on the file system without having to copy them the directory of the source RSP document (or a subdirectory therein).
+When including files from the file system, only \emph{relative pathnames} are allowed\footnote{The RSP compiler in the \pkg{R.rsp} package will given an error if it detects an absolute pathname.}.  If an RSP document could use absolute pathnames, then it would only compile on a particular computer system/user account and would have to be altered in order to compile elsewhere.  Note that it is always possible to use file system links\footnote{The \code{createLink()} function in \pkg{R.utils} provides a platform-independent way for creating file system links.} to link to files elsewhere on the file system without having to copy them the directory of the source RSP document (or a subdirectory therein).
 \end{remark}
 
 <%----
@@ -783,7 +804,7 @@ Note that by combining the above aliases with the short format, one can write \c
 \subsubsection{Compiling a standalone RSP document from a preprocessed but not evaluated RSP document template}
 However convenient it is to use a modularized RSP document that reuses many different RSP subdocuments, it may be tedious to share such as document with others.  In order for someone else to compile the same RSP document, it is necessary to make sure all files being used are also shared with the receiver together with instructions where to put them.  Some of these files may only be included under certain conditions, making the just add to the overall clutter at the receiver's end.
  In such cases, it may be useful to produce \emph{a preprocessed but not yet evaluated RSP document} from the main RSP document.  Such an RSP document will not contain any preprocessing directives and in that sense be self-contained and easier to share.  It is also likely be easier for the receiver to follow.
-To compile such a stand-alone RSP document, do:
+To compile such a stand-alone RSP document, do
 \begin{escapeRspVerbatim}
 > s <- rclean(file="random.txt.rsp")
 \end{escapeRspVerbatim}
@@ -896,7 +917,7 @@ The \code{toPDF()} and \code{toPNG()} functions of the \pkg{R.devices} package a
 library("R.devices")
 
 # Use greater objects by default
-setOption("devNew/args/par", list(lwd=2));
+options("devNew/args/par"=list(lwd=2));
 
 toPDF("myFigure,yeah,cool", aspectRatio=0.6, { 
   curve(dnorm, from=-5, to=+5)
@@ -916,6 +937,7 @@ In order for this to work, one must specify the "image search path" in LaTeX, e.
 which is preferably added to the beginning of the LaTeX document.  This tells LaTeX to search for image files in directory \code{figures/} as well as directory \code{figures/external/}.   Moreover, by leaving out the filename extension, LaTeX will automatically search\footnote{In order for \code{{\bs}includegraphics\{\}} to locate the proper image file when leaving out the filename extension, the image file must not have other periods in the filename other than the one used for the extension.} for image files with different filename extensions, e.g. \code{*.png} and \code{*.pdf}.
 %
 \begin{figure}[htp]
+ \footnotesize
  \begin{center}
  \resizebox{0.70\textwidth}{!}{%
   \includegraphics{<%=toPDF("MyFigure,yeah,cool", aspectRatio=0.6, {
@@ -942,11 +964,11 @@ As a final remark, note that by replacing \code{toPDF()} with \code{toPNG()}, a 
 
 
 \subsubsection{Including image files in HTML}
-An image file is included in an HTML document via its pathname.  To have \code{toPNG()}, \code{toSVG()} and so on, return the (relative) pathname of files created, add the following to the top of your RSP document:
+Image files can be included in HTML documents either by linking to it via the images pathname or by embedding the content of the image files as a data URI.  
+
+In order to use the first approach, add the following \pkg{R.devices} options to the top of your RSP document in order to have \code{toPNG()}, \code{toSVG()} etc. to return the (relative) pathname of image files created:
 \begin{rspVerbatim}
-<\%
-setOption("devEval/args/field", "pathname")
-\%>
+<\% options("devEval/args/field"="pathname") \%>
 \end{rspVerbatim}
 With this setting, one can then include PNG image files in the HTML document as
 \begin{rspVerbatim}
@@ -960,19 +982,35 @@ which results in
 \end{verbatim}
 
 
+To instead embedded the image as an Base64 encoded data URI, which has the advantage of making HTML document "self contained", use
+\begin{rspVerbatim}
+<\% options("devEval/args/field"="dataURI") \%>
+\end{rspVerbatim}
+which will embedded the above 'MyFigure,yeah,cool.png' image files as
+\begin{verbatim}
+<img src=""data:image/png;base64,iVBORw0KGgo ... <truncated> ... K5CYII=">
+\end{verbatim}
+
+
+
 \subsubsection{Including image files in Markdown}
-Just as for HTML documents, on need to set the option that images created by \code{toPNG()} etc are returned by their (relative) pathnames by specifying option \code{devEval/args/field} (see above subsection).  With this setting, one can then include PNG image files in the Markdown document as
+For RSP-embedded Markdown documents it is recommended to have image files being linked to via their pathnames using
+\begin{rspVerbatim}
+<\% options("devEval/args/field"="pathname") \%>
+\end{rspVerbatim}
+With this, PNG image files can be generated and included as
 \begin{rspVerbatim}
 ![This figure was generated and inserted into the Markdown document using RSP.]
 (<\%=toPNG("MyFigure,yeah,cool", aspectRatio=0.6, \{
   curve(dnorm, from=-5, to=+5);
 \})\%>)
 \end{rspVerbatim}
-which results in
+which outputs Markdown
 \begin{verbatim}
 ![This figure was generated and inserted into the Markdown document using RSP.]
 (figures/MyFigure,yeah,cool.png)
 \end{verbatim}
+When this Markdown document is post-processed into a HTML document (internally done using the \pkg{markdown} package), any image files will automatically be embedded as data URIs in the HTML.
 
 
 %% \clearpage
@@ -985,7 +1023,7 @@ Continuing, any formatting of the capture has to be done in the format of the ou
 {\textbackslash}begin\{verbatim\}
 <\%=evalCapture(\{
 for (kk in 1:3) \{
-  printf("Iteration #%d{\bs}n", kk)
+  cat("Iteration #", kk, "{\bs}n", sep="")
 \}
 
 print(Sys.time())
@@ -998,7 +1036,7 @@ produces
 \begin{verbatim}
 <%=evalCapture({
 for (kk in 1:3) {
-  printf("Iteration #%d\n", kk)
+  cat("Iteration #", kk, "\n", sep="")
 }
 
 print(Sys.time())
@@ -1132,23 +1170,44 @@ This latter approach is error prone, especially because of how the LaTeX code ha
 <%-------------------------------------------------------------------
   COMPARISON TO OTHER METHODS
   -------------------------------------------------------------------%>
-\section{Brief comparison to other markup languages}
+\section{Related work}
+Several other literate programming methods exists for R, notibly \emph{Sweave}, \emph{knitr} and \emph{brew}.  The brew markup is similar to the RSP markup, with some differences, e.g. it does not provide mechanisms for preprocessing or handling of metadata.   The Sweave markup originates from noweb~\cite{RamseyN_1994,JohnsonJohnson_2000} and focuses on the concept of code chunks and is designed for TeX, although alternative output formats are also support.  The knitr markup extends Sweave with more powerful code formatting, image generation and it supports additional type of formats, e.g. Markdown and HTML.
 
 \begin{table}[htb]
+\footnotesize
 \begin{center}
-\begin{tabular}{lccc}
-Feature & RSP & brew & Sweave \\
+\begin{tabular}{p{43ex}||p{13ex}|p{10ex}|p{13.5ex}|p{14ex}}
+Feature & RSP & brew & Sweave & knitr \\
 \hline
-Context-independent processing                 & yes & yes &  - \\
-Interweaving incomplete code and text snippets & yes & yes &  - \\
-Preprocessing markup                           & yes &   - &  - \\
-Markup comments                                & yes &   - &  - \\
-Nested multiline markup comments               & yes &   ? &  - \\
-"As-is" insertion of other files               & yes &   ? &  - \\
+\hline
+Input formats (embedded)                       &  all,\hspace{7ex}(custom)  &  all  & LaTeX\hspace{7ex}(addons\,for HTML,\,ODF, AsciiDoc) & LaTeX,\,HTML, Markdown, AsciiDoc, ..., (custom)  \\
+Output formats (targetted)                     &  all,\hspace{7ex}(custom)  &  all  & PDF\hspace{7ex}(addons\,for HTML,\,ODF, AsciiDoc) & PDF,\,HTML, Markdown, AsciiDoc, (custom) \\
+Single-command end-to-end processing (e.g.~RSP-to-PDF and RSP-to-HTML)         &  yes  &    -  &   - &    -  \\
+Direct processing of online documents          &  yes  &    -  &   - &    -  \\
+R package vignette engine support              &  yes  & (not yet) & yes &  yes  \\
+Alternative to R scripts and \code{source()}   &  yes  &  yes  &   - &    -  \\
+\hline
+Markup independent of format                   &  yes  &  yes  &   - &    -  \\
+Looping over code and text snippets            &  yes  &  yes  &   - &    -  \\
+Markup comments (format independent)           &  yes  &  yes  &   - &    -  \\
+Markup comments - nested \& multiline          &  yes  &    -  &   - &    -  \\
+Metadata                                       &  yes  &    -  &   - & (yes) \\
+Preprocessing directives                       &  yes  &    -  &   - &    -  \\
+Inclusion of markup files                      &  yes  & (yes) &   - & (yes) \\
+Inclusion of source code from file             &  yes  & (yes) &   - &  yes  \\
+Inclusion of online files by URLs              &  yes  & (possible) &   - &    -  \\
+Code snippets in other languages than R        &  yes  &    -  &   - &  yes  \\
+Code snippet memoization ("caching")           &  (addon)  & (addon) & (addon) &  yes  \\
+Rich formatting of code and evaluations        &(possible; soon builtin) &    -  & (addon) &  yes  \\
+Figures - automatic inclusion of plots         &  N/A \hspace{7em}(simple)  &  N/A \hspace{7em}(simple)  & yes &  yes  \\
+Figures - full control                         &  yes  &  yes  & (tedious) &  yes  \\
+\hline
+Generation of markup document from master template (e.g.~dropping private parts) &  yes  &  (tedious) &   - &  - \\
+Extensive support by editors and GUIs          &(planned) &    -  & yes &  yes  \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Comparison of features in different R-related markup languages.}
+\caption{Comparison of features in selected alternative markup languages (RSP, brew, Sweave and knitr) and engines available for R.}
 \end{table}
 <%@endif%> <%-- docVersion --%>
 
@@ -1156,16 +1215,15 @@ Nested multiline markup comments               & yes &   ? &  - \\
 
 
 
-\section{History}
-The RSP markup language was first developed in May 2002.  It was inspired by the JavaServer Pages (JSP) markup languare available for the Java programming language which is used to create dynamic web content via for instance the Apache Tomcat web server.  A related solution is the Active Server Pages (ASP) markup language for the VBScript language.
+\section{History of RSP}
+The RSP markup language was first developed in May 2002.  It was first inspired by the JavaServer Pages (JSP) markup languare available for the Java programming language which is used to create dynamic web content via for instance the Apache Tomcat web server.  A related solution is the Active Server Pages (ASP) markup language for the VBScript language.
 
-Initially the RSP engine was implemented as part of the \pkg{R.io} package (deprecated) but was moved to the \pkg{R.rsp} package in July 2005.  In early 2013, the RSP engine of \pkg{R.rsp} underwent a major redesign (compared to \pkg{R.rsp} v0.8.2 and before).  This somewhat also affected the RSP language, but great efforts have been taken to keep it backward compatible.
+Initially the RSP engine was implemented as part of the \pkg{R.io} package (deprecated) but was moved to the \pkg{R.rsp} package in July 2005 and released on CRAN in July 2006.  In early 2013, the RSP engine of \pkg{R.rsp} underwent a major redesign (compared to \pkg{R.rsp} v0.8.2 and before).  This somewhat also affected the RSP language, but great efforts have been taken to keep it backward compatible.
 
 The RSP language and the \pkg{R.rsp} engine has been in particularly heavy use by thousands of users of the Aroma Project (\url{http://aroma-project.org/}) as part of the generation of interactive Javascript and HTML reports.
-Several R packages are using RSP for their HTML and PDF vignettes, which has become particularly simple since R~v3.0.0.
+Several R packages are using RSP for their HTML and PDF vignettes, which has become straightforward since R~v3.0.0.
 
-In June 2007, the \pkg{brew} package (on CRAN) was introduced independently of the \pkg{R.rsp} package.  Although a different engine is used, the brew syntax is similar to the one in the RSP markup language.
-
+In June 2007, the \pkg{brew} package (on CRAN) was introduced independently [private communication] of the \pkg{R.rsp} package.  Although a different engine is used, the brew syntax is similar to the one in the RSP markup language.
 
 
 

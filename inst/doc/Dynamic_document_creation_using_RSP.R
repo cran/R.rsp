@@ -4,12 +4,13 @@
 ## Metadata 'title': 'Dynamic document creation using RSP'
 ## Metadata 'keywords': 'RSP markup language, literate programming, reproducible research, report generator, Sweave, knitr, brew, noweb, TeX, LaTeX, Markdown, AsciiDoc, reStructuredText, Org-Mode, HTML, PDF'
 ## Metadata 'author': 'Henrik Bengtsson'
+## Metadata 'engine': 'R.rsp::rsp'
 ###########################################################################
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Required R packages
 library("R.rsp")
 library("R.devices")
+hpaste <- R.utils::hpaste
 t0 <- Sys.time()
 R.rsp$version
 R.rsp$author
@@ -17,11 +18,11 @@ R.rsp$author
 # Set default graphics options
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 # Use greater objects by default
-setOption("devNew/args/par", list(lwd=2));
+options("devNew/args/par"=list(lwd=2));
 
 # Change the default dimensions for PNGs
 devOptions("png", width=840)
-format(as.Date(getDate(R.rsp)), format="%B %d, %Y")
+format(as.Date(R.rsp$date), format="%B %d, %Y")
 Sys.Date()
 LETTERS
 hpaste(LETTERS)
@@ -46,7 +47,7 @@ toPDF("MyFigure,yeah,cool", aspectRatio=0.6, {
   })
 evalCapture({
 for (kk in 1:3) {
-  printf("Iteration #%d\n", kk)
+  cat("Iteration #", kk, "\n", sep="")
 }
 
 print(Sys.time())
@@ -56,4 +57,3 @@ type
 toLatex(sessionInfo())
 dt <- round(Sys.time()-t0, digits=2)
 attr(dt, "units")
-

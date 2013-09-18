@@ -68,10 +68,6 @@
 # @keyword IO
 #*/###########################################################################
 setMethodS3("rfile", "default", function(file, path=NULL, output=NULL, workdir=NULL, type=NA, envir=parent.frame(), args="*", postprocess=TRUE, ..., verbose=FALSE) {
-  # Load the package (super quietly), in case R.rsp::nnn() was called.
-  suppressPackageStartupMessages(require("R.rsp", quietly=TRUE)) || throw("Package not loaded: R.rsp");
-
-
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Validate arguments
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -363,7 +359,7 @@ setMethodS3("rfile", "RspRSourceCode", function(rcode, output, workdir=NULL, env
     setwd(workdir);
   }
 
-  res <- rcat(rcode, output=output, envir=envir, args=NULL, ...);
+  res <- rcat(rcode, output=output, envir=envir, args=NULL, ..., verbose=less(verbose, 10));
 
   if (isFile(output)) {
     res <- RspFileProduct(output, attrs=getAttributes(res));

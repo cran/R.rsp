@@ -4,11 +4,12 @@
 ## Metadata 'title': 'Include RSP and other non-Sweave vignettes in R packages'
 ## Metadata 'author': 'Henrik Bengtsson'
 ## Metadata 'keywords': 'R, package, vignette, static PDF'
+## Metadata 'engine': 'R.rsp::rsp'
 ###########################################################################
 
-## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 t0 <- Sys.time()
-format(as.Date(getDate(R.rsp)), format="%B %d, %Y")
+R.rsp <- R.oo::Package("R.rsp");
+format(as.Date(R.rsp$date), format="%B %d, %Y")
 pathMk <- file.path("doc", "templates", fsep="/");
 pathMk
 pathMk
@@ -32,4 +33,3 @@ paste(bfr, collapse="\n");}
 toLatex(sessionInfo())
 dt <- round(Sys.time()-t0, digits=2)
 attr(dt, "units")
-
