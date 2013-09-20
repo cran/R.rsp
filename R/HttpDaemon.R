@@ -68,7 +68,7 @@ setMethodS3("finalize", "HttpDaemon", function(this, ...) {
   if (isStarted(this))
     stop(this);
   this$count <- this$count - 1L;
-}, protected=TRUE)
+}, protected=TRUE, createGeneric=FALSE)
 
 
 setMethodS3("getCount", "HttpDaemon", function(static, ...) {
@@ -248,7 +248,7 @@ setMethodS3("startHelp", "HttpDaemon", function(static, ...) {
 #*/#########################################################################
 setMethodS3("getConfig", "HttpDaemon", function(static, ...) {
   # Load required package
-  require(tcltk) || stop("Package not installed/found: tcltk");
+  require("tcltk") || stop("Package not installed/found: tcltk");
 
   config <- tcltk::as.tclObj("config");
   class(config) <- c("tclArray", class(config));
@@ -630,7 +630,7 @@ setMethodS3("isStarted", "HttpDaemon", function(x, ...) {
 #*/#########################################################################
 setMethodS3("sourceTcl", "HttpDaemon", function(static, ...) {
   # Load required package
-  require(tcltk) || stop("Package not installed/found: tcltk");
+  require("tcltk") || stop("Package not installed/found: tcltk");
 
   tclPath <- system.file("tcl", package="R.rsp");
   pathname <- file.path(tclPath, "r-httpd.tcl");
@@ -685,6 +685,10 @@ setMethodS3("sourceTcl", "HttpDaemon", function(static, ...) {
 # @keyword IO
 #*/#########################################################################
 setMethodS3("start", "HttpDaemon", function(x, rootPaths=NULL, port=8080, default="^index[.](html|.*)$", ...) {
+  # The R.rsp package needs to be attached in order to make certain
+  # R functions of R.rsp available to the Tcl HTTP daemon.
+  .requirePkg("R.rsp", quietly=TRUE)
+
   # To please R CMD check...
   static <- x;
 
@@ -722,7 +726,7 @@ setMethodS3("start", "HttpDaemon", function(x, rootPaths=NULL, port=8080, defaul
   port <- Arguments$getInteger(tcltk::tclvalue(res), range=c(0L,65535L));
 
   invisible(port);
-}, static=TRUE)
+}, static=TRUE, createGeneric=FALSE)
 
 
 
@@ -881,6 +885,9 @@ setMethodS3("writeResponse", "HttpDaemon", function(static, ...) {
 
 ###############################################################################
 # HISTORY:
+# 2013-09-18
+# o ROBUSTNESS: Now start() for HttpDaemon makes sure that the R.rsp package
+#   is attached so that the Tcl HTTP daemon have access to its methods.
 # 2013-03-31
 # o Now HttpDaemon$openUrl() passes '...' to start().
 # o Now HttpDaemon$start() uses default="^index[.](html|.*)$".

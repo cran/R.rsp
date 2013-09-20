@@ -1,6 +1,60 @@
 Package: R.rsp
 ==============
 
+Version: 0.9.24 [2013-09-18]
+o Now preprocess() of RspDocument also records R vignette meta data
+  'engine' (from %\VignetteEngine{}) and RSP custom 'tangle' (from
+  %\VignetteTangle{}).
+o DOCUMENTATION: Updated the 'Dynamic document creation using RSP'
+  vignette with information on how to embedded image files as
+  data URI into HTML and Markdown.
+o DOCUMENTATION: Added HTML vignette 'Introductory slides on RSP'.
+  This requires that the package suggests the 'R.devices', 'base64enc'
+  and 'knitr' packages.
+o ROBUSTNESS: Now start() for HttpDaemon makes sure that the R.rsp package
+  is attached so that the Tcl HTTP daemon have access to its methods.
+o BUG FIX/WORKAROUND: For now, package attaches the 'R.oo' package.
+  This is needed due to what appears to be a bug in how R.oo
+  finalizes Object:s assuming R.oo is/can be attached.  Until that
+  is resolved, we make sure R.oo is attached.
+o BUG FIX: Two of the package vignettes assumed that the 'R.rsp'
+  package would be attached.
+o Bumped up package dependencies.
+
+
+Version: 0.9.23 [2013-09-16]
+o ROBUSTNESS: Package no longer assumes that R.utils is attached.
+o ROBUSTNESS: Now the package also works when only loaded.
+o ROBUSTNESS: Now all S3 methods are formally declared in NAMESPACE.
+o Bumped up package dependencies.
+
+
+Version: 0.9.22 [2013-09-10]
+o CLEANUP: Package no longer utilizes ':::'.
+
+
+Version: 0.9.21 [2013-08-20]
+o Package no longer attaches ("loads") R.utils, only imports it.
+
+
+Version: 0.9.20 [2013-08-05]
+o Added rsource() which is for RSP files what source() is for R files.
+
+
+Version: 0.9.19 [2013-08-04]
+o Added argument 'buffered' to rcat().  If FALSE and output is sent
+  to standard output, then RSP output is forwared to standard output
+  as they appear (and the underlying engine allow for it).
+o Bumped up package dependencies.
+
+
+Version: 0.9.18 [2013-07-29]
+o DOCUMENTATION: The 'RSP Markup Language - Reference Card' vignette
+  was slightly too long causing it to have a second pages.
+o BUG FIX: tidy() for RspRSourceCode would not drop the last line
+  of the header leaving a long '## - - - - ...' comment line at top.
+
+
 Version: 0.9.17 [2013-07-28]
 o CLEANUP: Dropped tempvar() now in R.utils v1.26.0.
 

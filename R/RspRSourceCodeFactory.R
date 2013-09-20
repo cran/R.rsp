@@ -31,9 +31,6 @@ setConstructorS3("RspRSourceCodeFactory", function(...) {
 
 
 setMethodS3("exprToCode", "RspRSourceCodeFactory", function(object, expr, ..., index=NA) {
-  # Load the package (super quietly), in case R.rsp::nnn() was called.
-  suppressPackageStartupMessages(require("R.rsp", quietly=TRUE)) || throw("Package not loaded: R.rsp");
-
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Local function
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,6 +63,7 @@ setMethodS3("exprToCode", "RspRSourceCodeFactory", function(object, expr, ..., i
       textT <- escapeRspText(textT);
       codeT <- sprintf(".rout(\"%s\")", textT);
       code <- c(code, codeT);
+      textT <- codeT <- NULL; # Not needed anymore
       text <- substring(text, first=1025L);
     }
     if (is.null(code)) {
@@ -84,21 +82,23 @@ setMethodS3("exprToCode", "RspRSourceCodeFactory", function(object, expr, ..., i
 
     # Parse and validate code chunk
     # (i) Try without { ... }
+    codeT <- sprintf("(%s)", code);
     rexpr <- tryCatch({
-      codeT <- sprintf("(%s)", code);
       base::parse(text=codeT);
     }, error = function(ex) NULL);
 
     # (ii) Otherwise retry with { ... }
     if (is.null(rexpr)) {
       code <- sprintf("{%s}", code);
+      codeT <- sprintf("(%s)", code);
       rexpr <- tryCatch({
-        codeT <- sprintf("(%s)", code);
         base::parse(text=codeT);
       }, error = function(ex) {
         throw(sprintf("RSP code chunk (#%d) does not contain a complete R expression: %s", index, ex));
       });
     }
+
+    rexpr <- NULL; # Not needed anymore
 
     echo <- getEcho(expr);
     ret <- getInclude(expr);
@@ -272,7 +272,13 @@ setMethodS3("getCompleteCode", "RspRSourceCodeFactory", function(this, object, .
     setInlineRsp("default", function(x, ...) .base_paste0(x, collapse=""))
 
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    ## RSP source code script
+    ## RSP source code script [BEGIN]
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ');
+
+  res$footer <- minIndent('
+    ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ## RSP source code script [END]
     ## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ');
 
@@ -284,6 +290,10 @@ setMethodS3("getCompleteCode", "RspRSourceCodeFactory", function(this, object, .
 
 ##############################################################################
 # HISTORY:
+# 2013-09-17
+# o Added a footer comment to the generated RSP source code script.
+#   This was done to ease troubleshooting when incomplete scripts are
+#   generated.
 # 2013-07-26
 # o GENERALIZATION: Now all return values are processed via generic
 #   function rpaste() before being outputted via cat().

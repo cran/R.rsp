@@ -27,9 +27,6 @@
 # @keyword internal
 #*/###########################################################################
 setConstructorS3("RspSourceCodeFactory", function(language=NA, ...) {
-  # Load the package (super quietly), in case R.rsp::nnn() was called.
-  suppressPackageStartupMessages(require("R.rsp", quietly=TRUE)) || throw("Package not loaded: R.rsp");
-
   language <- Arguments$getCharacter(language);
   extend(language, "RspSourceCodeFactory");
 })
@@ -95,7 +92,8 @@ setMethodS3("getLanguage", "RspSourceCodeFactory", function(this, ...) {
 setMethodS3("makeSourceCode", "RspSourceCodeFactory", function(this, code, ...) {
   lang <- getLanguage(this);
   className <- sprintf("Rsp%sSourceCode", capitalize(lang));
-  clazz <- Class$forName(className);
+  ns <- getNamespace("R.rsp");
+  clazz <- .Class_forName(className, envir=ns);
   code <- clazz(code, ...);
 
   # Get source code header, body, and footer.
@@ -225,9 +223,6 @@ setMethodS3("getCompleteCode", "RspSourceCodeFactory", function(this, object, ..
 # }
 #*/#########################################################################
 setMethodS3("toSourceCode", "RspSourceCodeFactory", function(object, doc, ...) {
-  # Load the package (super quietly), in case R.rsp::nnn() was called.
-  suppressPackageStartupMessages(require("R.rsp", quietly=TRUE)) || throw("Package not loaded: R.rsp");
-
   # Argument 'doc':
   doc <- Arguments$getInstanceOf(doc, "RspDocument");
 

@@ -4,6 +4,12 @@
 # @alias rcat.RspDocument
 # @alias rcat.RspRSourceCode
 # @alias rcat.function
+# @alias rsource
+# @alias rsource.default
+# @alias rsource.RspString
+# @alias rsource.RspDocument
+# @alias rsource.RspRSourceCode
+# @alias rsource.function
 #
 # @title "Evaluates an RSP string and outputs the generated string"
 #
@@ -11,7 +17,10 @@
 #  @get "title".
 # }
 #
-# @synopsis
+# \usage{
+#  @usage rcat,default
+#  @usage rsource,default
+# }
 #
 # \arguments{
 #   \item{...}{A @character string with RSP markup.}
@@ -25,6 +34,8 @@
 #     See @see "R.utils::cmdArgs".}
 #   \item{output}{A @connection, or a pathname where to direct the output.
 #               If \code{""}, the output is sent to the standard output.}
+#   \item{buffered}{If @TRUE, and \code{output=""}, then the RSP output is
+#     outputted as soon as possible, if possible.}
 #   \item{append}{Only applied if \code{output} specifies a pathname;
 #     If @TRUE, then the output is appended to the file, otherwise
 #     the files content is overwritten.}
@@ -45,6 +56,13 @@
 #   standard output.
 # }
 #
+# \section{rsource()}{
+#   The \code{rsource(file, ...)} is a convenient wrapper
+#   for \code{rcat(file=file, ..., output="", buffered=FALSE)}.
+#   As an analogue, \code{rsource()} is to an RSP file what
+#   \code{source()} is to an R script file.
+# }
+#
 # @examples "../incl/rcat.Rex"
 #
 # @author
@@ -60,36 +78,143 @@
 # @keyword IO
 # @keyword file
 #*/###########################################################################
-setMethodS3("rcat", "default", function(..., file=NULL, path=NULL, envir=parent.frame(), args="*", output="", append=FALSE, verbose=FALSE) {
-  s <- rstring(..., file=file, path=path, envir=envir, args=args, verbose=verbose);
-  cat(s, file=output, append=append);
+setMethodS3("rcat", "default", function(..., file=NULL, path=NULL, envir=parent.frame(), args="*", output="", buffered=TRUE, append=FALSE, verbose=FALSE) {
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Validate arguments
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Argument 'file' & 'path':
+  if (inherits(file, "connection")) {
+  } else if (is.character(file)) {
+    if (!is.null(path)) {
+      file <- file.path(path, file);
+    }
+    if (!isUrl(file)) {
+      file <- Arguments$getReadablePathname(file, absolute=TRUE);
+    }
+  }
+
+  # Argument 'verbose':
+  verbose <- Arguments$getVerbose(verbose);
+  if (verbose) {
+    pushState(verbose);
+    on.exit(popState(verbose));
+  }
+
+
+  verbose && enter(verbose, "rcat() for default");
+
+  if (is.null(file)) {
+    s <- RspString(...);
+  } else {
+    verbose && cat(verbose, "Input file: ", file);
+    s <- .readText(file);
+    s <- RspString(s, source=file, ...);
+  }
+  verbose && cat(verbose, "Length of RSP string: ", nchar(s));
+
+  res <- rcat(s, output=output, buffered=buffered, append=append, envir=envir, args=args, verbose=verbose);
+
+  verbose && exit(verbose);
+
+  invisible(res);
+}) # rcat()
+
+
+setMethodS3("rcat", "RspString", function(..., output="", buffered=TRUE, append=FALSE, envir=parent.frame(), args="*") {
+  # Argument 'buffered':
+  if (!buffered) {
+    isStdout <- FALSE;
+    if (is.character(output) && output == "") {
+      isStdout <- TRUE;
+    } else if (inherits(output, "connection")) {
+      ci <- summary(output);
+      isStdout <- identical(ci$class, "terminal") &&
+                  identical(ci$description, "stdout");
+    }
+    if (!isStdout) {
+      throw("Argument 'buffered' must be TRUE unless 'output' directs to the standard output.");
+    }
+  }
+
+  outputP <- ifelse(buffered, "RspStringProduct", "stdout");
+  s <- rstring(..., envir=envir, args=args, output=outputP);
+  if (!is.null(s)) {
+    cat(s, file=output, append=append);
+  }
   invisible(s);
 }) # rcat()
 
 
-setMethodS3("rcat", "RspString", function(..., output="", append=FALSE, envir=parent.frame(), args="*") {
-  s <- rstring(..., envir=envir, args=args);
-  cat(s, file=output, append=append);
+setMethodS3("rcat", "RspDocument", function(..., output="", buffered=TRUE, append=FALSE, envir=parent.frame(), args="*") {
+  # Argument 'buffered':
+  if (!buffered) {
+    isStdout <- FALSE;
+    if (is.character(output) && output == "") {
+      isStdout <- TRUE;
+    } else if (inherits(output, "connection")) {
+      ci <- summary(output);
+      isStdout <- identical(ci$class, "terminal") &&
+                  identical(ci$description, "stdout");
+    }
+    if (!isStdout) {
+      throw("Argument 'buffered' must be TRUE unless 'output' directs to the standard output.");
+    }
+  }
+
+  outputP <- ifelse(buffered, "RspStringProduct", "stdout");
+  s <- rstring(..., envir=envir, args=args,, output=outputP);
+  if (!is.null(s)) {
+    cat(s, file=output, append=append);
+  }
   invisible(s);
 }) # rcat()
 
 
-setMethodS3("rcat", "RspDocument", function(..., output="", append=FALSE, envir=parent.frame(), args="*") {
-  s <- rstring(..., envir=envir, args=args);
-  cat(s, file=output, append=append);
+setMethodS3("rcat", "RspRSourceCode", function(..., output="", buffered=TRUE, append=FALSE, envir=parent.frame(), args="*") {
+  # Argument 'buffered':
+  if (!buffered) {
+    isStdout <- FALSE;
+    if (is.character(output) && output == "") {
+      isStdout <- TRUE;
+    } else if (inherits(output, "connection")) {
+      ci <- summary(output);
+      isStdout <- identical(ci$class, "terminal") &&
+                  identical(ci$description, "stdout");
+    }
+    if (!isStdout) {
+      throw("Argument 'buffered' must be TRUE unless 'output' directs to the standard output.");
+    }
+  }
+
+  outputP <- ifelse(buffered, "RspStringProduct", "stdout");
+  s <- rstring(..., envir=envir, args=args, output=outputP);
+  if (!is.null(s)) {
+    cat(s, file=output, append=append);
+}
   invisible(s);
 }) # rcat()
 
+setMethodS3("rcat", "function", function(..., output="", buffered=TRUE, append=FALSE, envir=parent.frame(), args="*") {
+  # Argument 'buffered':
+  if (!buffered) {
+    isStdout <- FALSE;
+    if (is.character(output) && output == "") {
+      isStdout <- TRUE;
+    } else if (inherits(output, "connection")) {
+      ci <- summary(output);
+      isStdout <- identical(ci$class, "terminal") &&
+                  identical(ci$description, "stdout");
+    }
+    if (!isStdout) {
+      throw("Argument 'buffered' must be TRUE unless 'output' directs to the standard output.");
+    }
+  }
 
-setMethodS3("rcat", "RspRSourceCode", function(..., output="", append=FALSE, envir=parent.frame(), args="*") {
-  s <- rstring(..., envir=envir, args=args);
-  cat(s, file=output, append=append);
-  invisible(s);
-}) # rcat()
-
-setMethodS3("rcat", "function", function(..., output="", append=FALSE, envir=parent.frame(), args="*") {
-  s <- rstring(..., envir=envir, args=args);
-  cat(s, file=output, append=append);
+  outputP <- ifelse(buffered, "RspStringProduct", "stdout");
+  s <- rstring(..., output=outputP, envir=envir, args=args);
+  if (!is.null(s)) {
+    cat(s, file=output, append=append);
+  }
   invisible(s);
 }) # rcat()
 
