@@ -22,7 +22,16 @@ if (length(rr) > 0) {
 bfr <- gsub("\t", "    ", bfr, fixed=TRUE);
 paste(bfr, collapse="\n");}
 pathMk
-{pathname <- system.file(pathMk, "Rinstignore", package="R.rsp");
+{pathname <- system.file(pathMk, ",install_extras", package="R.rsp");
+bfr <- readLines(pathname, warn=FALSE);
+rr <- grep("^# HISTORY", bfr);
+if (length(rr) > 0) {
+  bfr <- bfr[1:(rr-2L)];
+}
+bfr <- gsub("\t", "    ", bfr, fixed=TRUE);
+paste(bfr, collapse="\n");}
+pathMk
+{pathname <- system.file(pathMk, "dummy.Rnw", package="R.rsp");
 bfr <- readLines(pathname, warn=FALSE);
 rr <- grep("^# HISTORY", bfr);
 if (length(rr) > 0) {
