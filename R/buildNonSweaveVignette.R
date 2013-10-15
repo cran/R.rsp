@@ -75,6 +75,11 @@ parseVignette <- function(pathname, commentPrefix="^[ \t]*%[ \t]*", final=FALSE,
   names(values) <- keys;
   opts <- as.list(values);
 
+  # No %\VignetteIndexEntry{}?
+  if (!is.element("IndexEntry", names(values))) {
+    return(NULL);
+  }
+
   vign <- c(list(pathname=pathname), opts);
 
 
@@ -118,6 +123,8 @@ parseVignette <- function(pathname, commentPrefix="^[ \t]*%[ \t]*", final=FALSE,
 #   \item{path}{The directory where to search for vignettes.}
 #   \item{pattern}{Filename pattern to locate vignettes.}
 #   \item{...}{Additional arguments passed to @see "parseVignette".}
+#   \item{drop}{A @vector of filename patterns of vignette sources
+#    to be ignored.}
 # }
 #
 # \value{
@@ -135,12 +142,18 @@ parseVignette <- function(pathname, commentPrefix="^[ \t]*%[ \t]*", final=FALSE,
 # @keyword IO
 # @keyword internal
 #*/###########################################################################
-parseVignettes <- function(path=".", pattern="[.][^.~]*$", ...) {
+parseVignettes <- function(path=".", pattern="[.][^.~]*$", ..., drop="^dummy.tex$") {
   pathnames <- list.files(path=path, pattern=pattern, full.names=TRUE);
 
-  # Ignore dummy.Rnw (and dummy.tex which is created by R just before make)
-  keep <- !is.element(basename(pathnames), c("dummy.Rnw", "dummy.tex"));
-  pathnames <- pathnames[keep];
+  # Ignore certain files, e.g. "^dummy.Rnw$"?
+  if (length(drop) > 0L) {
+    filenames <- basename(pathnames);
+    excl <- rep(FALSE, times=length(filenames));
+    for (pattern in drop) {
+      excl <- excl | (regexpr(pattern, filenames) != -1L);
+    }
+    pathnames <- pathnames[!excl];
+  }
 
   vigns <- list();
   for (kk in seq_along(pathnames)) {
@@ -394,6 +407,10 @@ buildPkgIndexHtml <- function(...) {
 
 ############################################################################
 # HISTORY:
+# 2013-10-13
+# o BUG FIX: parseVignette() ignores files that do not contain a
+#   '%\VignetteIndexEntry{}'.
+# o Added argument 'dropDummy' to parseVignettes().
 # 2013-03-28
 # o Now buildNonSweaveTexToPdf() ignores 'dummy.tex'.
 # 2013-03-07

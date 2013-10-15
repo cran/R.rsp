@@ -8,8 +8,13 @@
 ###########################################################################
 
 t0 <- Sys.time()
+library("R.rsp");
+dzslides <- isCapableOf(R.rsp, "pandoc (>= 1.9.2)");
+if (dzslides) {
 Sys.setenv("R.rsp/pandoc/args/format"="dzslides");
-R.rsp <- R.oo::Package("R.rsp")
+if (isCapableOf(R.rsp, "pandoc (>= 1.12)")) {
+} # if (...)
+} # if (dzslides)
 library("R.devices")
 options("devEval/args/field"="dataURI")
 devOptions("png", width=840)
@@ -24,6 +29,8 @@ maxSlide
 page <<- page + 1L
 } # slide()
 format(as.Date(R.rsp$date), format="%B %d, %Y")
+if (!dzslides) {
+} # if (!dzslides)
 slide("RSP: Hello world!")
 slide("Objectives")
 slide("Compiling RSP document into PDF, HTML, ...")

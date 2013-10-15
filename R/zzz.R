@@ -27,50 +27,28 @@
 } # .requirePkg()
 
 
+
 .onLoad <- function(libname, pkgname) {
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # Register vignette engines
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  try({
-    vignetteEngine <- get("vignetteEngine", envir=asNamespace("tools"));
+  .registerVignetteEngines(pkgname);
 
-    # Skip engine
-    vignetteEngine("skip_Rnw", package=pkgname, pattern="[.]Rnw$", weave=NA);
-
-    # RSP engine
-    vignetteEngine("rsp", package=pkgname, pattern="[.][^.]*[.]rsp$",
-                    weave=rspWeave, tangle=rspTangle);
-
-    # Markdown RSP + knitr::pandoc engine (non-offical trial version)
-    vignetteEngine("md.rsp+knitr:pandoc", package=pkgname,
-                    pattern="[.]md[.]rsp$",
-                    weave=`.weave_md.rsp+knitr:pandoc`,
-                    tangle=rspTangle);
-
-##    # "as-is" engine
-##    vignetteEngine("asis", package=pkgname, pattern="[.](pdf|html)[.]asis$",
-##                    weave=asisWeave, tangle=function(...) NULL);
-##
-##    # LaTeX engine
-##    vignetteEngine("tex", package=pkgname, pattern="[.]tex$",
-##                    weave=texWeave, tangle=function(...) NULL);
-##
-##    # Markdown engine
-##    vignetteEngine("markdown", package=pkgname, pattern="[.]md$",
-##                    weave=markdownWeave, tangle=function(...) NULL);
-  }, silent=TRUE)
+  ns <- getNamespace(pkgname);
+  pkg <- RRspPackage(pkgname);
+  assign(pkgname, pkg, envir=ns);
 }
 
 
 .onAttach <- function(libname, pkgname) {
-  pkg <- RRspPackage(pkgname);
-  assign(pkgname, pkg, pos=getPosition(pkg));
-  startupMessage(pkg);
+  startupMessage(get(pkgname, envir=getNamespace(pkgname)));
 }
 
 
 ############################################################################
 # HISTORY:
+# 2013-09-28
+# o Now assigning Package object already when loading the package,
+#   and not just when attaching it.
+# 2013-09-19
+# o Simplified .onLoad() so it's now calling .registerVignetteEngines().
 # 2013-09-18
 # o Added the 'md.rsp+knitr:pandoc' engine.
 # 2013-03-07

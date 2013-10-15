@@ -11,6 +11,7 @@
 library("R.rsp")
 library("R.devices")
 hpaste <- R.utils::hpaste
+evalCapture <- R.utils::evalCapture
 t0 <- Sys.time()
 R.rsp$version
 R.rsp$author
