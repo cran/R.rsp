@@ -4,6 +4,7 @@
 # @alias rstring.RspDocument
 # @alias rstring.RspSourceCode
 # @alias rstring.function
+# @alias rstring.expression
 #
 # @title "Evaluates an RSP string and returns the generated string"
 #
@@ -111,22 +112,26 @@ setMethodS3("rstring", "RspString", function(object, envir=parent.frame(), args=
 
     # Assign arguments to the parse/evaluation environment
     names <- attachLocally(args, envir=envir);
-    if (length(names) > 0L) {
-      verbose && printf(verbose, "Variables assigned: [%d] %s\n", length(names), hpaste(names));
-      member <- NULL; rm(list="member"); # To please R CMD check
-      ll <- subset(ll(envir=envir), member %in% names);
-      verbose && print(verbose, ll);
+    if (verbose) {
+      if (length(names) > 0L) {
+        printf(verbose, "Variables assigned: [%d] %s\n", length(names), hpaste(names));
+        member <- NULL; rm(list="member"); # To please R CMD check
+        ll <- subset(ll(envir=envir), member %in% names);
+        print(verbose, ll);
+      }
     }
     verbose && exit(verbose);
   } else {
     names <- NULL;
   }
 
-  verbose && enter(verbose, "Parse RSP string to RSP document");
-  verbose && cat(verbose, "Parse environment: ", getName(envir));
-  if (length(names) > 0L) {
-    ll <- subset(ll(envir=envir), member %in% names);
-    verbose && print(verbose, ll);
+  if (verbose) {
+    enter(verbose, "Parse RSP string to RSP document");
+    cat(verbose, "Parse environment: ", getName(envir));
+    if (length(names) > 0L) {
+      ll <- subset(ll(envir=envir), member %in% names);
+      print(verbose, ll);
+    }
   }
   expr <- parse(object, envir=envir, ..., verbose=verbose);
   verbose && print(verbose, expr);
@@ -158,7 +163,7 @@ setMethodS3("rstring", "RspDocument", function(object, envir=parent.frame(), ...
   language <- capitalize(tolower(language));
   className <- sprintf("Rsp%sSourceCodeFactory", language);
   ns <- getNamespace("R.rsp");
-  clazz <- .Class_forName(className, envir=ns);
+  clazz <- Class$forName(className, envir=ns);
   factory <- newInstance(clazz);
   verbose && cat(verbose, "Language: ", getLanguage(factory));
   code <- toSourceCode(factory, object, verbose=verbose);
@@ -225,10 +230,36 @@ setMethodS3("rstring", "function", function(object, envir=parent.frame(), ..., v
   on.exit({
     rm(list=fcnName, envir=envir, inherits=FALSE);
   }, add=TRUE);
-
-  rcode <- RspRSourceCode(sprintf("%s()", fcnName));
+  code <- sprintf("%s()", fcnName);
+  rcode <- RspRSourceCode(code);
   res <- rstring(rcode, envir=envir, ..., verbose=less(verbose,10));
 
+  verbose && exit(verbose);
+
+  res;
+}) # rstring()
+
+
+setMethodS3("rstring", "expression", function(object, envir=parent.frame(), ..., verbose=FALSE) {
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Validate arguments
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Argument 'object':
+
+  # Argument 'verbose':
+  verbose <- Arguments$getVerbose(verbose);
+  if (verbose) {
+    pushState(verbose);
+    on.exit(popState(verbose));
+  }
+
+  verbose && enter(verbose, "rstring() for ", class(object)[1L]);
+  verbose && cat(verbose, "Environment: ", getName(envir));
+  # Deparsing 'object[[1L]]' instead of 'object' in order to drop
+  # the 'expression({ ... })' wrapper.
+  code <- deparse(object[[1L]]);
+  rcode <- RspRSourceCode(code);
+  res <- rstring(rcode, envir=envir, ..., verbose=less(verbose,10));
   verbose && exit(verbose);
 
   res;
@@ -238,6 +269,11 @@ setMethodS3("rstring", "function", function(object, envir=parent.frame(), ..., v
 
 ##############################################################################
 # HISTORY:
+# 2014-01-26
+# o CLEANUP: Now R.oo::ll() is only called if 'verbose' is enabled, because
+#   calling ll() still triggers attachment of R.oo as of R.oo (>= 1.17.0).
+# 2014-01-02
+# o Added rstring(), rcat() and rfile() for expression:s too.
 # 2013-07-18
 # o BUG FIX: rstring(), rcat(), and rfile() for function:s would only work
 #   if the evaluation was done in the default environment.

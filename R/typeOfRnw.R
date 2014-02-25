@@ -34,7 +34,9 @@ setMethodS3("typeOfRnw", "default", function(filename, path=NULL, default="appli
   # Validate arguments
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Arguments 'filename' & 'path':
-  pathname <- Arguments$getReadablePathname(filename, path=path);
+  withoutGString({
+    pathname <- Arguments$getReadablePathname(filename, path=path);
+  })
 
   # Argument 'default':
   default <- Arguments$getCharacter(default);

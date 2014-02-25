@@ -11,9 +11,9 @@ importFrom("R.oo", "uses")
 importFrom("R.oo", "Object")
 importFrom("R.oo", "Package")
 importFrom("R.oo", "Exception")
- importFrom("R.utils", "Arguments")
- importFrom("R.utils", "GString")
- importFrom("R.utils", "Verbose")
+importFrom("R.utils", "Arguments")
+importFrom("R.utils", "GString")
+importFrom("R.utils", "Verbose")
 
 
 ## Importing generics
@@ -23,13 +23,14 @@ importFrom("R.oo", "getName")
 importFrom("R.oo", "getPath")
 importFrom("R.oo", "getSource")
 importFrom("R.oo", "trim")
- importFrom("R.utils", "evaluate")
- importFrom("R.utils", "getAbsolutePath")
+importFrom("R.utils", "evaluate")
+importFrom("R.utils", "getAbsolutePath")
 importFrom("stats", "start")
 importFrom("utils", "toLatex")
 
 
 ## Importing functions
+importFrom("R.cache", "getChecksum")
 importFrom("R.methodsS3", "throw")
 importFrom("R.oo", "attachLocally")
 importFrom("R.oo", "getStaticInstance")
@@ -48,6 +49,7 @@ importFrom("R.utils", "downloadFile")
 importFrom("R.utils", "enter")
 importFrom("R.utils", "evalCapture")
 importFrom("R.utils", "exit")
+importFrom("R.utils", "file.info2")
 importFrom("R.utils", "filePath")
 importFrom("R.utils", "getOption") ## Multi-sources: R.utils, base
 importFrom("R.utils", "getParent")
@@ -65,8 +67,11 @@ importFrom("R.utils", "less")
 importFrom("R.utils", "popState")
 importFrom("R.utils", "printf")
 importFrom("R.utils", "pushState")
+importFrom("R.utils", "renameFile")
 importFrom("R.utils", "sourceTo")
 importFrom("R.utils", "tempvar")
+importFrom("R.utils", "withoutGString")
+importFrom("R.utils", "CmdArgsFunction")
 
 importFrom("utils", "browseURL")
 importFrom("utils", "capture.output")
@@ -80,11 +85,6 @@ importFrom("utils", "tail")
 
 ## Manually added
 importFrom("R.oo", "ll")
-if (packageVersion("R.utils") < "1.27.5") {
-  importFrom("R.utils", "getOption.default")
-  importFrom("R.utils", "cat.default")
-  importFrom("R.utils", "inherits.default")
-}
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,6 +116,7 @@ S3method("findAsciiDoc", "default")
 S3method("findPandoc", "default")
 S3method("importRsp", "default")
 S3method("indexOfNonQuoted", "default")
+S3method("wstring", "default")
 S3method("parseRsp", "default")
 S3method("rargs", "default")
 S3method("rcat", "default")
@@ -277,9 +278,11 @@ S3method("as.character", "RspException")
 
 # RspFileProduct
 S3method("findProcessor", "RspFileProduct")
+S3method("getFileSize", "RspFileProduct")
 S3method("getType", "RspFileProduct")
 S3method("print", "RspFileProduct")
 S3method("view", "RspFileProduct")
+
 
 # RspIncludeDirective
 S3method("getContent", "RspIncludeDirective")
@@ -326,6 +329,7 @@ S3method("hasProcessor", "RspProduct")
 S3method("print", "RspProduct")
 S3method("process", "RspProduct")
 S3method("view", "RspProduct")
+S3method("!", "RspProduct")
 
 # RspResponse
 S3method("flush", "RspResponse")
