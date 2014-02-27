@@ -51,6 +51,7 @@ RspFileProduct(pathname=NA, ..., mustExist=TRUE)
  \bold{Methods:}\cr
 \tabular{rll}{
  \tab \code{findProcessor} \tab  -\cr
+ \tab \code{getFileSize} \tab  -\cr
  \tab \code{getType} \tab  -\cr
  \tab \code{print} \tab  -\cr
  \tab \code{view} \tab  -\cr
@@ -58,7 +59,7 @@ RspFileProduct(pathname=NA, ..., mustExist=TRUE)
 
 
  \bold{Methods inherited from RspProduct}:\cr
-findProcessor, getMetadata, getType, hasProcessor, print, process, view
+!, findProcessor, getMetadata, getType, hasProcessor, print, process, setMetadata, view
 
  \bold{Methods inherited from RspObject}:\cr
 getAttribute, getAttributes, hasAttribute, print, setAttribute, setAttributes

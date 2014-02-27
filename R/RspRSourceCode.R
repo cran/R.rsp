@@ -132,14 +132,31 @@ setMethodS3("evaluate", "RspRSourceCode", function(object, envir=parent.frame(),
   attachLocally(args, envir=envir);
 
   if (output == "RspStringProduct") {
+##    # The default capture.output() uses textConnection()
+##    # which is much slower than rawConnection().
+##    res <- capture.output({
+##      eval(expr, envir=envir);
+##      # Force a last complete line
+##      cat("\n");
+##    });
+##    res <- paste(res, collapse="\n");
+
     # Evaluate R source code and capture output
-    res <- capture.output({
-      eval(expr, envir=envir);
-      # Force a last complete line
-      cat("\n");
-    });
-    res <- paste(res, collapse="\n");
+    file <- rawConnection(raw(0L), open="w");
+    on.exit({
+      if (!is.null(file)) close(file);
+    }, add=TRUE)
+    capture.output({ eval(expr, envir=envir) }, file=file);
+    res <- rawToChar(rawConnectionValue(file));
+    close(file); file <- NULL;
+
     res <- RspStringProduct(res, attrs=getAttributes(object));
+
+    # Update metadata?
+    if (exists("rmeta", mode="function", envir=envir)) {
+      rmeta <- get("rmeta", mode="function", envir=envir);
+      res <- setMetadata(res, rmeta())
+    }
   } else if (output == "stdout") {
     eval(expr, envir=envir);
     # Force a last complete line
@@ -238,6 +255,11 @@ setMethodS3("tangle", "RspRSourceCode", function(code, format=c("safetangle", "t
 
 ##############################################################################
 # HISTORY:
+# 2014-02-04
+# o SPEEDUP: Now evaluate() for RspRSourceCode captures output via a raw
+#   connection rather than a text connection, because the processing
+#   time for the latter is exponential in the number of captured lines
+#   whereas the former is linear.
 # 2013-09-18
 # o Now tidy() handles the new RSP R source code footer comments.
 # 2013-08-04

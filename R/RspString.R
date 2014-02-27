@@ -78,7 +78,7 @@ setMethodS3("print", "RspString", function(x, ...) {
 # }
 #*/#########################################################################
 setMethodS3("nbrOfLines", "RspString", function(object, ...) {
-  length(unlist(strsplit(object, split="\n", fixed=TRUE)));
+  length(unlist(strsplit(object, split="\n", fixed=TRUE), use.names=FALSE));
 })
 
 
@@ -122,6 +122,7 @@ setMethodS3("getType", "RspString", function(object, default=NA, as=c("text", "I
 
 #########################################################################/**
 # @RdocMethod getMetadata
+# @aliasmethod setMetadata
 #
 # @title "Gets the metadata of the RspDocument"
 #
@@ -152,6 +153,22 @@ setMethodS3("getMetadata", "RspString", function(object, name=NULL, ...) {
   }
   res;
 }, protected=TRUE)
+
+
+setMethodS3("setMetadata", "RspString", function(object, metadata=NULL, name, value, ...) {
+  data <- getMetadata(object);
+
+  if (!is.null(metadata)) {
+    for (name in names(metadata)) {
+      data[[name]] <- metadata[[name]];
+    }
+  } else {
+    data[[name]] <- value;
+  }
+
+  setAttribute(object, "metadata", data);
+}, protected=TRUE)
+
 
 
 #########################################################################/**

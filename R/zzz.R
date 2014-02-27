@@ -1,14 +1,13 @@
-.conflicts.OK <- TRUE
-
-# Temporary workaround until R.oo::Class$forName() supports
-# searching namespaces as well. /HB 2013-09-16
-.Class_forName <- function(name, envir=NULL) {
-  if (is.environment(envir) && exists(name, mode="function", envir=envir)) {
-    clazz <- get(name, mode="function", envir=envir);
-    if (inherits(clazz, "Class")) return(clazz);
-  }
-  Class$forName(name);
-} # .Class_forName()
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Make functions callable from the command line
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+rcat <- CmdArgsFunction(rcat)
+rclean <- CmdArgsFunction(rclean)
+rcompile <- CmdArgsFunction(rcompile)
+rfile <- CmdArgsFunction(rfile)
+rscript <- CmdArgsFunction(rscript)
+rsource <- CmdArgsFunction(rsource)
+rstring <- CmdArgsFunction(rstring)
 
 
 .requirePkg <- function(name, quietly=FALSE) {
@@ -27,6 +26,11 @@
 } # .requirePkg()
 
 
+.onUnload <- function(libpath) {
+  # Force finalize() on HttpDaemon objects
+  base::gc();
+} # .onUnload()
+
 
 .onLoad <- function(libname, pkgname) {
   .registerVignetteEngines(pkgname);
@@ -44,6 +48,8 @@
 
 ############################################################################
 # HISTORY:
+# 2014-02-21
+# o Added .onUnload() which calls the garbage collector.
 # 2013-09-28
 # o Now assigning Package object already when loading the package,
 #   and not just when attaching it.

@@ -30,7 +30,7 @@
 #*/###########################################################################
 setMethodS3("splitUrl", "default", function(url, ...) {
   # Argument 'url':
-  url <- Arguments$getCharacter(url);
+  url <- Arguments$getCharacter(url, asGString=FALSE);
   if (length(url) == 0L) {
     return(NULL);
   }
@@ -72,7 +72,7 @@ setMethodS3("splitUrl", "default", function(url, ...) {
       if (length(parts) > 0L) {
         parts <- strsplit(parts, split="=", fixed=TRUE);
         if (length(parts) > 0L) {
-          names <- unlist(lapply(parts, FUN=function(x) x[1L]));
+          names <- unlist(lapply(parts, FUN=function(x) x[1L]), use.names=FALSE);
           parameters <- lapply(parts, FUN=function(x) paste(x[-1L], collapse="="));
           names(parameters) <- names;
         }

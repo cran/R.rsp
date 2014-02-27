@@ -13,12 +13,14 @@
 \alias{rcat.RspDocument}
 \alias{rcat.RspRSourceCode}
 \alias{rcat.function}
+\alias{rcat.expression}
 \alias{rsource}
 \alias{rsource.default}
 \alias{rsource.RspString}
 \alias{rsource.RspDocument}
 \alias{rsource.RspRSourceCode}
 \alias{rsource.function}
+\alias{rsource.expression}
 
 \title{Evaluates an RSP string and outputs the generated string}
 
@@ -29,7 +31,7 @@
 \usage{
  \method{rcat}{default}(..., file=NULL, path=NULL, envir=parent.frame(), args="*", output="", buffered=TRUE,
   append=FALSE, verbose=FALSE)
- \method{rsource}{default}(file, path=NULL, output="", buffered=FALSE, ...)
+ \method{rsource}{default}(file, path=NULL, envir=parent.frame(), output="", buffered=FALSE, ...)
 }
 
 \arguments{

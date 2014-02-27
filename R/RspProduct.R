@@ -47,6 +47,7 @@ setMethodS3("print", "RspProduct", function(x, ...) {
 #########################################################################/**
 # @RdocMethod view
 # @alias view.RspFileProduct
+# @alias !.RspProduct
 #
 # @title "Views the RSP product"
 #
@@ -71,6 +72,11 @@ setMethodS3("print", "RspProduct", function(x, ...) {
 # }
 #*/#########################################################################
 setMethodS3("view", "RspProduct", abstract=TRUE)
+
+
+setMethodS3("!", "RspProduct", function(x) {
+  view(x)
+}, appendVarArgs=FALSE, protected=TRUE)
 
 
 
@@ -114,6 +120,7 @@ setMethodS3("getType", "RspProduct", function(object, default=NA, as=c("text", "
 
 #########################################################################/**
 # @RdocMethod getMetadata
+# @aliasmethod setMetadata
 #
 # @title "Gets the metadata an RSP product"
 #
@@ -143,6 +150,21 @@ setMethodS3("getMetadata", "RspProduct", function(object, name=NULL, ...) {
     res <- res[[name]];
   }
   res;
+}, protected=TRUE)
+
+
+setMethodS3("setMetadata", "RspProduct", function(object, metadata=NULL, name, value, ...) {
+  data <- getMetadata(object);
+
+  if (!is.null(metadata)) {
+    for (name in names(metadata)) {
+      data[[name]] <- metadata[[name]];
+    }
+  } else {
+    data[[name]] <- value;
+  }
+
+  setAttribute(object, "metadata", data);
 }, protected=TRUE)
 
 
@@ -341,6 +363,8 @@ setMethodS3("process", "RspProduct", function(object, type=NULL, envir=parent.fr
 
 ############################################################################
 # HISTORY:
+# 2013-12-15
+# o Added !() for RspProduct, which is short for view().
 # 2013-08-04
 # o Now process() for RspProduct handles when the processor returns NULL,
 #   e.g. when output are directed directly to standard output without

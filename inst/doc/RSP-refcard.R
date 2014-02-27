@@ -1,7 +1,7 @@
 ###########################################################################
 ## This 'tangle' R script was created from an RSP document.
 ## RSP source document: 'incl/example.txt.rsp'
-## Metadata 'title': 'RSP Markup Language - Reference Card'
+## Metadata 'title': 'Example'
 ## Metadata 'keywords': 'RSP markup language, Quick Reference Card'
 ## Metadata 'author': 'Henrik Bengtsson'
 ## Metadata 'engine': 'R.rsp::rsp'

@@ -141,7 +141,7 @@
 \alias{setMetadata}
 \alias{escapeRspContent}
 \alias{escapeRspTags}
-\alias{extentionToIMT}
+\alias{extensionToIMT}
 \alias{parseInternetMediaType}
 \alias{unescapeRspTags}
 \alias{nbrOfLines}
@@ -158,6 +158,13 @@
 
 \alias{parse}
 \alias{parse.default}
+
+\alias{withoutGString}
+\alias{wstring}
+\alias{wstring.default}
+
+\alias{getFileSize}
+\alias{getFileSize.RspFileProduct}
 
 
 \description{
