@@ -15,7 +15,7 @@
 
 
 \description{
-  The RSP markup language makes any text-based document come alive.  RSP provides a powerful markup for controlling the content and output of LaTeX, HTML, Markdown, AsciiDoc, Sweave and knitr documents (and more), e.g. 'Today's date is <\%=Sys.Date()\%>'.  Contrary to many other literate programming languages, with RSP it is straightforward to loop over mixtures of code and text sections, e.g. in month-by-month summaries.  RSP has also several preprocessing directives for incorporating static and dynamic contents of external files (local or online) among other things.  Functions rstring() and rcat() make it easy to process RSP strings, while rfile() compiles RSP files (also online) into their final outputs, e.g. rfile('report.tex.rsp') generates 'report.pdf'.  RSP is ideal for self-contained scientific reports and R package vignettes.
+  The RSP markup language makes any text-based document come alive.  RSP provides a powerful markup for controlling the content and output of LaTeX, HTML, Markdown, AsciiDoc, Sweave and knitr documents (and more), e.g. 'Today's date is <\%=Sys.Date()\%>'.  Contrary to many other literate programming languages, with RSP it is straightforward to loop over mixtures of code and text sections, e.g. in month-by-month summaries.  RSP has also several preprocessing directives for incorporating static and dynamic contents of external files (local or online) among other things.  Functions rstring() and rcat() make it easy to process RSP strings, rsource() sources an RSP file as it was an R script, while rfile() compiles it (even online) into its final output format, e.g. rfile('report.tex.rsp') generates 'report.pdf' and rfile('report.md.rsp') generates 'report.html'.  RSP is ideal for self-contained scientific reports and R package vignettes.  It's easy to use - if you know how to write an R script, you'll be up and running within minutes.
 }
 
 \section{Installation}{
@@ -23,14 +23,20 @@
 }
 
 \section{To get started}{
-  To get started, see:
+  We recommend that you start by reading one of the '\href{../doc/index.html}{vignettes}';
   \enumerate{
-    \item For a detailed description of RSP, see vignette '\href{../doc/index.html}{Dynamic document creation using RSP}'.
-    \item For a quick overview of RSP, see vignette '\href{../doc/index.html}{Introductory slides on RSP}'.
-    \item For a one-page overview of RSP, see vignette '\href{../doc/index.html}{RSP Markup Language - Reference Card}'.
-    \item To included RSP vignettes in a package, see '\href{../doc/index.html}{Include RSP and other non-Sweave vignettes in R packages}'.
-    \item To compile a RSP-embedded text document to a final document, use \code{\link{rfile}}(), e.g. \code{rfile("report.tex.rsp")} outputs file 'report.pdf' and \code{rfile("report.md.rsp")} outputs file 'report.html'.
-    \item To compile a RSP document (file or string) and output the result to standard output or a string, use \code{\link{rcat}}() an \code{\link{rstring}}(), respectively.
+    \item A 5 minute slideshow covering the basics of RSP.
+    \item Detailed description of the RSP markup language.
+    \item A one-page RSP reference card.
+    \item How to use RSP for package vignettes.
+    \item How to use static PDF or HTML package vignettes.
+  }
+
+  Then, when you're ready to try it yourself, these are commands you can start with:
+  \enumerate{
+    \item Play with \code{\link{rcat}}(), which works like \code{\link[base]{cat}}() but also processed RSP expressions, e.g. \code{rcat("A random number: <\%=sample(100, size=1)\%>\n")}.
+    \item To source a RSP document as you do with R scripts, use \code{\link{rsource}}(), e.g. \code{rsource("report.md.rsp")} which will run the RSP and display the output as it appears.
+    \item To compile a RSP document to a final document, use \code{\link{rfile}}(), e.g. \code{rfile("report.md.rsp")} outputs Markdown file 'report.md' which is automatically compiled into a final 'report.html'.
   }
 }
 
@@ -55,7 +61,7 @@
 \section{How to cite this package}{
  Bengtsson H (2014).
 \emph{R.rsp: Dynamic generation of scientific reports}.
-R package version 0.14.1.
+R package version 0.19.0.
 }
 
 \author{Henrik Bengtsson}

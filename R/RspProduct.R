@@ -33,7 +33,7 @@ setConstructorS3("RspProduct", function(object=NA, ...) {
 setMethodS3("print", "RspProduct", function(x, ...) {
   s <- sprintf("%s:", class(x)[1L]);
   s <- c(s, sprintf("Content type: %s", getType(x)));
-  md <- getMetadata(x);
+  md <- getMetadata(x, local=FALSE);
   for (key in names(md)) {
     s <- c(s, sprintf("Metadata '%s': '%s'", key, md[[key]]));
   }
@@ -107,7 +107,7 @@ setMethodS3("!", "RspProduct", function(x) {
 #   @seeclass
 # }
 #*/#########################################################################
-setMethodS3("getType", "RspProduct", function(object, default=NA, as=c("text", "IMT"), ...) {
+setMethodS3("getType", "RspProduct", function(object, default=NA_character_, as=c("text", "IMT"), ...) {
   as <- match.arg(as);
   res <- getAttribute(object, "type", default=as.character(default));
   res <- tolower(res);
@@ -144,17 +144,25 @@ setMethodS3("getType", "RspProduct", function(object, default=NA, as=c("text", "
 #   @seeclass
 # }
 #*/#########################################################################
-setMethodS3("getMetadata", "RspProduct", function(object, name=NULL, ...) {
+setMethodS3("getMetadata", "RspProduct", function(object, name=NULL, default=NULL, local=FALSE, ...) {
   res <- getAttribute(object, "metadata");
+  if (!local) {
+    isLocal <- is.element(names(res), "source");
+    res <- res[!isLocal];
+  }
   if (!is.null(name)) {
-    res <- res[[name]];
+    if (is.element(name, names(res))) {
+      res <- res[[name]];
+    } else {
+      res <- default;
+    }
   }
   res;
 }, protected=TRUE)
 
 
 setMethodS3("setMetadata", "RspProduct", function(object, metadata=NULL, name, value, ...) {
-  data <- getMetadata(object);
+  data <- getMetadata(object, local=TRUE);
 
   if (!is.null(metadata)) {
     for (name in names(metadata)) {

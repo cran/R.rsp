@@ -57,7 +57,19 @@
 #   parses and evaluates \file{RSP-refcard.tex.rsp} and output \file{RSP-refcard.pdf} in the current directory.
 # }
 #
-# @examples "../incl/rfile.Rex"
+# \examples{
+# @include "../incl/rfile.Rex"
+#
+# \donttest{
+# # Compile and display the main vignette (requires LaTeX)
+# if (isCapableOf(R.rsp, "latex")) {
+#   path <- system.file("doc", package="R.rsp")
+#   pdf <- rfile("Dynamic_document_creation_using_RSP.tex.rsp", path=path)
+#   cat("Created document: ", pdf, "\n", sep="")
+#   if (interactive()) browseURL(pdf)
+# }
+# }
+# }
 #
 # @author
 #
@@ -69,9 +81,9 @@
 # @keyword IO
 #*/###########################################################################
 setMethodS3("rfile", "default", function(file, path=NULL, output=NULL, workdir=NULL, type=NA, envir=parent.frame(), args="*", postprocess=TRUE, ..., verbose=FALSE) {
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Validate arguments
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Argument 'file' & 'path':
   if (inherits(file, "connection")) {
   } else if (inherits(file, "RspFileProduct")) {
@@ -108,6 +120,7 @@ setMethodS3("rfile", "default", function(file, path=NULL, output=NULL, workdir=N
       # If URI, drop any URI arguments
       url <- splitUrl(file);
       filename <- basename(url$path);
+      filename <- Arguments$getReadablePathname(filename, adjust="url", mustExist=FALSE);
     } else {
       filename <- basename(file);
     }
@@ -175,18 +188,27 @@ setMethodS3("rfile", "default", function(file, path=NULL, output=NULL, workdir=N
 
   verbose && enter(verbose, "Processing RSP file");
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Information on input and output
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   if (verbose) {
+    # Information on input
     if (inherits(file, "RspFileProduct")) {
       cat(verbose, "Input file:");
       print(verbose, file);
     } else if (is.character(file)) {
-      cat(verbose, "Input pathname: ", file);
+      if (isUrl(file)) {
+        cat(verbose, "Input URL: ", file);
+      } else {
+        cat(verbose, "Input pathname: ", file);
+      }
     } else if (inherits(file, "connection")) {
       ci <- summary(file);
       printf(verbose, "Input '%s' connection: %s\n",
           class(ci)[1L], ci$description);
     }
 
+    # Information on output
     if (is.character(output)) {
       cat(verbose, "Output pathname: ", output);
     } else if (inherits(output, "connection")) {
@@ -195,10 +217,14 @@ setMethodS3("rfile", "default", function(file, path=NULL, output=NULL, workdir=N
           class(ci)[1L], ci$description);
     }
 
+    # Information on content *output* type
     printf(verbose, "Default content type: %s\n", type);
   }
 
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Assign RSP arguments
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   verbose && enter(verbose, "Assigning RSP arguments");
   verbose && cat(verbose, "Environment: ", getName(envir));
   if (length(args) > 0L) {
@@ -211,21 +237,33 @@ setMethodS3("rfile", "default", function(file, path=NULL, output=NULL, workdir=N
   verbose && exit(verbose);
 
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Processing
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Coerce to an RspFileProduct
+  # FIXME: Would be nice to be able to handle unknown file extensions,
+  # e.g. when an RSP file is downloaded from online wihtout a filename ext.
   if (!inherits(file, "RspFileProduct")) {
     file <- RspFileProduct(file, mustExist=FALSE);
+    processor <- findProcessor(file);
+    if (is.null(processor)) {
+      # Assume an RSP document if type cannot be inferred by filename etc.
+      file <- RspFileProduct(file, type="application/x-rsp", mustExist=FALSE);
+    }
   }
 
-  if (getType(file) == "application/x-rsp") {
+  # Process...
+  if (getType(file, default="text/plain") == "application/x-rsp") {
+    # (a) An RSP document, or...
     verbose && enter(verbose, "Reading RSP document");
     str <- .readText(file);
     verbose && printf(verbose, "Number of characters: %d\n", nchar(str));
     verbose && str(verbose, str);
     verbose && exit(verbose);
 
-
     verbose && enter(verbose, "Parsing RSP document");
     rstr <- RspString(str, type=type, source=file);
+    rstr <- setMetadata(rstr, name="source", value=file);
     doc <- parse(rstr, envir=envir, ...);
     verbose && print(verbose, doc);
     rstr <- str <- NULL; # Not needed anymore
@@ -233,7 +271,9 @@ setMethodS3("rfile", "default", function(file, path=NULL, output=NULL, workdir=N
 
     res <- rfile(doc, output=output, workdir=workdir, envir=envir, args=NULL, postprocess=postprocess, ..., verbose=verbose);
   } else {
+    # (b) ...other type of document.
     res <- process(file, workdir=workdir, envir=envir, args=NULL, recursive=postprocess, ..., verbose=verbose);
+    res <- setMetadata(res, name="source", value=file);
   }
 
   verbose && exit(verbose);
@@ -499,6 +539,10 @@ setMethodS3("rfile", "expression", function(object, ..., envir=parent.frame(), v
 
 ############################################################################
 # HISTORY:
+# 2014-05-30
+# o Now metadata 'source' is set by rfile(), iff possible.  It gives the
+#   absolute path to the input file, or the URL, of the source RSP file.
+#   It can be accessed via <%@meta name="source"%>.
 # 2014-01-02
 # o Added rstring(), rcat() and rfile() for expression:s too.
 # 2013-12-14

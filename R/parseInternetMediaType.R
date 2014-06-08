@@ -20,9 +20,11 @@ extensionToIMT <- function(filename, ext=NULL, default=NA) {
     "js"       = "application/javascript",
     "json"     = "application/json",
     "kml"      = "application/vnd.google-earth.kml+xml",
+    "latex"    = "application/x-latex",  # To allow TeX vignette sources
     "md"       = "application/x-markdown",
     "pdf"      = "application/pdf",
     "ps"       = "application/postscript",
+    "r"        = "application/R",
     "rdf"      = "application/rdf+xml",
     "rhtml"    = "application/x-rhtml",
     "rmd"      = "application/x-rmd",
@@ -202,6 +204,8 @@ parseInternetMediaType <- function(s, ...) {
 
 ##############################################################################
 # HISTORY:
+# 2014-05-27
+# o Added application/R.
 # 2013-12-14
 # o Now extensionToIMT() also handles URLs with parameters.
 # 2013-05-22

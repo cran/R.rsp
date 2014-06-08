@@ -29,9 +29,11 @@
 setConstructorS3("RspFileProduct", function(pathname=NA, ..., mustExist=TRUE) {
   # Argument 'pathname':
   if (!is.null(pathname) && !is.na(pathname)) {
-    withoutGString({
-      pathname <- Arguments$getReadablePathname(pathname, mustExist=mustExist);
-    })
+    if (!isUrl(pathname)) {
+      withoutGString({
+        pathname <- Arguments$getReadablePathname(pathname, mustExist=mustExist);
+      })
+    }
   }
 
   extend(RspProduct(pathname, ...), "RspFileProduct");
@@ -55,7 +57,7 @@ setMethodS3("print", "RspFileProduct", function(x, ...) {
 
   s <- c(s, sprintf("Content type: %s", getType(x)));
 
-  md <- getMetadata(x);
+  md <- getMetadata(x, local=FALSE);
   for (key in names(md)) {
     s <- c(s, sprintf("Metadata '%s': '%s'", key, md[[key]]));
   }
@@ -69,21 +71,41 @@ setMethodS3("print", "RspFileProduct", function(x, ...) {
 
 
 setMethodS3("view", "RspFileProduct", function(object, ...) {
-  browseURL(object, ...);
+  # WORKAROUND: browseURL('foo/bar.html', browser=NULL), which in turn
+  # calls shell.exec('foo/bar.html'), does not work on Windows, because
+  # the OS expects backslashes.  [Should shell.exec() convert to
+  # backslashes?]  By temporarily setting the working directory to that
+  # of the file, view() for RspFileProduct works around this issue.
+  if (isFile(object)) {
+    path <- dirname(object);
+    pathname <- basename(object);
+    opwd <- getwd();
+    on.exit(setwd(opwd));
+    setwd(path);
+  } else {
+    pathname <- object;
+  }
+  browseURL(pathname, ...);
   invisible(object);
 }, proctected=TRUE)
 
 
 
-setMethodS3("getType", "RspFileProduct", function(object, as=c("text", "IMT"), ...) {
+setMethodS3("getType", "RspFileProduct", function(object, default=NA_character_, as=c("text", "IMT"), ...) {
   as <- match.arg(as);
-  res <- NextMethod("getType");
+  res <- NextMethod("getType", default=NA_character_);
 
   if (is.na(res)) {
     # Infer type from the filename extension?
     if (isFile(object) || isUrl(object)) {
       res <- extensionToIMT(object);
     }
+  }
+
+  # Fall back to a default?
+  if (is.na(res)) {
+    default <- as.character(default);
+    res <- default;
   }
 
   if (as == "IMT" && !is.na(res)) {
@@ -99,7 +121,7 @@ setMethodS3("getFileSize", "RspFileProduct", function(object, what=c("numeric", 
   what <- match.arg(what);
 
   pathname <- object
-  if (is.null(pathname)) {
+  if (is.null(pathname) && isUrl(pathname)) {
     fileSize <- NA_real_;
   } else {
     fileSize <- file.info2(pathname)$size;
@@ -206,20 +228,26 @@ setMethodS3("findProcessor", "RspFileProduct", function(object, ..., verbose=FAL
     verbose && cat(verbose, "Processor found: <none>");
   } else {
     # Get the metadata attributes
-    metadata <- getMetadata(object);
+    metadata <- getMetadata(object, local=TRUE);
 
     # Make sure the processor returns an RspFileProduct
     fcnT <- fcn
     processor <- function(...) {
        do.call(fcnT, args=c(list(...), metadata));
     }
+
     fcn <- function(pathname, ...) {
       # Arguments 'pathname':
-      withoutGString({
-        pathname <- Arguments$getReadablePathname(pathname);
-      })
+      if (!isUrl(pathname)) {
+        withoutGString({
+          pathname <- Arguments$getReadablePathname(pathname);
+        })
+      }
 
+      # NOTE: It is not sure that the processor supports URLs
       pathnameR <- processor(pathname, ...);
+
+      # Always return the relative path
       pathnameR <- getAbsolutePath(pathnameR);
       RspFileProduct(pathnameR, attrs=list(metadata=metadata), mustExist=FALSE);
     } # fcn()
@@ -235,6 +263,15 @@ setMethodS3("findProcessor", "RspFileProduct", function(object, ..., verbose=FAL
 
 ############################################################################
 # HISTORY:
+# 2014-04-18
+# o Added argument 'default' to getType() for RspFileProduct.
+# o BUG FIX: RspFileProduct would corrupt URLs.
+# 2014-03-24
+# o WORKAROUND: Due to limitations on browseURL(), view() for
+#   RspFileProduct failed to open files with commas in their filenames
+#   (e.g. path/foo,bar.html) on some file system (e.g. Windows).  As a
+#   workaround, view() now sets the working directory temporarily to that
+#   of the file to be displayed and then calls browseURL().
 # 2014-02-07
 # o Now print() for RspFileProduct reports the file size also in units
 #   of kB, MB, GB, etc.

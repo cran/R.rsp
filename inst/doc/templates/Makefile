@@ -12,7 +12,7 @@ vignettes:
 
 # Compile any TeX files for which a PDF is missing
 tex:
-	"$(R)" -e "if (packageVersion('R.rsp') >= '0.9.1') R.rsp::buildNonSweaveTexToPdf()"
+	"$(R)" -e "R.rsp::buildNonSweaveTexToPdf()"
 
 # Create an HTML vignette index page
 index.html:
@@ -24,7 +24,8 @@ index.html:
 clean:
 	$(RM) enginesMap.R
 	$(RM) index.html.rsp
+	$(RM) dummy.Rnw dummy.tex dummy.R dummy.html dummy.pdf
 	$(RM) *.rsp.R
-	$(RM) *.tex *.aux *.bbl *.blg *.log *.out *.sty *.toc
+	$(RM) *.aux *.bbl *.blg *.log *.out *.sty *.toc
 	$(RM) -r figures/
 	$(RM) Makefile

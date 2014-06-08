@@ -63,7 +63,7 @@ setMethodS3("rsptex", "default", function(..., pdf=TRUE, force=FALSE, verbose=FA
   filename2 <- basename(pathname2);
 
   ext <- ifelse(pdf, ".pdf", ".dvi");
-  pathname3 <- gsub("[.]tex$", ext, filename2);
+  pathname3 <- gsub("[.](tex|latex)$", ext, filename2);
   verbose && cat(verbose, "Output pathname: ", pathname3);
   verbose && cat(verbose, "Output exists: ", file.exists(pathname3));
 
@@ -82,7 +82,7 @@ setMethodS3("rsptex", "default", function(..., pdf=TRUE, force=FALSE, verbose=FA
 
   if (force || !isUpToDate) {
     verbose && enter(verbose, "Compiling LaTeX file");
-    tools::texi2dvi(pathname2, pdf=pdf);
+    texi2dvi(pathname2, pdf=pdf);
     verbose && exit(verbose);
   }
 

@@ -33,7 +33,10 @@ setMethodS3("compileRsp", "default", function(filename, path=NULL, ..., outPath=
   # Validate arguments
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Arguments 'filename' & 'path':
-  pathname <- Arguments$getReadablePathname(filename, path=path);
+  pathname <- if (is.null(path)) filename else file.path(path, filename);
+  if (!isUrl(pathname)) {
+    pathname <- Arguments$getReadablePathname(pathname);
+  }
 
   # Arguments 'outPath':
   outPath <- Arguments$getWritablePath(outPath);
@@ -47,9 +50,14 @@ setMethodS3("compileRsp", "default", function(filename, path=NULL, ..., outPath=
   }
 
   verbose && enter(verbose, "Compiling RSP document");
-  pathname <- getAbsolutePath(pathname);
-  verbose && cat(verbose, "RSP pathname (absolute): ", pathname);
-  verbose && printf(verbose, "Input file size: %g bytes\n", file.info(pathname)$size);
+
+  # A local file?
+  if (!isUrl(pathname)) {
+    pathname <- getAbsolutePath(pathname);
+    verbose && cat(verbose, "RSP pathname (absolute): ", pathname);
+    verbose && printf(verbose, "Input file size: %g bytes\n", file.info(pathname)$size);
+  }
+
   verbose && cat(verbose, "Output and working directory: ", outPath);
 
   opwd <- ".";

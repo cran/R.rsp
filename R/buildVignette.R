@@ -50,15 +50,13 @@ buildVignette <- function(file, dir = ".", latex = TRUE, tangle = TRUE, quiet = 
     ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ### BEGIN: Workaround until buildVignette() is in the 'tools' package.
     ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    .requirePkg("tools");
+    use("tools", quietly=TRUE);
     ns <- getNamespace("tools");
     .get_vignette_metadata <- get(".get_vignette_metadata", mode="function", envir=ns);
     vignette_is_tex <- get("vignette_is_tex", mode="function", envir=ns);
     find_vignette_product <- get("find_vignette_product", mode="function", envir=ns);
     vignetteEngine <- get("vignetteEngine", mode="function", envir=ns);
-    file_path_as_absolute <- tools::file_path_as_absolute;
 
-    texi2pdf <- tools::texi2pdf
     list.files <- function(..., no..=FALSE) {
       res <- base::list.files(...);
       if (no..) res <- setdiff(res, c(".", ".."));

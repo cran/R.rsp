@@ -1,5 +1,6 @@
 ###########################################################################/**
 # @RdocFunction rspWeave
+# @alias asisWeave
 #
 # @title "A weave function for RSP documents"
 #
@@ -13,6 +14,9 @@
 # \arguments{
 #   \item{file}{The file to be weaved.}
 #   \item{...}{Not used.}
+#   \item{postprocess}{If @TRUE, the compiled document is also post
+#     processed, if possible.}
+#   \item{clean}{If @TRUE, intermediate files are removed, otherwise not.}
 #   \item{quiet}{If @TRUE, no verbose output is generated.}
 #   \item{envir}{The @environment where the RSP document is
 #         parsed and evaluated.}
@@ -21,7 +25,7 @@
 #
 # \value{
 #   Returns the absolute pathname of the generated RSP product.
-#   The generated RSP product is not postprocessed.
+#   The generated RSP product is postprocessed, if possible.
 # }
 #
 # @author
@@ -34,7 +38,7 @@
 # @keyword IO
 # @keyword internal
 #*/###########################################################################
-rspWeave <- function(file, ..., postprocess=TRUE, quiet=FALSE, envir=new.env(), .engineName="rsp") {
+rspWeave <- function(file, ..., postprocess=TRUE, clean=TRUE, quiet=FALSE, envir=new.env(), .engineName="rsp") {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # WORKAROUND: 'R CMD build' seems to ignore the %\VignetteEngine{<engine>}
   # markup for R (>= 3.0.0 && <= 3.0.1 patched r63905) and only go by the
@@ -51,13 +55,25 @@ rspWeave <- function(file, ..., postprocess=TRUE, quiet=FALSE, envir=new.env(), 
   # If no problems, use the default rfile() weaver.
   if (is.null(weave)) {
     weave <- function(..., quiet=FALSE) {
-      rfile(..., workdir=".", postprocess=postprocess, verbose=!quiet);
+      rfile(..., workdir=".", postprocess=postprocess, clean=clean, verbose=!quiet);
     }
   }
 
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Weave!
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   res <- weave(file, ..., quiet=quiet, envir=envir);
 
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Cleanup, i.e. remove intermediate RSP files, e.g. Markdown and TeX?
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ext <- tolower(file_ext(file));
+  if (postprocess && clean && (ext == "rsp")) {
+    tmp <- file_path_sans_ext(basename(file));
+    if (file_test("-f", tmp)) file.remove(tmp);
+  }
 
   # DEBUG: Store generated file? /HB 2013-09-17
   path <- Sys.getenv("RSP_DEBUG_PATH");
@@ -71,6 +87,7 @@ rspWeave <- function(file, ..., postprocess=TRUE, quiet=FALSE, envir=new.env(), 
 
 ###########################################################################/**
 # @RdocFunction rspTangle
+# @alias asisTangle
 #
 # @title "A tangle function for RSP documents"
 #
@@ -85,6 +102,7 @@ rspWeave <- function(file, ..., postprocess=TRUE, quiet=FALSE, envir=new.env(), 
 #   \item{file}{The file to be tangled.}
 #   \item{...}{Not used.}
 #   \item{envir}{The @environment where the RSP document is parsed.}
+#   \item{pattern}{A filename pattern used to identify the name.}
 # }
 #
 # \value{
@@ -101,7 +119,7 @@ rspWeave <- function(file, ..., postprocess=TRUE, quiet=FALSE, envir=new.env(), 
 # @keyword IO
 # @keyword internal
 #*/###########################################################################
-rspTangle <- function(file, ..., envir=new.env()) {
+rspTangle <- function(file, ..., envir=new.env(), pattern="(|[.][^.]*)[.]rsp$") {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Validate arguments
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -111,21 +129,29 @@ rspTangle <- function(file, ..., envir=new.env()) {
   # Setup output R file
   workdir <- ".";
   filename <- basename(file);
-  pattern <- "(|[.][^.]*)[.]rsp$";
   fullname <- gsub(pattern, "", filename);
   filenameR <- sprintf("%s.R", fullname);
   pathnameR <- Arguments$getWritablePathname(filenameR, path=workdir);
   pathnameR <- getAbsolutePath(pathnameR);
 
   # Translate RSP document to RSP code script
-  rcode <- rscript(file=file);
+  rcode <- rscript(file=file, output=RspSourceCode(), ...);
+
+  # Check if tangle is disabled by the vignette
+  tangle <- getMetadata(rcode, "tangle");
+  tangle <- tolower(tangle);
+  tangle <- (length(tangle) == 0L) || !is.element(tangle, c("false", "no"));
+
+  # Skip tangling?
+  if (!tangle) return(NULL);
+
   rcode <- tangle(rcode);
 
   # Create header
   hdr <- NULL;
   hdr <- c(hdr, "This 'tangle' R script was created from an RSP document.");
   hdr <- c(hdr, sprintf("RSP source document: '%s'", file));
-  md <- getMetadata(rcode);
+  md <- getMetadata(rcode, local=FALSE);
   for (key in names(md)) {
     value <- md[[key]];
     value <- gsub("\n", "\\n", value, fixed=TRUE);
@@ -145,17 +171,43 @@ rspTangle <- function(file, ..., envir=new.env()) {
 } # rspTangle()
 
 
-## asisWeave <- function(file, ...) {
-##   fileR <- gsub("[.]asis$", "", file);
-##   fileR;
-## } # asisWeave()
-##
-##
-## texWeave <- function(file, ...) {
-##   file <- RspFileProduct(file);
-##   process(file);
-## } # texWeave()
+asisWeave <- function(file, ...) {
+  output <- file_path_sans_ext(basename(file));
 
+  # Make sure the output vignette exists
+  if (!isFile(output)) {
+    # It could be that we're here because 'R CMD check' runs the
+    # 're-building of vignette outputs' step.  Then the output
+    # file has already been moved to inst/doc/.  If so, grab it
+    # from there instead.
+    outputS <- file.path("..", "inst", "doc", output);
+    if (isFile(outputS)) {
+      file.copy(outputS, output, overwrite=TRUE);
+      output <- outputS;
+    } else {
+      path <- Sys.getenv("RSP_DEBUG_PATH");
+      if (nchar(path) > 0L) {
+        msg <- list(file=file, output=output, pwd=getwd(), files=dir());
+        sink(file.path(path, "R.rsp.DEBUG")); print(msg); sink();
+      }
+      throw("No such output file: ", output);
+    }
+  }
+
+  # Update the timestamp of the output file
+  # (otherwise tools::buildVignettes() won't detect it)
+  touchFile(output);
+
+  # DEBUG: Store generated file? /HB 2013-09-17
+  path <- Sys.getenv("RSP_DEBUG_PATH");
+  if (nchar(path) > 0L) {
+    copyFile(output, file.path(path, basename(output)), overwrite=TRUE);
+  }
+
+  output;
+} # asisWeave()
+
+asisTangle <- function(file, ...) NULL
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -234,8 +286,11 @@ rspTangle <- function(file, ..., envir=new.env()) {
   if (dzslides) {
     # Pandoc *.md to *.html
     format <- Sys.getenv("R.rsp/pandoc/args/format", "html");
+    use("knitr", quietly=TRUE)
+    # To please R CMD check
+    pandoc <- NULL; rm(list="pandoc");
     suppressMessages({
-      html <- knitr::pandoc(md, format=format);
+      html <- pandoc(md, format=format);
     })
     html <- RspFileProduct(html);
   } else {
@@ -267,6 +322,9 @@ rspTangle <- function(file, ..., envir=new.env()) {
 
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# REGISTER VIGNETTE ENGINES
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 .registerVignetteEngines <- function(pkgname) {
   # Are vignette engines supported?
   if (getRversion() < "3.0.0") return(); # Nope!
@@ -274,42 +332,60 @@ rspTangle <- function(file, ..., envir=new.env()) {
   # Register vignette engines
   vignetteEngine <- get("vignetteEngine", envir=asNamespace("tools"));
 
-  # (1) Skip engine
-  vignetteEngine("skip_Rnw", package=pkgname,
-    pattern="[.]Rnw$",
-    weave=NA
-  );
-
-  # (2) RSP engine
+  # RSP engine
   vignetteEngine("rsp", package=pkgname,
     pattern="[.][^.]*[.]rsp$",
     weave=rspWeave,
     tangle=rspTangle
   );
 
-  # (3) Markdown RSP + knitr::pandoc engine (non-offical trial version)
+  # "asis" engine
+  vignetteEngine("asis", package=pkgname,
+    pattern="[.](pdf|html)[.]asis$",
+    weave=asisWeave,
+    tangle=asisTangle
+  );
+
+  # TeX engine
+  vignetteEngine("tex", package=pkgname,
+    pattern="[.](tex|latex)$",
+    weave=rspWeave,
+    tangle=function(...) rspTangle(..., pattern="[.](tex|latex)$")
+  );
+
+  # Markdown engine
+  vignetteEngine("md", package=pkgname,
+    pattern="[.]md$",
+    weave=rspWeave,
+    tangle=function(...) rspTangle(..., pattern="[.]md$")
+  );
+
+  # Markdown RSP + knitr::pandoc engine (non-offical trial version)
   vignetteEngine("md.rsp+knitr:pandoc", package=pkgname,
     pattern="[.]md[.]rsp$",
     weave=`.weave_md.rsp+knitr:pandoc`,
     tangle=rspTangle
   );
-
-##    # "as-is" engine
-##    vignetteEngine("asis", package=pkgname, pattern="[.](pdf|html)[.]asis$",
-##                    weave=asisWeave, tangle=function(...) NULL);
-##
-##    # LaTeX engine
-##    vignetteEngine("tex", package=pkgname, pattern="[.]tex$",
-##                    weave=texWeave, tangle=function(...) NULL);
-##
-##    # Markdown engine
-##    vignetteEngine("markdown", package=pkgname, pattern="[.]md$",
-##                    weave=markdownWeave, tangle=function(...) NULL);
 } # .registerVignetteEngines()
 
 
 ###############################################################################
 # HISTORY:
+# 2014-05-30
+# o asisTangle() no longer generates a tangle script and returns NULL.
+# o rspTangle() now respects %\VignetteTangle{FALSE} returning NULL.
+# 2014-05-24
+# o Added vignette engines 'tex' and 'md'.
+# o Dropped vignette engine 'skip_Rnw'.
+# o Now engine '.weave_md.rsp+knitr:pandoc' tries to install knitr,
+#   iff missing.
+# o WORKAROUND: Now engine 'dummy_Rnw' "fakes" weave and tangle outputs.
+# 2014-05-17
+# o Now rspWeave() for RSP cleans up intermediate TeX files by default.
+# 2014-04-30
+# o Added vignette engine 'R.rsp::asis'.
+# 2014-04-18
+# o Now rspTangle() passes '...' to rsource().
 # 2013-12-12
 # o BUG FIX: The 'rsp::.weave_md.rsp+knitr:pandoc' vignette engine did not
 #   explicitly disable RSP postprocessing as intended due to a typo.

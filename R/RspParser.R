@@ -385,18 +385,20 @@ setMethodS3("parse", "RspParser", function(parser, object, envir=parent.frame(),
   ## attached in order for 'R CMD build' to build the R.rsp package.
   ## If not, the generated RSP-to-R script becomes corrupt and contains
   ## invalid symbols, at least for '<%= ... %>' RSP constructs.
-  ## Below .requirePkg("R.oo", quietly=TRUE) is used to attach 'R.oo',
+  ## Below use("R.oo", quietly=TRUE) is used to attach 'R.oo',
   ## but we do it as late as possible, in order narrow down the cause.
   ## It appears to be related to garbage collection and finalizers of
   ## Object, which will try to attach 'R.oo' temporarily before running
   ## finalize() on the object.  If so, it's a bug in R.oo.
   ## /HB 2013-09-17
-  .requirePkg("R.oo", quietly=TRUE);
+  use("R.oo", quietly=TRUE);
 
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Local functions
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  metadata <- getMetadata(object, local=TRUE);
+
   returnAs <- function(doc, as=c("RspDocument", "RspString")) {
     as <- match.arg(as);
 
@@ -405,6 +407,8 @@ setMethodS3("parse", "RspParser", function(parser, object, envir=parent.frame(),
       expr <- RspText("");
       doc[[1]] <- expr;
     }
+
+    if (length(metadata) > 0L) doc <- setMetadata(doc, metadata);
 
     if (as == "RspDocument") {
       return(doc);
@@ -634,6 +638,8 @@ setMethodS3("parse", "RspParser", function(parser, object, envir=parent.frame(),
 
 ##############################################################################
 # HISTORY:
+# 2014-05-30
+# o Now parse() for RspParser preserves any metadata, iff already set.
 # 2014-01-11
 # o BUG FIX: RSP comments with only a single character commented out would
 #   generate an RSP parsing error, e.g. '<%-- --%>' and '<%--\n--%>'.

@@ -5,6 +5,7 @@
   %\VignetteKeyword{RSP markup language, literate programming, reproducible research, report generator, Sweave, knitr, brew, noweb, TeX, LaTeX, Markdown, AsciiDoc, reStructuredText, Org-Mode, HTML, PDF}
   %\VignetteAuthor{Henrik Bengtsson}
   %\VignetteEngine{R.rsp::md.rsp+knitr:pandoc}
+  %\VignetteTangle{FALSE}
 --------------------------------------------------------------------"%>
 <% t0 <- Sys.time() %>
 <%---------------------------------------------------------------------
@@ -19,7 +20,7 @@
   [3] http://paulrouget.com/dzslides/
   ---------------------------------------------------------------------%>
 <%@string version="${version}"%>
-<% library("R.rsp"); %>
+<% R.utils::use("R.rsp"); %>
 <% dzslides <- isCapableOf(R.rsp, "pandoc (>= 1.9.2)"); %>
 <% if (dzslides) { %>
 <%---------------------------------------------------------------------
@@ -72,7 +73,7 @@ pre { font-weight: bold; }
   SETUP
   ---------------------------------------------------------------------%>
 <%
-library("R.devices")
+R.utils::use("R.devices")
 options("devEval/args/field"="dataURI")
 devOptions("png", width=840)
 %>
@@ -133,7 +134,7 @@ A random number: 7
 * Supplement and/or complement Sweave, knitr, ...
 * Mix and match code and text however you want.
 * Simplify sharing of template and output documents.
-* Use for R package vignettes (since R 3.0.0).
+* Use for R package vignettes.
 
 ## Some usage
 * PSCBS: PDF reports of copy-number segmentation results
