@@ -1,5 +1,8 @@
 library("R.rsp")
-library("R.utils") # Arguments
+parse <- R.utils::parse # S3 generic parse() is exported by R.rsp
+Arguments <- R.utils::Arguments
+enter <- R.utils::enter
+exit <- R.utils::exit
 
 verbose <- Arguments$getVerbose(TRUE)
 
@@ -10,7 +13,7 @@ pathname <- file.path(path, "trimming-1.txt.rsp")
 
 verbose && enter(verbose, "Validating that the RSP parse output can be deparsed")
 
-untils <- rev(eval(formals(parse.RspParser)$until))
+untils <- rev(eval(formals(R.rsp:::parse.RspParser)$until))
 untils <- setdiff(untils, "*")
 
 for (kk in seq_along(untils)) {

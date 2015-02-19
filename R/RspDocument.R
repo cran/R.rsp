@@ -41,9 +41,11 @@ setMethodS3("print", "RspDocument", function(x, ...) {
   s <- c(s, sprintf("Total number of RSP constructs: %d", length(x)));
   if (length(x) > 0L) {
     types <- sapply(x, FUN=function(x) class(x)[1L]);
-    tbl <- table(types);
-    for (kk in seq_along(tbl)) {
-      s <- c(s, sprintf("Number of %s(s): %d", names(tbl)[kk], tbl[kk]));
+    if (length(types) > 0L) {
+      tbl <- table(types);
+      for (kk in seq_along(tbl)) {
+        s <- c(s, sprintf("Number of %s(s): %d", names(tbl)[kk], tbl[kk]));
+      }
     }
   }
   s <- c(s, sprintf("Content type: %s", getType(x)));
@@ -97,68 +99,6 @@ setMethodS3("getType", "RspDocument", function(object, default=NA, as=c("text", 
 
 
 #########################################################################/**
-# @RdocMethod getMetadata
-# @aliasmethod setMetadata
-#
-# @title "Gets the metadata of the RspDocument"
-#
-# \description{
-#  @get "title".
-# }
-#
-# @synopsis
-#
-# \arguments{
-#   \item{name}{(optional) A @character string specifying a specific
-#      metadata variable to retrieve.}
-#   \item{...}{Not used.}
-# }
-#
-# \value{
-#  Returns a @character string.
-# }
-#
-# @author
-#
-# \seealso{
-#   @seeclass
-# }
-#*/#########################################################################
-setMethodS3("getMetadata", "RspDocument", function(object, name=NULL, default=NULL, local=FALSE, ...) {
-  res <- getAttribute(object, "metadata", default=list());
-  if (!local) {
-    isLocal <- is.element(names(res), "source");
-    res <- res[!isLocal];
-  }
-  if (!is.null(name)) {
-    if (is.element(name, names(res))) {
-      res <- res[[name]];
-    } else {
-      res <- default;
-    }
-  }
-  res;
-}, protected=TRUE)
-
-
-setMethodS3("setMetadata", "RspDocument", function(object, metadata=NULL, name, value, ...) {
-  data <- getMetadata(object, local=TRUE);
-
-  if (!is.null(metadata)) {
-    for (name in names(metadata)) {
-      data[[name]] <- metadata[[name]];
-    }
-  } else {
-    data[[name]] <- value;
-  }
-
-  setAttribute(object, "metadata", data);
-}, protected=TRUE)
-
-
-
-
-#########################################################################/**
 # @RdocMethod getSource
 #
 # @title "Gets the source reference of an RSP document"
@@ -184,7 +124,7 @@ setMethodS3("setMetadata", "RspDocument", function(object, metadata=NULL, name, 
 # }
 #*/#########################################################################
 setMethodS3("getSource", "RspDocument", function(object, ...) {
-  getAttribute(object, "source", default=as.character(NA));
+  getAttribute(object, "source", default=NA_character_);
 }, protected=TRUE, createGeneric=FALSE)
 
 
@@ -264,9 +204,7 @@ setMethodS3("dropEmptyText", "RspDocument", function(object, ..., verbose=FALSE)
   }
 
   # Nothing to do?
-  if (length(object) == 0L) {
-    return(object);
-  }
+  if (length(object) == 0L) return(object);
 
   verbose && enter(verbose, "Dropping empty RSP text constructs");
 
@@ -330,13 +268,6 @@ setMethodS3("trimNonText", "RspDocument", function(object, ..., verbose=FALSE) {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Local functions
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  countLineBreaks <- function(s, ...) {
-    s <- gsub("\r\n", "\n", s, fixed=TRUE);
-    s <- gsub("\r", "\n", s, fixed=TRUE);
-    s <- charToRaw(s);
-    sum(s == as.raw(0x0a));
-  } # countLineBreaks()
-
   tailString <- function(s, n=10L) {
     len <- nchar(s);
     s <- substring(s, first=max(1L, len-n+1, n));
@@ -350,7 +281,7 @@ setMethodS3("trimNonText", "RspDocument", function(object, ..., verbose=FALSE) {
     s <- gsub("\n", "\\n", s, fixed=TRUE);
     s <- gsub("\r", "\\r", s, fixed=TRUE);
     s;
-  } # tailString()
+  } # headString()
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Validate arguments
@@ -378,9 +309,9 @@ setMethodS3("trimNonText", "RspDocument", function(object, ..., verbose=FALSE) {
   idxsText <- unname(which(isText));
   idxsNonText <- unname(which(!isText));
   idxsSilentNonText <- idxsNonText[!sapply(object[idxsNonText], FUN=getInclude)];
-  verbose && cat(verbose, "Number text RSP constructs: ", length(idxsText));
-  verbose && cat(verbose, "Number non-text RSP constructs: ", length(idxsNonText));
-  verbose && cat(verbose, "Number \"silent\" non-text RSP constructs: ", length(idxsSilentNonText));
+  verbose && cat(verbose, "Number of text RSP constructs: ", length(idxsText));
+  verbose && cat(verbose, "Number of non-text RSP constructs: ", length(idxsNonText));
+  verbose && cat(verbose, "Number of \"silent\" non-text RSP constructs: ", length(idxsSilentNonText));
 
   # Nothing todo?
   if (length(idxsNonText) == 0L) {
@@ -432,9 +363,9 @@ setMethodS3("trimNonText", "RspDocument", function(object, ..., verbose=FALSE) {
       idxsText <- unname(which(isText));
       idxsNonText <- unname(which(!isText));
       idxsSilentNonText <- idxsNonText[!sapply(object[idxsNonText], FUN=getInclude)];
-      verbose && cat(verbose, "Number text RSP constructs: ", length(idxsText));
-      verbose && cat(verbose, "Number non-text RSP constructs: ", length(idxsNonText));
-      verbose && cat(verbose, "Number \"silent\" non-text RSP constructs: ", length(idxsSilentNonText));
+      verbose && cat(verbose, "Number of text RSP constructs: ", length(idxsText));
+      verbose && cat(verbose, "Number of non-text RSP constructs: ", length(idxsNonText));
+      verbose && cat(verbose, "Number of \"silent\" non-text RSP constructs: ", length(idxsSilentNonText));
     } else {
       verbose && cat(verbose, "No 'empty' RSP text found.");
     }
@@ -475,6 +406,7 @@ setMethodS3("trimNonText", "RspDocument", function(object, ..., verbose=FALSE) {
       idxTextL <- idxTextL[length(idxTextL)];
       exprL <- object[[idxTextL]];
       textL <- getContent(exprL);
+      verbose && printf(verbose, "The text to the left is: '%s'\n", textL);
       emptyL <- (regexpr("\n[ \t\v]*$", textL) != -1L);
     }
 
@@ -484,7 +416,7 @@ setMethodS3("trimNonText", "RspDocument", function(object, ..., verbose=FALSE) {
       # so we don't need to consider it again.
       idxsText <- setdiff(idxsText, idxTextL);
 
-      verbose && printf(verbose, "The text to the left is non-empty: '%s'\n", tailString(textL));
+      verbose && printf(verbose, "The text to the left is non-empty: '[...]%s'\n", tailString(textL));
       verbose && exit(verbose);
       next;
     }
@@ -738,18 +670,14 @@ setMethodS3("mergeTexts", "RspDocument", function(object, trim=FALSE, ..., verbo
 
 
   # Nothing to do?
-  if (length(object) <= 1L) {
-    return(object);
-  }
+  if (length(object) <= 1L) return(object);
 
   # All RSP text constructs
   isText <- sapply(object, FUN=inherits, "RspText");
   idxs <- which(isText);
 
   # Nothing todo?
-  if (length(idxs) == 0L) {
-    return(object);
-  }
+  if (length(idxs) == 0L) return(object);
 
   verbose && enter(verbose, "Merging RSP texts");
 
@@ -815,15 +743,11 @@ setMethodS3("flatten", "RspDocument", function(object, ..., verbose=FALSE) {
   object <- mergeTexts(object);
 
   # Nothing to do?
-  if (length(object) == 0L) {
-    return(object);
-  }
+  if (length(object) == 0L) return(object);
 
   # Nothing todo?
   idxs <- which(sapply(object, FUN=inherits, "RspDocument"));
-  if (length(idxs) == 0L) {
-    return(object);
-  }
+  if (length(idxs) == 0L) return(object);
 
   res <- list();
 
@@ -1122,10 +1046,93 @@ setMethodS3("parseIfElseDirectives", "RspDocument", function(object, firstIdx=1L
 
 
 
+
+
+setMethodS3("parseCutNPasteDirectives", "RspDocument", function(object, firstIdx=1L, ..., verbose=FALSE) {
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Validate arguments
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Argument 'object' & 'firstIdx':
+    idx <- firstIdx;
+    directive <- object[[idx]];
+
+    if (!inherits(directive, "RspCutDirective")) {
+      throw(RspPreprocessingException("First RSP construct is not an RSP 'cut' directive", item=directive));
+    }
+
+    # Argument 'verbose':
+    verbose <- Arguments$getVerbose(verbose);
+    if (verbose) {
+      pushState(verbose);
+      on.exit(popState(verbose));
+    }
+
+    title <- as.character(asRspString(directive));
+    verbose && enter(verbose, "Extracting the statements of ", title);
+
+    verbose && printf(verbose, "RSP '%s' directive (#%d): %s\n", directive, idx, asRspString(directive));
+
+    idx <- idx + 1L;
+
+    content <- list();
+
+    # Build cut statement # (find endcut)
+    verbose && enter(verbose, "Collecting statements for ", title);
+    endFound <- FALSE;
+    while (idx <= length(object)) {
+      item <- object[[idx]];
+      if (verbose) itemStr <- gsub("\n", "\\\\n", asRspString(item));
+
+      if (inherits(item, "RspEndcutDirective")) {
+        verbose && printf(verbose, "Detected END%s (#%d: %s)\n", toupper(directive), idx, itemStr);
+        endFound <- TRUE;
+        idx <- idx + 1L;
+        break;
+      }
+
+      if (inherits(item, "RspCutDirective")) {
+        verbose && enter(verbose, sprintf("Detected nested %s (#%d: %s)", toupper(directive), idx, itemStr));
+        throw("Nested CUT'N'PASTE directives are not yet supported!");
+        item <- parseCutNPasteDirectives(object, firstIdx=idx, verbose=verbose);
+
+        # Consume indices
+        idxs <- getAttribute(item, ".idxs");
+        verbose && printf(verbose, "Item range #%d-#%d\n", min(idxs), max(idxs));
+        idx <- max(idxs);
+        verbose && exit(verbose);
+      } else {
+        verbose && printf(verbose, "Adding item #%d: '%s'\n", idx, itemStr);
+      }
+
+      content <- c(content, list(item));
+
+      idx <- idx + 1L;
+    } # while()
+    verbose && exit(verbose);
+
+    if (!endFound) {
+      throw(RspPreprocessingException(sprintf("Syntax error. Unclosed RSP '%s' directive (#%d)", toupper(directive), idx), item=directive));
+    }
+
+    verbose && printf(verbose, "Consumed items #%d-#%d\n", firstIdx, idx);
+
+    res <- directive;
+    attr(res, ".content") <- content;
+    attr(res, ".idxs") <- firstIdx:(idx-1L);
+
+    verbose && exit(verbose);
+
+    res;
+}, protected=TRUE) # parseCutNPasteDirectives()
+
+
+
 #########################################################################/**
 # @RdocMethod preprocess
 # @aliasmethod parseIfElseDirectives
 # @alias parseIfElseDirectives
+# @aliasmethod parseCutNPasteDirectives
+# @alias parseCutNPasteDirectives
 #
 # @title "Processes all RSP preprocessing directives"
 #
@@ -1143,6 +1150,8 @@ setMethodS3("parseIfElseDirectives", "RspDocument", function(object, firstIdx=1L
 #      replaced (inserted and expanded) by its @list of
 #      @see "RspConstruct"s.}
 #   \item{envir}{The @environment where the preprocessing is evaluated.}
+#   \item{clipboard}{An @environment hold cut'n'paste directives during
+#      preprocessing.}
 #   \item{...}{Not used.}
 #   \item{verbose}{See @see "R.utils::Verbose".}
 # }
@@ -1157,7 +1166,7 @@ setMethodS3("parseIfElseDirectives", "RspDocument", function(object, firstIdx=1L
 #   @seeclass
 # }
 #*/#########################################################################
-setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatten=TRUE, envir=parent.frame(), ..., verbose=FALSE) {
+setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatten=TRUE, envir=parent.frame(), clipboard=new.env(), ..., verbose=FALSE) {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Local function
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1260,6 +1269,46 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
   path <- getPath(object);
 
 
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # (0) Restructure according cut'n'paste
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  verbose && enter(verbose, "Parsing cut'n'paste statements");
+
+  idx <- 1L;
+  while (idx <= length(object)) {
+    item <- object[[idx]];
+    if (inherits(item, "RspCutDirective")) {
+      cut <- parseCutNPasteDirectives(object, firstIdx=idx, verbose=verbose);
+      name <- attr(cut, "name");
+      content <- attr(cut, ".content");
+      assign(name, content, envir=clipboard, inherits=FALSE);
+      # Not needed anymore
+      name <- content <- NULL;
+
+      # RSP expressions to be dropped
+      idxs <- getAttribute(cut, ".idxs");
+      if (item == "copy") {
+        # If a copy directive, then keep the content.
+        idxs <- range(idxs);
+      }
+
+      # Drop
+      for (ii in idxs) {
+        object[[ii]] <- RspVoid();
+      }
+    }
+    idx <- idx + 1L;
+  } # for (idx ...)
+  item <- NULL; # Not needed anymore
+
+  verbose && exit(verbose);
+
+  # Assert that all 'cut' statements are consumed
+  isCut <- sapply(object, FUN=inherits, "RspCutDirective");
+  stopifnot(!any(isCut));
+
+
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # (1) Restructure according to IF-ELSE-THEN directives
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1350,10 +1399,23 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # RSP void
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    if (inherits(item, "RspVoid")) {
+      # Drop void RSP items
+      object[[idx]] <- NA;
+      verbose && exit(verbose);
+      next;
+    } # RspVoid
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # RSP comments
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if (inherits(item, "RspComment")) {
       # Drop comment
+      ## Should we keep this around for improved/better
+      ## trimming of newlines? /HB 2014-09-02
       object[[idx]] <- NA;
       verbose && exit(verbose);
       next;
@@ -1450,6 +1512,32 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Paste
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    if (inherits(item, "RspPasteDirective")) {
+      attrs <- getAttributes(item);
+      name <- attrs$name;
+
+      doc <- get(name, envir=clipboard, inherits=FALSE);
+      doc <- RspDocument(doc);
+
+      verbose && enter(verbose, "Recursively preprocessing pasted RSP document");
+      doc <- preprocess(doc, recursive=TRUE, flatten=flatten, envir=envir, clipboard=clipboard, ..., verbose=verbose);
+      metaChild <- getMetadata(doc);
+      if (length(metaChild) > 0L) {
+        object <- setMetadata(object, metaChild);
+      }
+      metaChild <- NULL;
+      verbose && exit(verbose);
+
+      # Paste content
+      object[[idx]] <- doc;
+      verbose && exit(verbose);
+      next;
+    }
+
+
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # RspMetaDirective => ...
     # Setters:
     # <@meta name="<name>" content="<content>"%>
@@ -1538,7 +1626,7 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
       } else if (!is.null(name) && is.null(value)) {
         # <@string name="<name>"%>
         if (exists(name, envir=envir, inherits=FALSE)) {
-          value <- get(name, envir=envir);
+          value <- get(name, envir=envir, inherits=FALSE);
         } else {
           value <- attrs$default;
           # <@string name="<name>" default="<content>"%>?
@@ -1573,7 +1661,7 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
     if (inherits(item, "RspEvalDirective")) {
       file <- getFile(item);
       content <- getContent(item);
-      language <- getAttribute(item, "language", default=as.character(NA));
+      language <- getAttribute(item, "language", default=NA_character_);
       if (is.null(content) && is.null(file)) {
         throw(RspPreprocessingException("Either attribute 'file' or 'content' must be given", item=item));
       }
@@ -1728,7 +1816,6 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
         content <- escapeRspContent(content, srcCT=inclCT, targetCT=hostCT, verbose=verbose);
       }
 
-
       # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
       # (d) Escape any remaining RSP tags (hide from RSP parser)
       # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1767,7 +1854,7 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
 
         if (recursive && until == "*") {
           verbose && enter(verbose, "Recursively preprocessing included RSP document");
-          doc <- preprocess(doc, recursive=TRUE, flatten=flatten, envir=envir, ..., verbose=verbose);
+          doc <- preprocess(doc, recursive=TRUE, flatten=flatten, envir=envir, clipboard=clipboard, ..., verbose=verbose);
           metaChild <- getMetadata(doc);
           if (length(metaChild) > 0L) {
             object <- setMetadata(object, metaChild);
@@ -1840,15 +1927,22 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
         }
       }
 
-      result <- NA;
+      # Check for existance of variable
+      exist <- FALSE;
+      for (mode in c("character", "numeric", "integer", "logical")) {
+        exist <- exists(name, mode=mode, envir=envir);
+        if (exist) {
+          value <- get(name, mode=mode, envir=envir);
+          break;
+        }
+      } # for (mode ...)
+
       if (test == "exists") {
-        # Check for existance of variable
-        result <- exists(name, envir=envir);
+        result <- exist;
       } else {
-        if (!exists(name, envir=envir)) {
+        if (!exist) {
           throw(RspPreprocessingException(sprintf("Variable (%s) does not exist", name), item=item));
         }
-        value <- get(name, envir=envir);
 
         otherValue <- attrs$value;
         if (is.null(otherValue)) {
@@ -1896,7 +1990,7 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
       if (!is.null(doc)) {
         verbose && print(verbose, doc);
         doc <- setAttribute(doc, ".ifElseParsed", TRUE);
-        doc <- preprocess(doc, recursive=TRUE, flatten=flatten, envir=envir, ..., verbose=verbose);
+        doc <- preprocess(doc, recursive=TRUE, flatten=flatten, envir=envir, clipboard=clipboard, ..., verbose=verbose);
         # Sanity check
         isIf <- sapply(doc, FUN=inherits, "RspIfDirective");
         stopifnot(!any(isIf));
@@ -1944,12 +2038,23 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
 
   verbose && exit(verbose);
 
-
-  # Cleanup
+  # Cleanup (remove NAs, e.g. former RSP comments)
   excl <- which(sapply(object, FUN=identical, NA));
   if (length(excl) > 0L) {
     object <- object[-excl];
   }
+
+##   # Sanity check:
+##   # Here all objects are expected to be all RSP text items
+##   isOk <- sapply(object, FUN=function(x) {
+##     inherits(x, "RspText") || inherits(x, "RspComment")
+##   });
+##   if (!all(isOk)) {
+##     classes <- sapply(object[!isOk], FUN=function(x) class(x)[1L]);
+##     tbl <- table(classes);
+##     msg <- sprintf("%s [n=%d]", names(tbl), tbl);
+##     warning("INTERNAL ERROR: Unexpected classes of RSP items after preprocessing: ", paste(msg, collapse=", "));
+##   }
 
   if (flatten) {
     verbose && enter(verbose, "Flatten RSP document");
@@ -1961,7 +2066,17 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
   object <- dropEmptyText(object);
   object <- mergeTexts(object);
 
-  verbose && printf(verbose, "Returning RSP document with %d RSP constructs.\n", length(object));
+  if (verbose) {
+    if (length(object) > 0L) {
+      classes <- sapply(object, FUN=function(x) class(x)[1L]);
+      if (length(classes) > 0L) {
+        tbl <- table(classes);
+        msg <- sprintf("%s [n=%d]", names(tbl), tbl);
+        printf(verbose, "Returning RSP document with %d RSP constructs: %s\n", length(object), paste(msg, collapse=", "));
+      }
+    }
+  }
+
 
   verbose && exit(verbose);
 
@@ -1971,6 +2086,17 @@ setMethodS3("preprocess", "RspDocument", function(object, recursive=TRUE, flatte
 
 ##############################################################################
 # HISTORY:
+# 2014-09-03
+# o ROBUSTNESS: Now RspIfDirective is more conservative in how it
+#   locates RSP variables, i.e. it will only search for RSP variables
+#   of certain modes.
+# 2014-09-02
+# o Clarified some verbose output; useful for troubleshooting.
+# 2014-07-02
+# o Added support for copy directives.
+# o Now the cut'n'paste clipboard is available across files.
+# 2014-07-01
+# o Added support for cut'n'paste preprocessing directives.
 # 2014-05-30
 # o RSP directives <%@meta ...%>, <%@string ...%>, ... <%@integer ...%> for
 #   getting values gained attribute 'default'.

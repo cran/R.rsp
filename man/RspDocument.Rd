@@ -53,11 +53,11 @@ RspDocument(expressions=list(), ...)
  \tab \code{\link[R.rsp:dropEmptyText.RspDocument]{dropEmptyText}} \tab Drops all empty RSP text constructs.\cr
  \tab \code{\link[R.rsp:evaluate.RspDocument]{evaluate}} \tab Parses, translates, and evaluates the RSP document.\cr
  \tab \code{\link[R.rsp:flatten.RspDocument]{flatten}} \tab Flattens an RspDocument.\cr
- \tab \code{\link[R.rsp:getMetadata.RspDocument]{getMetadata}} \tab Gets the metadata of the RspDocument.\cr
  \tab \code{\link[R.rsp:getPath.RspDocument]{getPath}} \tab Gets the path to the source reference of an RSP string.\cr
  \tab \code{\link[R.rsp:getSource.RspDocument]{getSource}} \tab Gets the source reference of an RSP document.\cr
  \tab \code{\link[R.rsp:getType.RspDocument]{getType}} \tab Gets the type of the RspDocument.\cr
  \tab \code{\link[R.rsp:mergeTexts.RspDocument]{mergeTexts}} \tab Merge neighboring 'text' elements.\cr
+ \tab \code{parseCutNPasteDirectives} \tab  -\cr
  \tab \code{parseIfElseDirectives} \tab  -\cr
  \tab \code{\link[R.rsp:preprocess.RspDocument]{preprocess}} \tab Processes all RSP preprocessing directives.\cr
  \tab \code{print} \tab  -\cr
@@ -68,7 +68,6 @@ RspDocument(expressions=list(), ...)
  \tab \code{rscript} \tab  -\cr
  \tab \code{rsource} \tab  -\cr
  \tab \code{rstring} \tab  -\cr
- \tab \code{setMetadata} \tab  -\cr
  \tab \code{\link[R.rsp:subset.RspDocument]{subset}} \tab Subsets an RspDocument.\cr
  \tab \code{\link[R.rsp:toR.RspDocument]{toR}} \tab Translates the RSP document into R source code.\cr
  \tab \code{\link[R.rsp:trim.RspDocument]{trim}} \tab Trims each of the RSP constructs.\cr
@@ -77,7 +76,7 @@ RspDocument(expressions=list(), ...)
 
 
  \bold{Methods inherited from RspObject}:\cr
-getAttribute, getAttributes, hasAttribute, print, setAttribute, setAttributes
+print
 
  \bold{Methods inherited from list}:\cr
 all.equal, as.data.frame, attachLocally, relist, within

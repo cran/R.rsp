@@ -29,6 +29,7 @@
     \item Detailed description of the RSP markup language.
     \item A one-page RSP reference card.
     \item How to use RSP for package vignettes.
+    \item How to use plain LaTeX for package vignettes.
     \item How to use static PDF or HTML package vignettes.
   }
 
@@ -59,9 +60,9 @@
 }
 
 \section{How to cite this package}{
- Bengtsson H (2014).
-\emph{R.rsp: Dynamic generation of scientific reports}.
-R package version 0.19.0.
+ Bengtsson H (2015).
+\emph{R.rsp: Dynamic Generation of Scientific Reports}.
+R package version 0.20.0, \url{https://github.com/HenrikBengtsson/R.rsp}.
 }
 
 \author{Henrik Bengtsson}
