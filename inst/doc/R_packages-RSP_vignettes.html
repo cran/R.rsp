@@ -166,7 +166,7 @@ hr {
 <body>
 <h1>R packages: RSP vignettes</h1>
 
-<p>Henrik Bengtsson on February 18, 2015</p>
+<p>Henrik Bengtsson on December 18, 2015</p>
 
 <p>When building an R package, Sweave vignettes are automatically recognized, compiled into PDFs, which in turn are listed along with their source in the R help system, e.g. <code>help.start()</code>.  These package vignettes are also listed online on the CRAN and Bioconductor package pages, e.g. <a href="http://cran.r-project.org/package=R.rsp">RSP</a>.</p>
 
@@ -185,7 +185,7 @@ hr {
 <li><code>vignettes/YAPackage-ExampleReport.md.rsp</code> - an RSP-embedded Markdown vignette </li>
 </ul>
 
-<p>Second, make sure they both carry the required R vignette markup, which are <code>%\VignetteIndexEntry{...}</code> and <code>%\VignetteEngine{...}</code>.  This markup is independent of vignette format (TeX, Markdown, HTML, etc.) and vignette engine (Sweave, RSP, knitr, etc.).  What may matter is how you include it the source vignette such that it won&#39;t be part of the final vignette.  With RSP this is easy, because you can do it the same way regardless of format by using RSP preprocessing directives.  For example, in <code>vignettes/YAPackage-Intro.tex.rsp</code> we have the following in the preamble of the TeX file:</p>
+<p>Second, make sure they both carry the required R vignette markup, which are <code>%\VignetteIndexEntry{...}</code> and <code>%\VignetteEngine{...}</code>.  The former controls the title shown in R&#39;s help indices as well as in online package respositories such as CRAN.   Moreover, the same vignette markup is used everywhere in R regardless of vignette format (TeX, Markdown, HTML, etc.) and vignette engine (Sweave, RSP, knitr, etc.).  What may differ is how you include it the source vignette such that it won&#39;t be part of the final vignette.  With RSP this is easy, because you can do it the same way regardless of format by using RSP preprocessing directives.  For example, in <code>vignettes/YAPackage-Intro.tex.rsp</code> we have the following in the preamble of the TeX file:</p>
 
 <pre><code>&lt;%@meta language=&quot;R-vignette&quot; content=&quot;--------------------------------
   DIRECTIVES FOR R:
