@@ -1,39 +1,87 @@
 <!DOCTYPE html>
 <head>
-<meta charset="utf-8">
-  <title>Introductory slides on RSP - </title>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Introductory slides on RSP – </title>
   <style type="text/css">code{white-space: pre;}</style>
+<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
+
 <style>
-  html { background-color: black; }
-  body { background-color: white; border-radius: 12px}
+  html, .view body { background-color: black; counter-reset: slideidx; }
+  body, .view section { background-color: white; border-radius: 12px }
   /* A section is a slide. It's size is 800x600, and this will never change */
-  section {
-      font-family: Arial, serif;
-      font-size: 20pt;
-    }
-  address, blockquote, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ol, p, pre, table, ul, dl { padding: 10px 20px 10px 20px; }
-  h1, h2, h3 {
+  section, .view head > title {
+      /* The font from Google */
+      font-family: 'Oswald', arial, serif;
+      font-size: 30px;
+  }
+
+  .view section:after {
+    counter-increment: slideidx;
+    content: counter(slideidx, decimal-leading-zero);
+    position: absolute; bottom: -80px; right: 100px;
+    color: white;
+  }
+
+  .view head > title {
+    color: white;
     text-align: center;
-    margin: 10pt 10pt 20pt 10pt;
+    margin: 1em 0 1em 0;
   }
-  ul, ol {
-    margin: 10px 10px 10px 50px;
+
+  h1, h2 {
+    margin-top: 200px;
+    text-align: center;
+    font-size: 80px;
   }
-  section.titleslide h1 { margin-top: 200px; }
-  h1.title { margin-top: 150px; }
-  h1 { font-size: 180%; }
-  h2 { font-size: 120%; }
-  h3 { font-size: 100%; }
-  q { quotes: "“" "”" "‘" "’"; }
-  blockquote { font-style: italic }
-  /* Figures are displayed full-page, with the caption on
-     top of the image/video */
+  h3 {
+    margin: 100px 0 50px 100px;
+  }
+
+  ul {
+      margin: 50px 200px;
+  }
+  li > ul {
+      margin: 15px 50px;
+  }
+
+  p {
+    margin: 75px;
+    font-size: 50px;
+  }
+
+  blockquote {
+    height: 100%;
+    background-color: black;
+    color: white;
+    font-size: 60px;
+    padding: 50px;
+  }
+  blockquote:before {
+    content: open-quote;
+  }
+  blockquote:after {
+    content: close-quote;
+  }
+
+  /* Figures are displayed full-page, with the caption
+     on top of the image/video */
   figure {
     background-color: black;
+    width: 100%;
+    height: 100%;
+  }
+  figure > * {
+    position: absolute;
+  }
+  figure > img, figure > video {
+    width: 100%; height: 100%;
   }
   figcaption {
     margin: 70px;
+    font-size: 50px;
   }
+
   footer {
     position: absolute;
     bottom: 0;
@@ -50,10 +98,20 @@
      https://developer.mozilla.org/en/CSS/CSS_transitions
      How to use CSS3 Transitions: */
   section {
-      -moz-transition: left 400ms linear 0s;
-      -webkit-transition: left 400ms linear 0s;
-      -ms-transition: left 400ms linear 0s;
-      transition: left 400ms linear 0s;
+    -moz-transition: left 400ms linear 0s;
+    -webkit-transition: left 400ms linear 0s;
+    -ms-transition: left 400ms linear 0s;
+    transition: left 400ms linear 0s;
+  }
+  .view section {
+    -moz-transition: none;
+    -webkit-transition: none;
+    -ms-transition: none;
+    transition: none;
+  }
+
+  .view section[aria-selected] {
+    border: 5px red solid;
   }
 
   /* Before */
@@ -69,286 +127,85 @@
   .incremental > * { opacity: 1; }
 
   /* The current item */
-  .incremental > *[aria-selected] { color: red; opacity: 1; }
+  .incremental > *[aria-selected] { opacity: 1; }
 
   /* The items to-be-selected */
-  .incremental > *[aria-selected] ~ * { opacity: 0.2; }
+  .incremental > *[aria-selected] ~ * { opacity: 0; }
+
+  /* The progressbar, at the bottom of the slides, show the global
+     progress of the presentation. */
+  #progress-bar {
+    height: 2px;
+    background: #AAA;
+  }
 </style>
 </head>
 <body>
-<section class="slide level1">
+<section class="slide level6">
 
-<!--pandoc
-standalone:
-smart:
-title-prefix: "Introductory slides on RSP"
-M: TITLE:"Henrik Bengtsson"
-M: AUTHOR:"Introductory slides on RSP"
--->
-<!--
-Override default pandoc/dzslides settings
--->
-<style>
-h1, h2, h3 {
-  text-align: left;
-  margin: 0pt 0pt 0pt 0pt; /* top right bottom left */ 
-}
-h1 { font-size: 120%; }
-h2 { font-size: 100%; }
-h3 { font-size: 90%; }
-section {
-  font-size: 16pt;
-}
-h1.title { font-size: 180%; }
-div.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 1ex;
-  font-size: 60%;
-  text-align: left;
-  background-color: #F3F4F8;
-  border-top: 1px solid #CCC;
-}
-/* The current item */
-.incremental > *[aria-selected] { color: #0000F3; opacity: 1; }
-li { padding-bottom: 0.8ex; }
-pre { font-weight: bold; }
-</style>
-<h1 class="title">
-Introductory slides on RSP
-</h1>
-<p>Henrik Bengtsson</p>
-<p>December 18, 2015</p>
-<p>Availability: <code>install.packages(&quot;R.rsp&quot;)</code> from <a href="http://cran.r-project.org/package=R.rsp">CRAN</a></p>
-<p>Since: 2002</p>
-<p><br></p>
-</section>
-<section id="rsp-hello-world" class="slide level1">
-<h1>RSP: Hello world!</h1>
+<p>Henrik Bengtsson May 15, 2016 Availability: `install.packages(“R.rsp”)` from <a href="http://cran.r-project.org/package=R.rsp">CRAN</a> Since: 2002<br />
+# RSP: Hello world!</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 2 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 2 of 15</span>
 </div>
-<pre><code>&gt; library(R.rsp)
-
-&gt; rcat(&quot;A random number: &lt;%=sample(1:10, size=1)%&gt;&quot;)
-A random number: 7</code></pre>
-</section>
-<section id="objectives" class="slide level1">
-<h1>Objectives</h1>
+<p>``` &gt; library(R.rsp) &gt; rcat(“A random number: &lt;%=sample(1:10, size=1)%&gt;”) A random number: 7 ``` # Objectives</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 3 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 3 of 15</span>
 </div>
-<ul>
-<li>Dynamically generate documents and reports (and web/help pages).</li>
-<li>Quickly turn your favorite static report template into a dynamic one.</li>
-<li>Support <em>all</em> formats, e.g. LaTeX, Markdown, HTML, …</li>
-<li>Supplement and/or complement Sweave, knitr, …</li>
-<li>Mix and match code and text however you want.</li>
-<li>Simplify sharing of template and output documents.</li>
-<li>Use for R package vignettes.</li>
-</ul>
-<h2 id="some-usage">Some usage</h2>
-<ul>
-<li>PSCBS: PDF reports of copy-number segmentation results</li>
-<li>aroma-project.org: Interactive <a href="http://aroma-project.org/data/reports/GSE8605/ACC,-XY,BPN,-XY,AVG,FLN,-XY,paired/ChromosomeExplorer.html">Chromosome Explorer</a> and <a href="http://www.aroma-project.org/data/reports/GSE8605/raw/ArrayExplorer.html">Array Explorer</a></li>
-<li><a href="http://haplin.fhi.no/default.asp?active_page_id=1">Haplin GUI</a> - genetic association analyses</li>
-<li><a href="http://code.google.com/p/google-motion-charts-with-r/#Examples">googleVis</a> - Google Chart Tools from R</li>
-</ul>
-</section>
-<section id="compiling-rsp-document-into-pdf-html" class="slide level1">
-<h1>Compiling RSP document into PDF, HTML, …</h1>
+<p>* Dynamically generate documents and reports (and web/help pages). * Quickly turn your favorite static report template into a dynamic one. * Support _all_ formats, e.g. LaTeX, Markdown, HTML, … * Supplement and/or complement Sweave, knitr, … * Mix and match code and text however you want. * Simplify sharing of template and output documents. * Use for R package vignettes. ## Some usage * PSCBS: PDF reports of copy-number segmentation results * aroma-project.org: Interactive [Chromosome Explorer](http://aroma-project.org/data/reports/GSE8605/ACC,-XY,BPN,-XY,AVG,FLN,-XY,paired/ChromosomeExplorer.html) and [Array Explorer](http://www.aroma-project.org/data/reports/GSE8605/raw/ArrayExplorer.html) * [Haplin GUI](http://haplin.fhi.no/default.asp?active_page_id=1) - genetic association analyses * [googleVis](http://code.google.com/p/google-motion-charts-with-r/#Examples) - Google Chart Tools from R # Compiling RSP document into PDF, HTML, …</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 4 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 4 of 15</span>
 </div>
-<pre><code>&gt; rfile(&quot;http://example.org/vignette.tex.rsp&quot;)
-RspFileProduct:
-Pathname: vignette.pdf
-File size: 258.71 kB (264925 bytes)
-Content type: application/pdf
-Metadata &#39;title&#39;: &#39;Dynamic document creation using RSP&#39;
-Metadata &#39;keywords&#39;: &#39;Literate programming, HTML, PDF&#39;
-Metadata &#39;author&#39;: &#39;Henrik Bengtsson&#39;</code></pre>
-</section>
-<section id="very-simple-idea-translate-rsp-to-r-and-evaluate" class="slide level1">
-<h1>Very simple idea: Translate RSP to R and evaluate</h1>
+<p>``` &gt; rfile(“http://example.org/vignette.tex.rsp”) RspFileProduct: Pathname: vignette.pdf File size: 258.71 kB (264925 bytes) Content type: application/pdf Metadata ‘title’: ‘Dynamic document creation using RSP’ Metadata ‘keywords’: ‘Literate programming, HTML, PDF’ Metadata ‘author’: ‘Henrik Bengtsson’ ``` # Very simple idea: Translate RSP to R and evaluate</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 5 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 5 of 15</span>
 </div>
-<h2 id="rsp-document">1. RSP document</h2>
-<pre><code>Title: Example
-Counting:&lt;% for (i in 1:3) { %&gt;
- &lt;%=i%&gt;
-&lt;% } %&gt;</code></pre>
-<h2 id="r-script">2. R script</h2>
-<pre><code>cat(&quot;Title: Example\nCounting:&quot;)
-for (i in 1:3) {
-  cat(&quot; &quot;)
-  cat(i)
-}</code></pre>
-<h2 id="rsp-output">3. RSP output</h2>
-<pre><code>Title: Example
-Counting: 1 2 3</code></pre>
-</section>
-<section id="rsp-markup-language" class="slide level1">
-<h1>RSP Markup Language</h1>
+<p>## 1. RSP document ``` Title: Example Counting:&lt;% for (i in 1:3) { %&gt; &lt;%=i%&gt; &lt;% } %&gt; ``` ## 2. R script ``` cat(“Title: Example\nCounting:”) for (i in 1:3) { cat(&quot; &quot;) cat(i) } ``` ## 3. RSP output ``` Title: Example Counting: 1 2 3 ``` # RSP Markup Language</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 6 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 6 of 15</span>
 </div>
-<h2 id="rsp-comments----...---">1. RSP comments (<code>&lt;%-- ... --%&gt;</code>)</h2>
-<h2 id="rsp-preprocessing-directives-...">2. RSP preprocessing directives (<code>&lt;%@ ... %&gt;</code>)</h2>
-<h2 id="rsp-code-expressions-...">3. RSP code expressions (<code>&lt;% ... %&gt;</code>)</h2>
-</section>
-<section id="rsp-markup-language-1" class="slide level1">
-<h1>RSP Markup Language</h1>
+<p>## 1. RSP comments (`&lt;%– … –%&gt;`) ## 2. RSP preprocessing directives (`&lt;%@ … %&gt;`) ## 3. RSP code expressions (`&lt;% … %&gt;`) # RSP Markup Language</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 7 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 7 of 15</span>
 </div>
-<h2 id="rsp-comments----...----1">1. RSP comments (<code>&lt;%-- ... --%&gt;</code>)</h2>
-<pre><code>&lt;%-----------------------------
-  Compile to PDF:
-  R.rsp::rfile(&quot;report.tex.rsp&quot;)
-  ------------------------------%&gt;
-\documentclass{report}
-...</code></pre>
-<p>RSP comments drop anything within, e.g. private notes, other RSP constructor (nested comments too) and will never be part of the output.</p>
-</section>
-<section id="rsp-markup-language-2" class="slide level1">
-<h1>RSP Markup Language</h1>
+<p>## 1. RSP comments (`&lt;%– … –%&gt;`) ``` &lt;%—————————– Compile to PDF: R.rsp::rfile(“report.tex.rsp”) ——————————%&gt; \documentclass{report} … ``` RSP comments drop anything within, e.g. private notes, other RSP constructor (nested comments too) and will never be part of the output. # RSP Markup Language</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 8 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 8 of 15</span>
 </div>
-<h2 id="rsp-preprocessing-directives-...-1">2. RSP preprocessing directives (<code>&lt;%@ ... %&gt;</code>)</h2>
-<h3 id="including-local-and-online-files">Including local and online files</h3>
-<pre><code>&lt;%@include file=&quot;http://example.org/QC.tex.rsp&quot;%&gt;</code></pre>
-<h3 id="conditional-inclusion">Conditional inclusion</h3>
-<pre><code>&lt;%@ifeq version=&quot;devel&quot;%&gt;
-  &lt;%@include file=&quot;templates/QA-devel.tex.rsp&quot;%&gt;
-&lt;%@else%&gt;
-  Quality assessment is still under development.
-&lt;%@endif%&gt;</code></pre>
-<h3 id="meta-data">Meta data</h3>
-<pre><code>&lt;%@meta title=&quot;Example&quot;%&gt;
-\hypersetup{pdftitle=&lt;%@meta name=&quot;title&quot;%&gt;}
-\title{&lt;%@meta name=&quot;title&quot;%&gt;}</code></pre>
-<p>RSP preprocessing directives are independent of R, i.e. they would look the same with RSP for Python.</p>
-</section>
-<section id="rsp-markup-language-3" class="slide level1">
-<h1>RSP Markup Language</h1>
+<p>## 2. RSP preprocessing directives (`&lt;%@ … %&gt;`) ### Including local and online files ``` &lt;%@include file=“http://example.org/QC.tex.rsp”%&gt; ``` ### Conditional inclusion ``` &lt;%@ifeq version=“devel”%&gt; &lt;%@include file=“templates/QA-devel.tex.rsp”%&gt; &lt;%@else%&gt; Quality assessment is still under development. &lt;%@endif%&gt; ``` ### Meta data ``` &lt;%@meta title=“Example”%&gt; \hypersetup{pdftitle=&lt;%@meta name=“title”%&gt;} \title{&lt;%@meta name=“title”%&gt;} ``` RSP preprocessing directives are independent of R, i.e. they would look the same with RSP for Python. # RSP Markup Language</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 9 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 9 of 15</span>
 </div>
-<h2 id="rsp-code-expressions-...-1">3. RSP code expressions (<code>&lt;% ... %&gt;</code>)</h2>
-<h3 id="insert-value-of-evaluated-r-expressions">Insert value of evaluated R expressions</h3>
-<pre><code>&lt;%= sample(1:100, size=1) %&gt;</code></pre>
-<p><br></p>
-<h3 id="code-snippets---mixture-of-rsp-and-text">Code snippets - mixture of RSP and text</h3>
-<pre><code>&lt;% for (i in 1:3) { %&gt;
- &lt;%=i%&gt;
-&lt;% } %&gt;</code></pre>
-</section>
-<section id="looping-over-mixtures-of-code-and-text" class="slide level1">
-<h1>Looping over mixtures of code and text</h1>
+<p>## 3. RSP code expressions (`&lt;% … %&gt;`) ### Insert value of evaluated R expressions ``` &lt;%= sample(1:100, size=1) %&gt; ```<br />
+### Code snippets - mixture of RSP and text ``` &lt;% for (i in 1:3) { %&gt; &lt;%=i%&gt; &lt;% } %&gt; ``` # Looping over mixtures of code and text</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 10 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 10 of 15</span>
 </div>
-<pre><code>&lt;% fit &lt;- segmentByPairedPSCBS(data) %&gt;
-
-\section{Segmentation results}
-
-&lt;% for (chr in 1:23) { %&gt;
-  \subsection{Chromosome &lt;%=chr%&gt;}
-
-  &lt;% fitT &lt;- extractChromosome(fit, chr) %&gt;
-  PSCBS identified &lt;%=nbrOfSegments(fitT)%&gt; segments
-  on Chr. &lt;%=chr%&gt;.
-
-  ...
-&lt;% } # for (chr ...) %&gt;</code></pre>
-<p><br></p>
-<p>It is rather tedious to achieve the same using noweb-style markup, e.g. Sweave and knitr.</p>
-</section>
-<section id="rsp-template-functions" class="slide level1">
-<h1>RSP template functions</h1>
+<p>``` &lt;% fit &lt;- segmentByPairedPSCBS(data) %&gt; \section{Segmentation results} &lt;% for (chr in 1:23) { %&gt; \subsection{Chromosome &lt;%=chr%&gt;} &lt;% fitT &lt;- extractChromosome(fit, chr) %&gt; PSCBS identified &lt;%=nbrOfSegments(fitT)%&gt; segments on Chr. &lt;%=chr%&gt;. … &lt;% } # for (chr …) %&gt; ```<br />
+It is rather tedious to achieve the same using noweb-style markup, e.g. Sweave and knitr. # RSP template functions</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 11 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 11 of 15</span>
 </div>
-<pre><code>&lt;%-- RSP TEMPLATES --%&gt;
-&lt;% chromosomeSummary &lt;- function(chr) { %&gt;
-  &lt;% fitT &lt;- extractChromosome(fit, chr) %&gt;
-  PSCBS identified &lt;%=nbrOfSegments(fitT)%&gt; segments
-  on Chr. &lt;%=chr%&gt;.
-  ...
-&lt;% } %&gt;
-
-&lt;%-- DOCUMENT --%&gt;
-...
-&lt;% for (chr in 1:23) { %&gt;
-  \subsection{Chromosome &lt;%=chr%&gt;}
-  &lt;% chromosomeSummary(chr) %&gt;
-&lt;% } # for (chr ...) %&gt;</code></pre>
-</section>
-<section id="r.rsp-package---rsp-engine-for-r" class="slide level1">
-<h1>R.rsp package - RSP engine for R</h1>
+<p>``` &lt;%– RSP TEMPLATES –%&gt; &lt;% chromosomeSummary &lt;- function(chr) { %&gt; &lt;% fitT &lt;- extractChromosome(fit, chr) %&gt; PSCBS identified &lt;%=nbrOfSegments(fitT)%&gt; segments on Chr. &lt;%=chr%&gt;. … &lt;% } %&gt; &lt;%– DOCUMENT –%&gt; … &lt;% for (chr in 1:23) { %&gt; \subsection{Chromosome &lt;%=chr%&gt;} &lt;% chromosomeSummary(chr) %&gt; &lt;% } # for (chr …) %&gt; ``` # R.rsp package - RSP engine for R</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 12 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 12 of 15</span>
 </div>
-<h2 id="rcat---rsp-version-of-cat">rcat() - RSP version of cat()</h2>
-<pre><code>&gt; rcat(&quot;A random integer in [1,100]:
-        &lt;%=sample(1:100, size=1)%&gt;\n&quot;)
-A random integer in [1,100]: 77</code></pre>
-<p><br></p>
-<h2 id="rsource---rsp-version-of-source">rsource() - RSP version of source()</h2>
-<p>Consider RSP file ‘count.rsp’ (think ‘count.R’):</p>
-<pre><code>Counting:&lt;% for (i in 1:10) { %&gt;
-  &lt;% Sys.sleep(0.3) %&gt;&lt;%=i%&gt;
-&lt;% } %&gt;.</code></pre>
-<p>Running this RSP script gives:</p>
-<pre><code>&gt; rsource(&quot;count.rsp&quot;)
-Counting: 1 2 3 4 5 6 7 8 9 10.</code></pre>
-</section>
-<section id="rfile---end-to-end-compilation" class="slide level1">
-<h1>rfile() - end-to-end compilation</h1>
+<p>## rcat() - RSP version of cat() ``` &gt; rcat(“A random integer in [1,100]: &lt;%=sample(1:100, size=1)%&gt;\n”) A random integer in [1,100]: 77 ```<br />
+## rsource() - RSP version of source() Consider RSP file ‘count.rsp’ (think ‘count.R’): ``` Counting:&lt;% for (i in 1:10) { %&gt; &lt;% Sys.sleep(0.3) %&gt;&lt;%=i%&gt; &lt;% } %&gt;. ``` Running this RSP script gives: ``` &gt; rsource(“count.rsp”) Counting: 1 2 3 4 5 6 7 8 9 10. ``` # rfile() - end-to-end compilation</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 13 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 13 of 15</span>
 </div>
-<pre><code>&gt; rfile(&quot;report.md.rsp&quot;, args=list(n=50, model=&quot;L1&quot;))
-RspFileProduct:
-Pathname: report.html
-File size: 42.54 kB (43564 bytes)
-Content type: text/html</code></pre>
-<p><br></p>
-<pre><code>&gt; rfile(&quot;http://example.org/vignette.tex.rsp&quot;)
-RspFileProduct:
-Pathname: vignette.pdf
-File size: 258.71 kB (264925 bytes)
-Content type: application/pdf
-Metadata &#39;title&#39;: &#39;Dynamic document creation using RSP&#39;
-Metadata &#39;keywords&#39;: &#39;Literate programming, HTML, PDF&#39;
-Metadata &#39;author&#39;: &#39;Henrik Bengtsson&#39;</code></pre>
-</section>
-<section id="including-graphics-using-r.devices-package" class="slide level1">
-<h1>Including graphics (using R.devices package)</h1>
+<p>``` &gt; rfile(“report.md.rsp”, args=list(n=50, model=“L1”)) RspFileProduct: Pathname: report.html File size: 42.54 kB (43564 bytes) Content type: text/html ```<br />
+``` &gt; rfile(“http://example.org/vignette.tex.rsp”) RspFileProduct: Pathname: vignette.pdf File size: 258.71 kB (264925 bytes) Content type: application/pdf Metadata ‘title’: ‘Dynamic document creation using RSP’ Metadata ‘keywords’: ‘Literate programming, HTML, PDF’ Metadata ‘author’: ‘Henrik Bengtsson’ ``` # Including graphics (using R.devices package)</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 14 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 14 of 15</span>
 </div>
-<p>RSP-embedded LaTeX</p>
-<pre><code>\includegraphics{&lt;%=toPDF(&quot;MyFigure,yeah,cool&quot;, {
- curve(dnorm, from=-5, to=+5)
-})%&gt;}</code></pre>
-<p>generates the image file and outputs</p>
-<pre><code>\includegraphics{MyFigure,yeah,cool}</code></pre>
-<p>which appears as</p>
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA0gAAAGkCAMAAAA8IPU5AAAAVFBMVEUAAAAAADoAAGYAOpAAZrY6AAA6kNtmAABmOpBmZmZmZrZmtv+QOgCQOmaQtpCQ2/+2ZgC2Zma225C2///bkDrb/7bb////tmb/25D//7b//9v///9j7ab3AAASK0lEQVR4nO3d6ZbbuBGGYXrsdiexM6NMFLOX+7/PSKKkptqkRAAF1IL3+ZGTnMwZFgr8WiS4De8Aig3aBQARECRAAEECBBAkQABBAgQQJEAAQQIEECRAAEECBBAkQABBAgQQJEAAQQIEECRAAEECBBAkQABBAgQQJEAAQQIEECRAAEECBBAkQEBRkMbh6y+pQgDPCBIgID1Ir8/DrT/+W6EuwBWCBAjIOLR7eRq+/HX6b+uHdgMQjXSQ3t93w/DtbpC0hwxUIB6ky4/SnSBl/WsBu2oE6fSj9PUXQUI/6gTp+KM0/JMgoRuVgvT+vh8GgoRuVAvScSGcIKEX9YKUu03AIYIECCBIgACCBAioHKT9dK9dykVgCKLTrbQJUso2IYK/XG1xaBdS2p1gKEeQAvotOSSpOoIUz1JsiFJlNYL09vN8OHF+MCltmyizEhmO7+qSD9L+5tD8R/I2UWQ9LySpJvEgjbN7VY8/TQtJYj7ruRsWklSPeJB2N9EZp4dlU7aJfA8f1KT1tUgH6fX55pbvt59cR2rn8cEbSaqFIMWxJSUkqRKCFMa2jJCkOjhHimJrQkhSFazaBbE9HySpBvnrSOPNdaTvydtEjpR0kKQKatzZcH1t8crriplHcWnZYALkca9dCIktZQbEEaQIUjvKwZ04ghRAei5IkjSC5F9OKkiSMILkXl4mSJIsguReZjuZBVEEybvsbjINkgiSdwVBYh7kECTnCprJPAgiSM6VNJOJkEOQfCvqJRMhhyD5VtZLZkIMQXKtsJWsN4ghSK6VtpKpkEKQPCvvJHMhhCA5JnBkxsGdEILkmEQjmQwZBMkvmT4yGyIIkl8EyRCC5JZUG5kOCQTJK7FlAqZDAkHySq6LzIcAguSUYBNZAhdAkJySbCITUo4g+STbQ2akGEHyiSAZQ5Bckm4hU1KKIHkkvjzAlJQiSB7Jd5A5KUSQHKrQQOakEEFyqEYDmZQyBMmfKv1jUsoQJH/q9I9ZKVIvSPvVT/YxZUUqtY9ZKVIhSLtTgHbT1y8XvsXMlJWp1T6mpYR4kI5fMj8k6e+n46/Ry9OXv1K3ifuqdY9pKSEepP3w7fRl8+mo7uXpW+o2cV+97jEvBaSD9PbzlKDd8O38P7/+Stwm7qrYPOalgHSQXp9PyRmH76f/ec5VyjZxV83mMTH5KgXpckhHkIRV7R0Tk0/+0O5meYFzJFl1H2ZlYvKJLzaMwyxJ+8X1b+YrW+XWMTPZ5K8j7YbzQsPhMG84nyqlbBN3ECSrKlyQfXk6p2fxBOnhNrGueueYmlzca+cJQTKLIDnSoHHMTSaC5AhBsosgOdKicUxOnspB2k/33A2flP5r+9Skb0xOnjZBStkm1rTpG7OThUM7Nxq1jdnJQpDcaNU2picHQXKDIFlWI0jTQ7IHS4/HPtwmlrXrGvOTQT5I+5v1Od7ZIIUgmVbh7u/h+lDs8aeJu79lNGwa85NBPEi7m+iMA88jyWjZNCYoXaUnZC94QlYKQbKNIPnQtmfMUDKC5ANBMo5zJBdat4wpSsWqnQsEyTr560jjzXUk3tkgoX3HmKNENe5sOL705GT5lQ1MUjKCZB732jmg0TAmKQ1BcoAg2ZccpMtx28phW/k28ZlOv5ilJGlBut7XfbLwoQmBbeIzguRAUpB2s1+il6dhWLpIVLxNfKLVLqYpRUKQxs8PGI0rj0mUbROfECQPtgfpcHL0W2rGrFMlZiiFWreYphQJQfrX0j/xH4JUmV63mKcELH9bR5BcIEjGaTaLidouLUivzx/3zr39O/dKEvOTgCD5kBqk6+pC3jrDhm1iTrVXTNR2iYd2lxXv45VZgtSAbq+Yqc1Sz5GOCfr6a7/ygITENjGj3CpmarP0xYax6Pagx9vEjHartLfvR8aq3Zh9b9CmbeKDeqfUC3Aj9+7vlbcRC2wTH9Q7pV6AG6lB2p9WG45pyv9RYnY2MtAoAyX4kLz8fT472rFqV5+BRhkowYfkIF1uXH15IkiVmeiTiSIcSAzSP2aLdTn3q27YJi5M9MlEEQ5wr51ZNtpkowr7eIzCLCNtMlKGdTzYZ5aRNhkpwzoeNbfKTJfMFGIaLz+xykyXzBRiWsnruHIvyTIzGxhqkqFS7Mp+QWTBXatMzAaGmmSoFLtY/rbJVI9MFWMUQbLJVI9MFWMUQbLJVI9MFWNUapBmnxHjXrt6jLXIWDkWJQZpPxCkFoy1yFg5FiUvfz9erdvP1vQW7xFnWh4x1yFzBZmT+hjF4ydjd9Pv1XTLA0HKYq5D5goyJ/UX6WGQxtN9ROP5LUMEKYfBBhksyZbkc6QHN9ddonY4CDwmiSDlMNgggyXZkrpqt3uQpNfn8+nRlCSClMFifyzWZEpqkE73qt5ZtbsG6ZikHwQph8n+mCzKkIxXFm8M0ukojyBlMNkfk0UZkrz8/eiW79mx3+vzH38TpGRG22O0LCvEl7/H2dN/4/LvFlNyl9H2GC3LCvHl75s33o0EKZnZ7pgtzITk5e/HH6F4efq4++FwdEeQ0pjtjtnCTEh/ZXH+51y2bbN3drtjtzID0l9ZzE2rVRlujuHS9BEkYyw3x3Jt2niwzxbTvTFdnLLKQdpPv1vDJ6X/2rhs98Z2dapSl78Tj+f2LH+nsd0b29Wpkn8eqXSbXbPeGuv16ZG/IFu6za5Zb431+vQkniOJJInZWGO+M+YLVFNj+fv6YuOV0DEba+x3xn6FSuSDNH/R0PLXKpiMFQ4a46BEHeLL3+PsteDHn6aFJDEZKzw0xkONGsSDdPss+rj0/BJzscxFX1wUqUA6SLMnZI8WLzwxF8t89MVHlc2lB2l399tIBCmbk7Y4KbO1/Hd/L79NiCBl89IWL3W2lRikl6fpt+jt59raNudImdx0xU2hTSUGaXd9rm+/cnTHql0mP13xU2lDqdeRZiFZeZ3+eHMdael5WiZigaOmOCq1nYIgrd7ZcL1su/JPMBELPDXFU62t1AhS2Tb75KonroptRPwcqXibffLVE1/VNpG5andIVP5t4EzDb5y1xFm5LUhfRyrfZpe8tcRbvfVJ39lQvs0eueuIu4Kr4y1CFvjriL+KKyNIBjhsiMOS60oN0uzRPpa/pXhsiMeaa0pftSNI0lz2w2XRFSVfR8qOz9Zt9sdlP1wWXVHyOxvyV703brM7TtvhtOxaUoMk8IPEFNxy2g6nZdfCCyK1ue2G28KrSDxHkvjOGDNww2033BZeRfKbVvlinyzHzXBcurwab1ot22ZnHDfDcenyCJIuz73gQ1cz3CKky3UvXBcvjCDp8t0L39WLIkiqnLfCefmStgfp5vyIcyQZ3lvhvX45BEmT+064H4CY9OtI03uEdsPKa+2Kt9kT/53wPwIh2Xc2jPlXZmn+WYBGBBiCjNR77a7Hc6tvWi3dZkciNCLCGCTwgkg9IfoQYhACsoP06fstctvsR4w+xBhFseQnZC8P9vGm1VJB2hBkGKXyv4+U/4gfrT+J0oYo4yiT/abVgif86PxRmC5w7+pR+i1C+9XvHslssxdxuhBnJAW4105JpCZEGksugqQkUhMijSUXQdIRqwexRpOFIKkIdoIeazRZCJKKaC2INp500kHa8rAFXQ/XgWC/sBnEf5F2BOmxeB2IN6JE8od248NrtTQ9YAMijilFhXOk8dHdQ733PGQDIo4pRY3Fht2D+x7ouXYFNcQc1WY1gvTomxXdtzzk+IMOayuWv5uLOvyo49qGILUWd/RxR7YBQWos8BFQ3JFtQJAaizz4yGN7hCC1FXrsoQf3AEFqK/bYY4/urspB2k8XZz/dNkS7gwo+vHvaBCllm5GF/xsSfXzrOLRrKfzIww9wFUFqqIOBdzDEZQSpnfAHdu99jHFRjSC9/bz/7jt6HVgXg1wgH6T9zfrcj4V/otNedzLsTob5mXiQxmGYfbFiMUl9trqXg55exvlJhUfN59EZl16132Wn+9m/uhnoDfmXn9x87WXxK0pddrqjQXc01A8EqY2extzPj+8MQWqir32rr9FOOEdqorMhdzbcI1btWuhuxN0NuMp77eaW3ifUXZf7O9TpccR3/9+sf+f1tcUrLxPqrcn97VUdjpl77errbbwnvSWJIFXX2XAvOhs2Qaqttz/NV32NmyBV1m2OOhs5Qaqsq8He6ipJBKmunsb6m56SRJCq6mlXWtDR8AlSTR3tSMv6aQBBqqif3WhVNy0gSPV0sxPd00sTCFI1vexCD3TSBoJUSyc70GN9NIIgVdLH7rNJF60gSHV0sfNs1UMzCFIVPew6CTpoB0GqoYMdJ038hhCkCuLvNsnCd4QgySNHC6L3hCCJI0dLoneFIEmLvsfkCt4XgiQs+P5SIHZnCJKs2HtLmdCf4SZIkkLvKuUit4cgCYq8o8iI2yGCJCfsTiIobJIIkpiou4iwoG0iSELC/qkVF7NTBElGzL2jjpC9IkgSQu4aFQXsF0ESEHC/qCxexwhSsXg7RQvRmkaQCg3kKE+wvhGkMsF2h5Zita5GkI6fjj358lfGNj2JtS80F6l98kHa33xDduFbzGGCxFFdqUAdFA9SN181D7QTKBqitFE8SLub6IzDt9Rt+hBl/vUFiZJ0kF6fr79HR28/F75s7r1tQ5C5NyNCPwlSooEYVeC/qwQpgf/pNsx5czlH2sr5RLvguMWs2m1BiJrx2mn560jjzXWk78nbNIcUNeay4TXubHh9Pndi4fzo8TYN+fh7oF1Jb+Z/i7Vr2YZ77Zbc/KiarzaowdUsEKQbviavC05mpOMgDXdo14bPrE+WuSDd270bqDJgSFHeO+7sH5WDtJ8WHDaX07RTpYODCS13Ge0gpWwTcMjcoR3gEUECBBAkQADvbAAE8M4GQAB3fwMCeB4JEKDzhCwQDkECBLQPUmU2DhypYsZGGYpV1DlHqqz7WZuxUYWRMnwFacOqXWXdz9qMjSqMlOErSBve2VBZ97M2Y6MKI2U4C9LjdzZU1v2szdiowkgZ7oKkzEbRVDFjowyClMZG0VQxY6MMgpTGRtFUMWOjDIKUxkbRVDFjowyClMZG0VQxY6MMgpTGRtFUMWOjDIKUxkbRVDFjowyClMZG0VQxY6MMgpTGRtFUMWOjDIKUxkbRVDFjowyCBPhGkAABBAkQQJAAAQQJEECQAAFug/TydPMOFgWnpxtX3tncxunN0TrPVs7pN+JCcafwGqTDPqQcpL3eo/ZnL09TBe1fmnFDvxEXmjuF1yDtB+UgHfbi4+uTdnp/iqfd5vCfur9J+o240twpnAbp+MdYN0i76TVkh/24/evIJuOUoEMFqr8F+o24UN0pfAbp9fnLn7rnSIf9Zjqi2qvN3XkPVqzgyEAjznR3Cp9B2g3f9RcbJnutP8TXPfjlSX+94V2xERe6O4XLII2HP35GgqR3YPX6fA7S4S+x+tmJ/hGm9k7hMUinPcdIkBY/6t7ENT82gqTXiIn2TuExSLvj3z4bQRr11qpsBUmxERPtncJhkKaDcRNB2itexDEVJM1GnAtQ3in8BOn8xvEf53NrpZ6N82ugqtdOrosNBoKkfhFJd6c48hek2aegFbo2C9JhT9bcfeys2ik34kh3pzjyE6QL/Z5N1G8psHEdyUAj3i3sFP6CdKZ9jqR/s5+ROxv0G/GBQ7t02kHSXu69/BKo/x7oN+IDQUqnHKTrF6IUDzBN3P1toRFXBCmdcpBG9YPydxvPI5loxAVBAnwjSIAAggQIIEiAAIIECCBIgACCBAggSIAAggQIIEiAAIIECCBIgACCBAggSIAAggQIIEiAAIIECCBIgACCBAggSIAAggQIIEiAAIIECCBIgACC5NbL0+kbEAa+6gKC5Nnu9G7TnfK3W3FCkPw6fY551H5nMU4IkmPj8PV/z8rfnMSEIHm2G4bz18agjCB59vLEgZ0RBMkzS1/L6xxB8uz46VTW7EwgSI69Pn/5U/uT5pgQJMeOl5D2rDaYQJD8Ol1CemX92wSC5Nbbz1OEuCJrAkFyaz+t2B3yxHqDPoIECCBIgACCBAggSIAAggQIIEiAAIIECCBIgACCBAggSIAAggQIIEiAAIIECCBIgACCBAggSIAAggQIIEiAAIIECCBIgACCBAggSIAAggQIIEiAAIIECCBIgACCBAggSIAAggQIIEiAAIIECCBIgACCBAggSIAAggQIIEiAAIIECCBIgACCBAggSICA/wMwtjORi5T7JgAAAABJRU5ErkJggg==" width=480></p>
-</section>
-<section id="appendix" class="slide level1">
-<h1>Appendix</h1>
+<p>RSP-embedded LaTeX ``` \includegraphics{&lt;%=toPDF(“MyFigure,yeah,cool”, { curve(dnorm, from=-5, to=+5) })%&gt;} ``` generates the image file and outputs ``` \includegraphics{MyFigure,yeah,cool} ``` which appears as <img src="data:image/png;base64,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" width="480" /> # Appendix</p>
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2015-12-18. <span style="float: right"> Slide 15 of 15</span></p>
+Henrik Bengtsson, Introductory slides on RSP, 2016-05-15. <span style="float: right"> Slide 15 of 15</span>
 </div>
 <p>Session info:</p>
-<pre style="font-size: 70%">
-R version 3.2.3 Patched (2015-12-14 r69777)
+<pre style="font-size: 70%"><code>R version 3.3.0 Patched (2016-05-12 r70604)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 Running under: Windows 7 x64 (build 7601) Service Pack 1
 
@@ -363,14 +220,13 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] markdown_0.7.7    R.devices_2.13.2  R.rsp_0.21.0      R.oo_1.19.0      
-[5] R.methodsS3_1.7.0
+[1] R.devices_2.14.0  R.rsp_0.30.0      R.oo_1.20.0       R.methodsS3_1.7.1
 
 loaded via a namespace (and not attached):
-[1] tools_3.2.3         base64enc_0.1-3     digest_0.6.8       
-[4] R.cache_0.12.0-9000 Cairo_1.5-9         R.utils_2.2.0      
-</pre>
-<p>This report was automatically generated using <code>rfile()</code> of the R.rsp package. Total processing time after RSP-to-R translation was 4.56 secs.</p>
+[1] markdown_0.7.7      tools_3.3.0         base64enc_0.1-4    
+[4] digest_0.6.9        R.cache_0.12.0-9000 Cairo_1.5-9        
+[7] R.utils_2.3.0      </code></pre>
+<p>This report was automatically generated using `rfile()` of the R.rsp package. Total processing time after RSP-to-R translation was 4.07 secs.</p>
 </section>
 <!-- {{{{ dzslides core
 #
