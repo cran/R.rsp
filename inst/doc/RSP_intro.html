@@ -1,421 +1,397 @@
+
 <!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta name="generator" content="pandoc">
-  <title>Introductory slides on RSP – </title>
-  <style type="text/css">code{white-space: pre;}</style>
-<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
+  <meta charset="UTF-8">
+  <title>RSP: A Brief Introduction</title>
+  <meta name="author" content="Henrik Bengtsson">
+  <meta name="keywords" content="R, RSP markup language, literate programming, reproducible research, report generator, Sweave, knitr, brew, noweb, TeX, LaTeX, Markdown, AsciiDoc, reStructuredText, Org-Mode, HTML, PDF">
+  <style>
 
-<style>
-  html, .view body { background-color: black; counter-reset: slideidx; }
-  body, .view section { background-color: white; border-radius: 12px }
-  /* A section is a slide. It's size is 800x600, and this will never change */
-  section, .view head > title {
-      /* The font from Google */
-      font-family: 'Oswald', arial, serif;
-      font-size: 30px;
-  }
-
-  .view section:after {
-    counter-increment: slideidx;
-    content: counter(slideidx, decimal-leading-zero);
-    position: absolute; bottom: -80px; right: 100px;
-    color: white;
-  }
-
-  .view head > title {
-    color: white;
-    text-align: center;
-    margin: 1em 0 1em 0;
-  }
-
-  h1, h2 {
-    margin-top: 200px;
-    text-align: center;
-    font-size: 80px;
-  }
-  h3 {
-    margin: 100px 0 50px 100px;
-  }
-
-  ul {
-      margin: 50px 200px;
-  }
-  li > ul {
-      margin: 15px 50px;
-  }
-
-  p {
-    margin: 75px;
-    font-size: 50px;
-  }
-
-  blockquote {
-    height: 100%;
-    background-color: black;
-    color: white;
-    font-size: 60px;
-    padding: 50px;
-  }
-  blockquote:before {
-    content: open-quote;
-  }
-  blockquote:after {
-    content: close-quote;
-  }
-
-  /* Figures are displayed full-page, with the caption
-     on top of the image/video */
-  figure {
-    background-color: black;
-    width: 100%;
-    height: 100%;
-  }
-  figure > * {
-    position: absolute;
-  }
-  figure > img, figure > video {
-    width: 100%; height: 100%;
-  }
-  figcaption {
-    margin: 70px;
-    font-size: 50px;
-  }
-
-  footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 40px;
-    text-align: right;
-    background-color: #F3F4F8;
-    border-top: 1px solid #CCC;
-  }
-
-  /* Transition effect */
-  /* Feel free to change the transition effect for original
-     animations. See here:
-     https://developer.mozilla.org/en/CSS/CSS_transitions
-     How to use CSS3 Transitions: */
-  section {
-    -moz-transition: left 400ms linear 0s;
-    -webkit-transition: left 400ms linear 0s;
-    -ms-transition: left 400ms linear 0s;
-    transition: left 400ms linear 0s;
-  }
-  .view section {
-    -moz-transition: none;
-    -webkit-transition: none;
-    -ms-transition: none;
-    transition: none;
-  }
-
-  .view section[aria-selected] {
-    border: 5px red solid;
-  }
-
-  /* Before */
-  section { left: -150%; }
-  /* Now */
-  section[aria-selected] { left: 0; }
-  /* After */
-  section[aria-selected] ~ section { left: +150%; }
-
-  /* Incremental elements */
-
-  /* By default, visible */
-  .incremental > * { opacity: 1; }
-
-  /* The current item */
-  .incremental > *[aria-selected] { opacity: 1; }
-
-  /* The items to-be-selected */
-  .incremental > *[aria-selected] ~ * { opacity: 0; }
-
-  /* The progressbar, at the bottom of the slides, show the global
-     progress of the presentation. */
-  #progress-bar {
-    height: 2px;
-    background: #AAA;
-  }
-</style>
-</head>
-<body>
-<section class="slide level1">
-
-<!--pandoc
-standalone:
-smart:
-title-prefix: "Introductory slides on RSP"
-M: TITLE:"Henrik Bengtsson"
-M: AUTHOR:"Introductory slides on RSP"
--->
-<!--
-Override default pandoc/dzslides settings
--->
-<style>
-h1, h2, h3 {
-  text-align: left;
-  margin: 0pt 0pt 0pt 0pt; /* top right bottom left */ 
+body {
+  font-family: serif;
 }
-h1 { font-size: 120%; }
-h2 { font-size: 100%; }
-h3 { font-size: 90%; }
+
+h1, h2, h3 {
+  font-family: sans-serif;
+  font-weight: normal;
+}
+
 section {
   font-size: 16pt;
 }
-h1.title { font-size: 180%; }
-div.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 1ex;
-  font-size: 60%;
-  text-align: left;
-  background-color: #F3F4F8;
-  border-top: 1px solid #CCC;
-}
-/* The current item */
-.incremental > *[aria-selected] { color: #0000F3; opacity: 1; }
-li { padding-bottom: 0.8ex; }
-pre { font-weight: bold; }
-</style>
-<h1 class="title">
-Introductory slides on RSP
-</h1>
-<p>Henrik Bengtsson</p>
-<p>December 05, 2016</p>
-<p>Availability: <code>install.packages(&quot;R.rsp&quot;)</code> from <a href="https://cran.r-project.org/package=R.rsp">CRAN</a></p>
-<p>Since: 2002</p>
-<p><br></p>
-</section>
-<section id="rsp-hello-world" class="slide level1">
-<h1>RSP: Hello world!</h1>
-<div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 2 of 15</span></p>
-</div>
-<pre><code>&gt; library(R.rsp)
 
-&gt; rcat(&quot;A random number: &lt;%=sample(1:10, size=1)%&gt;&quot;)
-A random number: 7</code></pre>
-</section>
-<section id="objectives" class="slide level1">
-<h1>Objectives</h1>
+h1 {
+  -webkit-margin-before: 0.27em;
+  -webkit-margin-after: 0.67em;
+}
+
+ul {
+  padding-left: 2ex;
+  list-style-position: outside;
+}
+
+li {
+  margin-top: 0.75ex;
+}
+
+.remark-slide-content h1 { font-size: 140%; }
+.remark-slide-content h2 { font-size: 100%; }
+.remark-slide-content h3 { font-size: 90%; }
+
+.remark-slide-content {
+  font-size: 115%;
+  /* Defaults: 1em 4em 1em 4em; */
+  margin: 0ex;
+  padding: 0em 3em 0em 3em;
+}
+
+.remark-code, .remark-inline-code {
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 90%;
+}
+
+img.screenshot-center {
+   position: relative;
+   bottom: 20%;
+   width: 100%;
+   box-shadow: 10px 10px 5px #888888;
+}
+
+img.screenshot-center-medium {
+   position: relative;
+   bottom: 20%;
+   width: 70%;
+   box-shadow: 10px 10px 5px #888888;
+}
+
+th {
+   background-color: #f2f2f2;
+}
+tr:nth-child(even) {
+   background-color: #f2f2f2
+}
+
+.blank {
+  background-color: white;
+}
+
+td {
+   width: 20%;
+}
+td:first-child {
+   width: 15%;
+}
+
+#author {
+  font-size: 150%;
+}
+
+.footnote-large {
+  position: absolute;
+  bottom: 3%;
+  font-size: 120%;
+}
+
+.footnote-small {
+  position: absolute;
+  bottom: 5%;
+  font-size: 80%;
+}
+
+  </style>
+</head>
+<body>
+<textarea id="source" style="visibility: hidden">
+
+# RSP: A Brief Introduction
+
+by Henrik Bengtsson, 2017-04-15
+
+
+Available on <a href="https://cran.r-project.org/package=R.rsp">CRAN</a> since 2005 (first version ~2002):
+
+```r
+install.packages("R.rsp")
+```
+
+```r
+> library("R.rsp")
+
+> rcat("A random number: <%= sample(1:10, size = 1) %>")
+A random number: 7
+```
+
+
+	      
+---
+# Objectives
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 3 of 15</span></p>
-</div>
-<ul>
-<li>Dynamically generate documents and reports (and web/help pages).</li>
-<li>Quickly turn your favorite static report template into a dynamic one.</li>
-<li>Support <em>all</em> formats, e.g. LaTeX, Markdown, HTML, …</li>
-<li>Supplement and/or complement Sweave, knitr, …</li>
-<li>Mix and match code and text however you want.</li>
-<li>Simplify sharing of template and output documents.</li>
-<li>Use for R package vignettes.</li>
-</ul>
-<h2 id="some-usage">Some usage</h2>
-<ul>
-<li>PSCBS: PDF reports of copy-number segmentation results</li>
-<li>aroma-project.org: Interactive <a href="http://aroma-project.org/data/reports/GSE8605/ACC,-XY,BPN,-XY,AVG,FLN,-XY,paired/ChromosomeExplorer.html">Chromosome Explorer</a> and <a href="http://www.aroma-project.org/data/reports/GSE8605/raw/ArrayExplorer.html">Array Explorer</a></li>
-<li><a href="https://folk.uib.no/gjessing/genetics/software/haplin/">Haplin GUI</a> - genetic association analyses</li>
-<li><a href="https://code.google.com/p/google-motion-charts-with-r/#Examples">googleVis</a> - Google Chart Tools from R</li>
-</ul>
-</section>
-<section id="compiling-rsp-document-into-pdf-html" class="slide level1">
-<h1>Compiling RSP document into PDF, HTML, …</h1>
+* Dynamically generate documents and reports (and web/help pages).
+* Quickly turn your favorite static report template into a dynamic one.
+* Support _all_ formats, e.g. LaTeX, Markdown, HTML, ...
+* Supplement and/or complement Sweave, knitr, ...
+* Mix and match code and text however you want.
+* Simplify sharing of template and output documents.
+* Use for R package vignettes.
+
+## Some usage
+* PSCBS: PDF reports of copy-number segmentation results
+* aroma-project.org: Interactive [Chromosome Explorer](http://aroma-project.org/data/reports/GSE8605/ACC,-XY,BPN,-XY,AVG,FLN,-XY,paired/ChromosomeExplorer.html) and [Array Explorer](http://www.aroma-project.org/data/reports/GSE8605/raw/ArrayExplorer.html)
+
+
+	      
+---
+# Compiling RSP document into PDF, HTML, ...
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 4 of 15</span></p>
-</div>
-<pre><code>&gt; rfile(&quot;http://example.org/vignette.tex.rsp&quot;)
+```r
+> rfile("http://example.org/vignette.tex.rsp")
 RspFileProduct:
 Pathname: vignette.pdf
 File size: 258.71 kB (264925 bytes)
 Content type: application/pdf
-Metadata &#39;title&#39;: &#39;Dynamic document creation using RSP&#39;
-Metadata &#39;keywords&#39;: &#39;Literate programming, HTML, PDF&#39;
-Metadata &#39;author&#39;: &#39;Henrik Bengtsson&#39;</code></pre>
-</section>
-<section id="very-simple-idea-translate-rsp-to-r-and-evaluate" class="slide level1">
-<h1>Very simple idea: Translate RSP to R and evaluate</h1>
+Metadata 'title': 'Dynamic document creation using RSP'
+Metadata 'keywords': 'Literate programming, HTML, PDF'
+Metadata 'author': 'Henrik Bengtsson'
+```
+
+
+
+	      
+---
+# Very simple idea: Translate RSP to R and evaluate
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 5 of 15</span></p>
-</div>
-<h2 id="rsp-document">1. RSP document</h2>
-<pre><code>Title: Example
-Counting:&lt;% for (i in 1:3) { %&gt;
- &lt;%=i%&gt;
-&lt;% } %&gt;</code></pre>
-<h2 id="r-script">2. R script</h2>
-<pre><code>cat(&quot;Title: Example\nCounting:&quot;)
+## 1. RSP document
+```
+Title: Example
+Counting:<% for (i in 1:3) { %>
+ <%= i %>
+<% } %>
+```
+## 2. R script
+```r
+cat("Title: Example\nCounting:")
 for (i in 1:3) {
-  cat(&quot; &quot;)
+  cat(" ")
   cat(i)
-}</code></pre>
-<h2 id="rsp-output">3. RSP output</h2>
-<pre><code>Title: Example
-Counting: 1 2 3</code></pre>
-</section>
-<section id="rsp-markup-language" class="slide level1">
-<h1>RSP Markup Language</h1>
+}
+```
+## 3. RSP output
+```
+Title: Example
+Counting: 1 2 3
+```
+
+	      
+---
+# RSP Markup Language
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 6 of 15</span></p>
-</div>
-<h2 id="rsp-comments----...---">1. RSP comments (<code>&lt;%-- ... --%&gt;</code>)</h2>
-<h2 id="rsp-preprocessing-directives-...">2. RSP preprocessing directives (<code>&lt;%@ ... %&gt;</code>)</h2>
-<h2 id="rsp-code-expressions-...">3. RSP code expressions (<code>&lt;% ... %&gt;</code>)</h2>
-</section>
-<section id="rsp-markup-language-1" class="slide level1">
-<h1>RSP Markup Language</h1>
+## 1. RSP comments (`<%-- ... --%>`)
+## 2. RSP preprocessing directives (`<%@ ... %>`)
+## 3. RSP code expressions (`<% ... %>`)
+
+
+	      
+---
+# RSP Markup Language
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 7 of 15</span></p>
-</div>
-<h2 id="rsp-comments----...----1">1. RSP comments (<code>&lt;%-- ... --%&gt;</code>)</h2>
-<pre><code>&lt;%-----------------------------
+## 1. RSP comments (`<%-- ... --%>`)
+```
+<%-----------------------------
   Compile to PDF:
-  R.rsp::rfile(&quot;report.tex.rsp&quot;)
-  ------------------------------%&gt;
+  R.rsp::rfile("report.tex.rsp")
+  ------------------------------%>
 \documentclass{report}
-...</code></pre>
-<p>RSP comments drop anything within, e.g. private notes, other RSP constructor (nested comments too) and will never be part of the output.</p>
-</section>
-<section id="rsp-markup-language-2" class="slide level1">
-<h1>RSP Markup Language</h1>
+...
+```
+RSP comments drop anything within, e.g. private notes, other RSP constructor (nested comments too) and will never be part of the output.
+
+	      
+---
+# RSP Markup Language
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 8 of 15</span></p>
-</div>
-<h2 id="rsp-preprocessing-directives-...-1">2. RSP preprocessing directives (<code>&lt;%@ ... %&gt;</code>)</h2>
-<h3 id="including-local-and-online-files">Including local and online files</h3>
-<pre><code>&lt;%@include file=&quot;http://example.org/QC.tex.rsp&quot;%&gt;</code></pre>
-<h3 id="conditional-inclusion">Conditional inclusion</h3>
-<pre><code>&lt;%@ifeq version=&quot;devel&quot;%&gt;
-  &lt;%@include file=&quot;templates/QA-devel.tex.rsp&quot;%&gt;
-&lt;%@else%&gt;
+## 2. RSP preprocessing directives (`<%@ ... %>`)
+### Including local and online files
+```
+<%@include file="http://example.org/QC.tex.rsp"%>
+```
+
+### Conditional inclusion
+```
+<%@ifeq version="devel"%>
+  <%@include file="templates/QA-devel.tex.rsp"%>
+<%@else%>
   Quality assessment is still under development.
-&lt;%@endif%&gt;</code></pre>
-<h3 id="meta-data">Meta data</h3>
-<pre><code>&lt;%@meta title=&quot;Example&quot;%&gt;
-\hypersetup{pdftitle=&lt;%@meta name=&quot;title&quot;%&gt;}
-\title{&lt;%@meta name=&quot;title&quot;%&gt;}</code></pre>
-<p>RSP preprocessing directives are independent of R, i.e. they would look the same with RSP for Python.</p>
-</section>
-<section id="rsp-markup-language-3" class="slide level1">
-<h1>RSP Markup Language</h1>
+<%@endif%>
+```
+
+### Meta data
+```
+<%@meta title="Example"%>
+\hypersetup{pdftitle=<%@meta name="title"%>}
+\title{<%@meta name="title"%>}
+```
+
+RSP preprocessing directives are independent of R, i.e. they would look the same with RSP for Python.
+
+	      
+---
+# RSP Markup Language
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 9 of 15</span></p>
-</div>
-<h2 id="rsp-code-expressions-...-1">3. RSP code expressions (<code>&lt;% ... %&gt;</code>)</h2>
-<h3 id="insert-value-of-evaluated-r-expressions">Insert value of evaluated R expressions</h3>
-<pre><code>&lt;%= sample(1:100, size=1) %&gt;</code></pre>
-<p><br></p>
-<h3 id="code-snippets---mixture-of-rsp-and-text">Code snippets - mixture of RSP and text</h3>
-<pre><code>&lt;% for (i in 1:3) { %&gt;
- &lt;%=i%&gt;
-&lt;% } %&gt;</code></pre>
-</section>
-<section id="looping-over-mixtures-of-code-and-text" class="slide level1">
-<h1>Looping over mixtures of code and text</h1>
+## 3. RSP code expressions (`<% ... %>`)
+### Insert value of evaluated R expressions
+```
+<%= sample(1:100, size = 1) %>
+```
+
+<br>
+
+### Code snippets - mixture of RSP and text 
+```
+<% for (i in 1:3) { %>
+ Step <%= i %>.
+<% } %>
+```
+
+
+
+	      
+---
+# Looping over mixtures of code and text
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 10 of 15</span></p>
-</div>
-<pre><code>&lt;% fit &lt;- segmentByPairedPSCBS(data) %&gt;
+```
+<% fit <- segmentByPairedPSCBS(data) %>
 
 \section{Segmentation results}
 
-&lt;% for (chr in 1:23) { %&gt;
-  \subsection{Chromosome &lt;%=chr%&gt;}
+<% for (chr in 1:23) { %>
+  \subsection{Chromosome <%= chr %>}
 
-  &lt;% fitT &lt;- extractChromosome(fit, chr) %&gt;
-  PSCBS identified &lt;%=nbrOfSegments(fitT)%&gt; segments
-  on Chr. &lt;%=chr%&gt;.
+  <% fitT <- extractChromosome(fit, chr) %>
+  PSCBS identified <%= nbrOfSegments(fitT) %> segments
+  on Chr. <%= chr %>.
 
   ...
-&lt;% } # for (chr ...) %&gt;</code></pre>
-<p><br></p>
-<p>It is rather tedious to achieve the same using noweb-style markup, e.g. Sweave and knitr.</p>
-</section>
-<section id="rsp-template-functions" class="slide level1">
-<h1>RSP template functions</h1>
+<% } # for (chr ...) %>
+```
+
+<br>
+
+To achieve the same using noweb-style markup (e.g. Sweave and knitr) is tedious.
+
+
+
+	      
+---
+# RSP template functions
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 11 of 15</span></p>
-</div>
-<pre><code>&lt;%-- RSP TEMPLATES --%&gt;
-&lt;% chromosomeSummary &lt;- function(chr) { %&gt;
-  &lt;% fitT &lt;- extractChromosome(fit, chr) %&gt;
-  PSCBS identified &lt;%=nbrOfSegments(fitT)%&gt; segments
-  on Chr. &lt;%=chr%&gt;.
+```
+<%-- RSP TEMPLATES --%>
+<% chromosomeSummary <- function(chr) { %>
+  <% fitT <- extractChromosome(fit, chr) %>
+  PSCBS identified <%= nbrOfSegments(fitT) %> segments
+  on Chr. <%= chr %>.
   ...
-&lt;% } %&gt;
+<% } %>
 
-&lt;%-- DOCUMENT --%&gt;
+<%-- DOCUMENT --%>
 ...
-&lt;% for (chr in 1:23) { %&gt;
-  \subsection{Chromosome &lt;%=chr%&gt;}
-  &lt;% chromosomeSummary(chr) %&gt;
-&lt;% } # for (chr ...) %&gt;</code></pre>
-</section>
-<section id="r.rsp-package---rsp-engine-for-r" class="slide level1">
-<h1>R.rsp package - RSP engine for R</h1>
+<% for (chr in 1:23) { %>
+  \subsection{Chromosome <%= chr %>}
+  <% chromosomeSummary(chr) %>
+<% } # for (chr ...) %>
+```
+
+
+
+	      
+---
+# R.rsp package - RSP engine for R
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 12 of 15</span></p>
-</div>
-<h2 id="rcat---rsp-version-of-cat">rcat() - RSP version of cat()</h2>
-<pre><code>&gt; rcat(&quot;A random integer in [1,100]:
-        &lt;%=sample(1:100, size=1)%&gt;\n&quot;)
-A random integer in [1,100]: 77</code></pre>
-<p><br></p>
-<h2 id="rsource---rsp-version-of-source">rsource() - RSP version of source()</h2>
-<p>Consider RSP file ‘count.rsp’ (think ‘count.R’):</p>
-<pre><code>Counting:&lt;% for (i in 1:10) { %&gt;
-  &lt;% Sys.sleep(0.3) %&gt;&lt;%=i%&gt;
-&lt;% } %&gt;.</code></pre>
-<p>Running this RSP script gives:</p>
-<pre><code>&gt; rsource(&quot;count.rsp&quot;)
-Counting: 1 2 3 4 5 6 7 8 9 10.</code></pre>
-</section>
-<section id="rfile---end-to-end-compilation" class="slide level1">
-<h1>rfile() - end-to-end compilation</h1>
+## rcat() - RSP version of cat()
+```r
+> rcat("A random integer in [1,100]:
+        <%=sample(1:100, size = 1)%>\n")
+A random integer in [1,100]: 77
+```
+
+<br>
+
+## rsource() - RSP version of source()
+Consider RSP file 'count.rsp' (think 'count.R'):
+
+```
+Counting:<% for (i in 1:10) { %>
+  <% Sys.sleep(0.3) %><%= i %>
+<% } %>.
+```
+Running this RSP script gives:
+
+```r
+> rsource("count.rsp")
+Counting: 1 2 3 4 5 6 7 8 9 10.
+```
+
+	      
+---
+# rfile() - end-to-end compilation
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 13 of 15</span></p>
-</div>
-<pre><code>&gt; rfile(&quot;report.md.rsp&quot;, args=list(n=50, model=&quot;L1&quot;))
+```r
+> rfile("report.md.rsp", args = list(n = 50, model = "L1"))
 RspFileProduct:
 Pathname: report.html
 File size: 42.54 kB (43564 bytes)
-Content type: text/html</code></pre>
-<p><br></p>
-<pre><code>&gt; rfile(&quot;http://example.org/vignette.tex.rsp&quot;)
+Content type: text/html
+```
+
+<br>
+
+```r
+> rfile("http://example.org/vignette.tex.rsp")
 RspFileProduct:
 Pathname: vignette.pdf
 File size: 258.71 kB (264925 bytes)
 Content type: application/pdf
-Metadata &#39;title&#39;: &#39;Dynamic document creation using RSP&#39;
-Metadata &#39;keywords&#39;: &#39;Literate programming, HTML, PDF&#39;
-Metadata &#39;author&#39;: &#39;Henrik Bengtsson&#39;</code></pre>
-</section>
-<section id="including-graphics-using-r.devices-package" class="slide level1">
-<h1>Including graphics (using R.devices package)</h1>
+Metadata 'title': 'Dynamic document creation using RSP'
+Metadata 'keywords': 'Literate programming, HTML, PDF'
+Metadata 'author': 'Henrik Bengtsson'
+```
+
+
+	      
+---
+# Including graphics (R.devices package)
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 14 of 15</span></p>
-</div>
-<p>RSP-embedded LaTeX</p>
-<pre><code>\includegraphics{&lt;%=toPDF(&quot;MyFigure,yeah,cool&quot;, {
- curve(dnorm, from=-5, to=+5)
-})%&gt;}</code></pre>
-<p>generates the image file and outputs</p>
-<pre><code>\includegraphics{MyFigure,yeah,cool}</code></pre>
-<p>which appears as</p>
-<p><img src="data:image/png;base64,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" width=480></p>
-</section>
-<section id="appendix" class="slide level1">
-<h1>Appendix</h1>
+RSP-embedded LaTeX
+
+```
+\includegraphics{<%= toPDF("MyFigure,yeah,cool", {
+  curve(dnorm, from = -5, to = +5)
+}) %>}
+```
+
+generates the image file and outputs
+
+```
+\includegraphics{MyFigure,yeah,cool}
+```
+
+which appears as
+
+<img src="data:image/png;base64,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" width=480>
+
+
+	      
+---
+# Appendix
 <div class="footer">
-<p>Henrik Bengtsson, Introductory slides on RSP, 2016-12-05. <span style="float: right"> Slide 15 of 15</span></p>
-</div>
-<p>Session info:</p>
-<pre style="font-size: 70%">
-R version 3.3.2 (2016-10-31)
+Session info:
+
+```
+R version 3.3.3 (2017-03-06)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 16.04.1 LTS
+Running under: Ubuntu 16.04.2 LTS
 
 locale:
  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -429,489 +405,23 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] R.devices_2.15.1  R.rsp_0.40.0      R.oo_1.21.0       R.methodsS3_1.7.1
+[1] R.devices_2.15.1  R.rsp_0.41.0      R.oo_1.21.0       R.methodsS3_1.7.1
 
 loaded via a namespace (and not attached):
-[1] markdown_0.7.7     tools_3.3.2        base64enc_0.1-4    digest_0.6.10.2   
-[5] R.cache_0.12.0     Cairo_1.5-9        R.utils_2.5.0-9000
-</pre>
-<p>This report was automatically generated using <code>rfile()</code> of the R.rsp package. Total processing time after RSP-to-R translation was 0.75 secs.</p>
-</section>
-<!-- {{{{ dzslides core
-#
-#
-#     __  __  __       .  __   ___  __
-#    |  \  / /__` |    | |  \ |__  /__`
-#    |__/ /_ .__/ |___ | |__/ |___ .__/ core :€
-#
-#
-# The following block of code is not supposed to be edited.
-# But if you want to change the behavior of these slides,
-# feel free to hack it!
-#
--->
+[1] tools_3.3.3     base64enc_0.1-4 digest_0.6.12   R.cache_0.12.0 
+[5] Cairo_1.5-9     R.utils_2.5.0  
+```
 
-<div id="progress-bar"></div>
+These slides were generated using `R.rsp::rfile()` in 0.06 secs.
 
-<!-- Default Style -->
-<style>
-  * { margin: 0; padding: 0; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
-  [role="note"] { display: none; }
-  body {
-    width: 800px; height: 600px;
-    margin-left: -400px; margin-top: -300px;
-    position: absolute; top: 50%; left: 50%;
-    overflow: hidden;
-    display: none;
-  }
-  .view body {
-    position: static;
-    margin: 0; padding: 0;
-    width: 100%; height: 100%;
-    display: inline-block;
-    overflow: visible; overflow-x: hidden;
-    /* undo Dz.onresize */
-    transform: none !important;
-    -moz-transform: none !important;
-    -webkit-transform: none !important;
-    -o-transform: none !important;
-    -ms-transform: none !important;
-  }
-  .view head, .view head > title { display: block }
-  section {
-    position: absolute;
-    pointer-events: none;
-    width: 100%; height: 100%;
-  }
-  .view section {
-    pointer-events: auto;
-    position: static;
-    width: 800px; height: 600px;
-    margin: -150px -200px;
-    float: left;
+</textarea>
 
-    transform: scale(.4);
-    -moz-transform: scale(.4);
-    -webkit-transform: scale(.4);
-    -o-transform: scale(.4);
-    -ms-transform: scale(.4);
-  }
-  .view section > * { pointer-events: none; }
-  section[aria-selected] { pointer-events: auto; }
-  html { overflow: hidden; }
-  html.view { overflow: visible; }
-  body.loaded { display: block; }
-  .incremental {visibility: hidden; }
-  .incremental[active] {visibility: visible; }
-  #progress-bar{
-    bottom: 0;
-    position: absolute;
-    -moz-transition: width 400ms linear 0s;
-    -webkit-transition: width 400ms linear 0s;
-    -ms-transition: width 400ms linear 0s;
-    transition: width 400ms linear 0s;
-  }
-  .view #progress-bar {
-    display: none;
-  }
-</style>
-
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>
-  var Dz = {
-    remoteWindows: [],
-    idx: -1,
-    step: 0,
-    html: null,
-    slides: null,
-    progressBar : null,
-    params: {
-      autoplay: "1"
-    }
-  };
-
-  Dz.init = function() {
-    document.body.className = "loaded";
-    this.slides = Array.prototype.slice.call($$("body > section"));
-    this.progressBar = $("#progress-bar");
-    this.html = document.body.parentNode;
-    this.setupParams();
-    this.onhashchange();
-    this.setupTouchEvents();
-    this.onresize();
-    this.setupView();
-  }
-
-  Dz.setupParams = function() {
-    var p = window.location.search.substr(1).split('&');
-    p.forEach(function(e, i, a) {
-      var keyVal = e.split('=');
-      Dz.params[keyVal[0]] = decodeURIComponent(keyVal[1]);
-    });
-  // Specific params handling
-    if (!+this.params.autoplay)
-      $$.forEach($$("video"), function(v){ v.controls = true });
-  }
-
-  Dz.onkeydown = function(aEvent) {
-    // Don't intercept keyboard shortcuts
-    if (aEvent.altKey
-      || aEvent.ctrlKey
-      || aEvent.metaKey
-      || aEvent.shiftKey) {
-      return;
-    }
-    if ( aEvent.keyCode == 37 // left arrow
-      || aEvent.keyCode == 38 // up arrow
-      || aEvent.keyCode == 33 // page up
-    ) {
-      aEvent.preventDefault();
-      this.back();
-    }
-    if ( aEvent.keyCode == 39 // right arrow
-      || aEvent.keyCode == 40 // down arrow
-      || aEvent.keyCode == 34 // page down
-    ) {
-      aEvent.preventDefault();
-      this.forward();
-    }
-    if (aEvent.keyCode == 35) { // end
-      aEvent.preventDefault();
-      this.goEnd();
-    }
-    if (aEvent.keyCode == 36) { // home
-      aEvent.preventDefault();
-      this.goStart();
-    }
-    if (aEvent.keyCode == 32) { // space
-      aEvent.preventDefault();
-      this.toggleContent();
-    }
-    if (aEvent.keyCode == 70) { // f
-      aEvent.preventDefault();
-      this.goFullscreen();
-    }
-    if (aEvent.keyCode == 79) { // o
-      aEvent.preventDefault();
-      this.toggleView();
-    }
-  }
-
-  /* Touch Events */
-
-  Dz.setupTouchEvents = function() {
-    var orgX, newX;
-    var tracking = false;
-
-    var db = document.body;
-    db.addEventListener("touchstart", start.bind(this), false);
-    db.addEventListener("touchmove", move.bind(this), false);
-
-    function start(aEvent) {
-      aEvent.preventDefault();
-      tracking = true;
-      orgX = aEvent.changedTouches[0].pageX;
-    }
-
-    function move(aEvent) {
-      if (!tracking) return;
-      newX = aEvent.changedTouches[0].pageX;
-      if (orgX - newX > 100) {
-        tracking = false;
-        this.forward();
-      } else {
-        if (orgX - newX < -100) {
-          tracking = false;
-          this.back();
-        }
-      }
-    }
-  }
-
-  Dz.setupView = function() {
-    document.body.addEventListener("click", function ( e ) {
-      if (!Dz.html.classList.contains("view")) return;
-      if (!e.target || e.target.nodeName != "SECTION") return;
-
-      Dz.html.classList.remove("view");
-      Dz.setCursor(Dz.slides.indexOf(e.target) + 1);
-    }, false);
-  }
-
-  /* Adapt the size of the slides to the window */
-
-  Dz.onresize = function() {
-    var db = document.body;
-    var sx = db.clientWidth / window.innerWidth;
-    var sy = db.clientHeight / window.innerHeight;
-    var transform = "scale(" + (1/Math.max(sx, sy)) + ")";
-
-    db.style.MozTransform = transform;
-    db.style.WebkitTransform = transform;
-    db.style.OTransform = transform;
-    db.style.msTransform = transform;
-    db.style.transform = transform;
-  }
-
-
-  Dz.getNotes = function(aIdx) {
-    var s = $("section:nth-of-type(" + aIdx + ")");
-    var d = s.$("[role='note']");
-    return d ? d.innerHTML : "";
-  }
-
-  Dz.onmessage = function(aEvent) {
-    var argv = aEvent.data.split(" "), argc = argv.length;
-    argv.forEach(function(e, i, a) { a[i] = decodeURIComponent(e) });
-    var win = aEvent.source;
-    if (argv[0] === "REGISTER" && argc === 1) {
-      this.remoteWindows.push(win);
-      this.postMsg(win, "REGISTERED", document.title, this.slides.length);
-      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
-      return;
-    }
-    if (argv[0] === "BACK" && argc === 1)
-      this.back();
-    if (argv[0] === "FORWARD" && argc === 1)
-      this.forward();
-    if (argv[0] === "START" && argc === 1)
-      this.goStart();
-    if (argv[0] === "END" && argc === 1)
-      this.goEnd();
-    if (argv[0] === "TOGGLE_CONTENT" && argc === 1)
-      this.toggleContent();
-    if (argv[0] === "SET_CURSOR" && argc === 2)
-      window.location.hash = "#" + argv[1];
-    if (argv[0] === "GET_CURSOR" && argc === 1)
-      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
-    if (argv[0] === "GET_NOTES" && argc === 1)
-      this.postMsg(win, "NOTES", this.getNotes(this.idx));
-  }
-
-  Dz.toggleContent = function() {
-    // If a Video is present in this new slide, play it.
-    // If a Video is present in the previous slide, stop it.
-    var s = $("section[aria-selected]");
-    if (s) {
-      var video = s.$("video");
-      if (video) {
-        if (video.ended || video.paused) {
-          video.play();
-        } else {
-          video.pause();
-        }
-      }
-    }
-  }
-
-  Dz.setCursor = function(aIdx, aStep) {
-    // If the user change the slide number in the URL bar, jump
-    // to this slide.
-    aStep = (aStep != 0 && typeof aStep !== "undefined") ? "." + aStep : ".0";
-    window.location.hash = "#" + aIdx + aStep;
-  }
-
-  Dz.onhashchange = function() {
-    var cursor = window.location.hash.split("#"),
-        newidx = 1,
-        newstep = 0;
-    if (cursor.length == 2) {
-      newidx = ~~cursor[1].split(".")[0];
-      newstep = ~~cursor[1].split(".")[1];
-      if (newstep > Dz.slides[newidx - 1].$$('.incremental > *').length) {
-        newstep = 0;
-        newidx++;
-      }
-    }
-    this.setProgress(newidx, newstep);
-    if (newidx != this.idx) {
-      this.setSlide(newidx);
-    }
-    if (newstep != this.step) {
-      this.setIncremental(newstep);
-    }
-    for (var i = 0; i < this.remoteWindows.length; i++) {
-      this.postMsg(this.remoteWindows[i], "CURSOR", this.idx + "." + this.step);
-    }
-  }
-
-  Dz.back = function() {
-    if (this.idx == 1 && this.step == 0) {
-      return;
-    }
-    if (this.step == 0) {
-      this.setCursor(this.idx - 1,
-                     this.slides[this.idx - 2].$$('.incremental > *').length);
-    } else {
-      this.setCursor(this.idx, this.step - 1);
-    }
-  }
-
-  Dz.forward = function() {
-    if (this.idx >= this.slides.length &&
-        this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
-        return;
-    }
-    if (this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
-      this.setCursor(this.idx + 1, 0);
-    } else {
-      this.setCursor(this.idx, this.step + 1);
-    }
-  }
-
-  Dz.goStart = function() {
-    this.setCursor(1, 0);
-  }
-
-  Dz.goEnd = function() {
-    var lastIdx = this.slides.length;
-    var lastStep = this.slides[lastIdx - 1].$$('.incremental > *').length;
-    this.setCursor(lastIdx, lastStep);
-  }
-
-  Dz.toggleView = function() {
-    this.html.classList.toggle("view");
-
-    if (this.html.classList.contains("view")) {
-      $("section[aria-selected]").scrollIntoView(true);
-    }
-  }
-
-  Dz.setSlide = function(aIdx) {
-    this.idx = aIdx;
-    var old = $("section[aria-selected]");
-    var next = $("section:nth-of-type("+ this.idx +")");
-    if (old) {
-      old.removeAttribute("aria-selected");
-      var video = old.$("video");
-      if (video) {
-        video.pause();
-      }
-    }
-    if (next) {
-      next.setAttribute("aria-selected", "true");
-      if (this.html.classList.contains("view")) {
-        next.scrollIntoView();
-      }
-      var video = next.$("video");
-      if (video && !!+this.params.autoplay) {
-        video.play();
-      }
-    } else {
-      // That should not happen
-      this.idx = -1;
-      // console.warn("Slide doesn't exist.");
-    }
-  }
-
-  Dz.setIncremental = function(aStep) {
-    this.step = aStep;
-    var old = this.slides[this.idx - 1].$('.incremental > *[aria-selected]');
-    if (old) {
-      old.removeAttribute('aria-selected');
-    }
-    var incrementals = $$('.incremental');
-    if (this.step <= 0) {
-      $$.forEach(incrementals, function(aNode) {
-        aNode.removeAttribute('active');
-      });
-      return;
-    }
-    var next = this.slides[this.idx - 1].$$('.incremental > *')[this.step - 1];
-    if (next) {
-      next.setAttribute('aria-selected', true);
-      next.parentNode.setAttribute('active', true);
-      var found = false;
-      $$.forEach(incrementals, function(aNode) {
-        if (aNode != next.parentNode)
-          if (found)
-            aNode.removeAttribute('active');
-          else
-            aNode.setAttribute('active', true);
-        else
-          found = true;
-      });
-    } else {
-      setCursor(this.idx, 0);
-    }
-    return next;
-  }
-
-  Dz.goFullscreen = function() {
-    var html = $('html'),
-        requestFullscreen = html.requestFullscreen || html.requestFullScreen || html.mozRequestFullScreen || html.webkitRequestFullScreen;
-    if (requestFullscreen) {
-      requestFullscreen.apply(html);
-    }
-  }
-  
-  Dz.setProgress = function(aIdx, aStep) {
-    var slide = $("section:nth-of-type("+ aIdx +")");
-    if (!slide)
-      return;
-    var steps = slide.$$('.incremental > *').length + 1,
-        slideSize = 100 / (this.slides.length - 1),
-        stepSize = slideSize / steps;
-    this.progressBar.style.width = ((aIdx - 1) * slideSize + aStep * stepSize) + '%';
-  }
-  
-  Dz.postMsg = function(aWin, aMsg) { // [arg0, [arg1...]]
-    aMsg = [aMsg];
-    for (var i = 2; i < arguments.length; i++)
-      aMsg.push(encodeURIComponent(arguments[i]));
-    aWin.postMessage(aMsg.join(" "), "*");
-  }
-  
-  function init() {
-    Dz.init();
-    window.onkeydown = Dz.onkeydown.bind(Dz);
-    window.onresize = Dz.onresize.bind(Dz);
-    window.onhashchange = Dz.onhashchange.bind(Dz);
-    window.onmessage = Dz.onmessage.bind(Dz);
-  }
-
-  window.onload = init;
+var slideshow = remark.create({
+  ratio: '4:3',
+})
 </script>
 
-
-<script> // Helpers
-  if (!Function.prototype.bind) {
-    Function.prototype.bind = function (oThis) {
-
-      // closest thing possible to the ECMAScript 5 internal IsCallable
-      // function 
-      if (typeof this !== "function")
-      throw new TypeError(
-        "Function.prototype.bind - what is trying to be fBound is not callable"
-      );
-
-      var aArgs = Array.prototype.slice.call(arguments, 1),
-          fToBind = this,
-          fNOP = function () {},
-          fBound = function () {
-            return fToBind.apply( this instanceof fNOP ? this : oThis || window,
-                   aArgs.concat(Array.prototype.slice.call(arguments)));
-          };
-
-      fNOP.prototype = this.prototype;
-      fBound.prototype = new fNOP();
-
-      return fBound;
-    };
-  }
-
-  var $ = (HTMLElement.prototype.$ = function(aQuery) {
-    return this.querySelector(aQuery);
-  }).bind(document);
-
-  var $$ = (HTMLElement.prototype.$$ = function(aQuery) {
-    return this.querySelectorAll(aQuery);
-  }).bind(document);
-
-  $$.forEach = function(nodeList, fun) {
-    Array.prototype.forEach.call(nodeList, fun);
-  }
-
-</script>
-<!-- vim: set fdm=marker: }}} -->
 </body>
 </html>
